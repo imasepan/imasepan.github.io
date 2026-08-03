@@ -29,7 +29,13 @@ applyTheme(readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
 if (themeToggle) {
   themeToggle.addEventListener('click', () => {
     const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    applyTheme(nextTheme);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion && document.startViewTransition) {
+      document.startViewTransition(() => applyTheme(nextTheme));
+    } else {
+      applyTheme(nextTheme);
+    }
 
     try {
       window.localStorage.setItem('theme', nextTheme);
