@@ -155,13 +155,15 @@ if (menuButton && nav) {
 const projectList = document.querySelector('#project-list');
 
 if (projectList) {
-  fetch('https://api.github.com/users/imasepan/repos?sort=updated&per_page=6')
+  fetch('https://api.github.com/users/imasepan/repos?sort=updated&per_page=100')
     .then((response) => {
       if (!response.ok) throw new Error('Could not load repositories');
       return response.json();
     })
     .then((repos) => {
-      const visibleRepos = repos.filter((repo) => !repo.fork && repo.name !== 'imasepan.github.io');
+      const visibleRepos = repos
+        .filter((repo) => repo.name !== 'imasepan.github.io')
+        .slice(0, 3);
       if (!visibleRepos.length) throw new Error('No public repositories found');
       projectList.innerHTML = visibleRepos.map((repo) => `
         <a class="project-card${repo.name.toLowerCase() === 'playermarket' ? ' player-market' : ''}" href="${repo.html_url}" target="_blank" rel="noreferrer">
