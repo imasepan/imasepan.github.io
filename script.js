@@ -105,7 +105,7 @@ if (projectList) {
       const visibleRepos = repos.filter((repo) => !repo.fork && repo.name !== 'imasepan.github.io');
       if (!visibleRepos.length) throw new Error('No public repositories found');
       projectList.innerHTML = visibleRepos.map((repo) => `
-        <a class="project-card" href="${repo.html_url}" target="_blank" rel="noreferrer">
+        <a class="project-card${repo.name.toLowerCase() === 'playermarket' ? ' player-market' : ''}" href="${repo.html_url}" target="_blank" rel="noreferrer">
           <h3>${repo.name}</h3>
           <p>${repo.description || (isKorean ? 'imasepan의 프로젝트입니다.' : 'A project by imasepan.')}</p>
           <span class="project-meta">${repo.language || 'Code'} · ${isKorean ? 'GitHub에서 보기 ↗' : 'View on GitHub ↗'}</span>
