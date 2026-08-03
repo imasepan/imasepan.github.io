@@ -1,4 +1,4 @@
-:root { --ink: #172018; --paper: #FDFBD4; --muted: #878672; --line: #D9D7B6; --lime: #d9f36b; --orange: #ff8b54; --serif: Georgia, 'Times New Roman', serif; --sans: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace; }
+:root { --ink: #172018; --paper: #FEFDE7; --muted: #878672; --line: #D9D7B6; --lime: #d9f36b; --orange: #ff8b54; --serif: Georgia, 'Times New Roman', serif; --sans: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); font-size: 16px; line-height: 1.5; }

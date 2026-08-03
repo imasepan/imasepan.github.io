@@ -2,6 +2,23 @@ const menuButton = document.querySelector('.menu-button');
 const nav = document.querySelector('.site-nav');
 const isKorean = document.documentElement.lang === 'ko';
 
+const scrollTarget = new URLSearchParams(window.location.search).get('scroll');
+
+if (scrollTarget) {
+  const target = document.getElementById(scrollTarget);
+
+  if (target) {
+    window.scrollTo(0, 0);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        window.history.replaceState(null, '', `${window.location.pathname}#${scrollTarget}`);
+      });
+    });
+  }
+}
+
 if (menuButton && nav) {
   menuButton.addEventListener('click', () => {
     const isOpen = nav.classList.toggle('is-open');
