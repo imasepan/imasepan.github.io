@@ -55,6 +55,24 @@ pageLoader.setAttribute('aria-hidden', 'true');
 pageLoader.innerHTML = '<span class="page-loader-label">Loading</span>';
 document.body.appendChild(pageLoader);
 
+let arrivingPage = null;
+try {
+  arrivingPage = window.sessionStorage.getItem('page-loader-label');
+  window.sessionStorage.removeItem('page-loader-label');
+} catch {
+  // Navigation still works if session storage is unavailable.
+}
+
+if (arrivingPage) {
+  pageLoader.querySelector('.page-loader-label').textContent = `Loading ${arrivingPage}`;
+  pageLoader.classList.add('is-arrival');
+  pageLoader.setAttribute('aria-hidden', 'false');
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => pageLoader.classList.add('is-revealing'));
+  });
+}
+
 document.querySelectorAll('a[href]').forEach((link) => {
   link.addEventListener('click', (event) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
@@ -70,6 +88,12 @@ document.querySelectorAll('a[href]').forEach((link) => {
     pageLoader.querySelector('.page-loader-label').textContent = `Loading ${isWriting ? 'Writing' : 'Guestbook'}`;
     pageLoader.setAttribute('aria-hidden', 'false');
     pageLoader.classList.add('is-active');
+
+    try {
+      window.sessionStorage.setItem('page-loader-label', isWriting ? 'Writing' : 'Guestbook');
+    } catch {
+      // The outgoing animation can still play without a matching reveal.
+    }
 
     const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650;
     window.setTimeout(() => window.location.assign(destination.href), delay);
