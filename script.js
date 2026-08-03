@@ -73,39 +73,11 @@ if (arrivingPage) {
   });
 }
 
-document.querySelectorAll('a[href]').forEach((link) => {
-  link.addEventListener('click', (event) => {
-    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
+const runTypewriter = () => {
+  const typewriterText = document.querySelector('[data-typewriter]');
+  if (!typewriterText || typewriterText.dataset.animated || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const destination = new URL(link.href, window.location.href);
-    if (destination.origin !== window.location.origin) return;
-
-    const isWriting = link.closest('.latest-post-card') || /(?:\/blog(?:\.html|\/)?|\/\d{4}\/\d{2}\/\d{2}\/)/.test(destination.pathname);
-    const isGuestbook = /\/guestbook\.html$/.test(destination.pathname);
-    const isHome = link.matches('.page-back') && /\/(?:index\.html)?$/.test(destination.pathname);
-    if (!isWriting && !isGuestbook && !isHome) return;
-
-    event.preventDefault();
-    const destinationLabel = isWriting ? 'Writing' : isGuestbook ? 'Guestbook' : 'Home';
-    pageLoader.querySelector('.page-loader-label').textContent = `Loading ${destinationLabel}`;
-    pageLoader.setAttribute('aria-hidden', 'false');
-    pageLoader.classList.add('is-active');
-
-    try {
-      window.sessionStorage.setItem('page-loader-label', destinationLabel);
-    } catch {
-      // The outgoing animation can still play without a matching reveal.
-    }
-
-    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650;
-    window.setTimeout(() => window.location.assign(destination.href), delay);
-  });
-});
-
-const scrollTarget = new URLSearchParams(window.location.search).get('scroll');
-const typewriterText = document.querySelector('[data-typewriter]');
-
-if (typewriterText && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  typewriterText.dataset.animated = 'true';
   const fullText = typewriterText.textContent.trim();
   const fullHeight = typewriterText.getBoundingClientRect().height;
   let characterIndex = 0;
@@ -127,9 +99,11 @@ if (typewriterText && !window.matchMedia('(prefers-reduced-motion: reduce)').mat
   };
 
   window.setTimeout(typeNextCharacter, 250);
-}
+};
 
-if (scrollTarget) {
+const handleScrollTarget = (url = new URL(window.location.href)) => {
+  const scrollTarget = new URLSearchParams(url.search).get('scroll');
+  if (!scrollTarget) return;
   const target = document.getElementById(scrollTarget);
 
   if (target) {
@@ -138,11 +112,11 @@ if (scrollTarget) {
       window.requestAnimationFrame(() => {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-        window.history.replaceState(null, '', `${window.location.pathname}#${scrollTarget}`);
+        window.history.replaceState(null, '', `${url.pathname}#${scrollTarget}`);
       });
     });
   }
-}
+};
 
 if (menuButton && nav) {
   menuButton.addEventListener('click', () => {
@@ -152,9 +126,11 @@ if (menuButton && nav) {
   });
 }
 
-const projectList = document.querySelector('#project-list');
+const loadProjects = () => {
+  const projectList = document.querySelector('#project-list');
+  if (!projectList || projectList.dataset.loaded) return;
+  projectList.dataset.loaded = 'true';
 
-if (projectList) {
   fetch('https://api.github.com/users/imasepan/repos?sort=updated&per_page=100')
     .then((response) => {
       if (!response.ok) throw new Error('Could not load repositories');
@@ -175,4 +151,92 @@ if (projectList) {
     .catch(() => {
       projectList.innerHTML = '<p class="loading">Projects will appear here as public repositories are added. <a href="https://github.com/imasepan?tab=repositories" target="_blank" rel="noreferrer">Browse GitHub ↗</a></p>';
     });
-}
+};
+
+const updateCurrentNavigation = (pathname) => {
+  document.querySelectorAll('.site-nav a').forEach((link) => {
+    link.removeAttribute('aria-current');
+    const linkPath = new URL(link.href, window.location.href).pathname;
+    if ((pathname.startsWith('/blog') && linkPath.startsWith('/blog')) || (pathname === '/guestbook.html' && linkPath === pathname)) {
+      link.setAttribute('aria-current', 'page');
+    }
+  });
+};
+
+const revealLoadedPage = () => {
+  pageLoader.className = 'page-loader is-arrival';
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => pageLoader.classList.add('is-revealing'));
+  });
+  window.setTimeout(() => {
+    pageLoader.className = 'page-loader';
+    pageLoader.setAttribute('aria-hidden', 'true');
+  }, 1500);
+};
+
+const loadInternalPage = async (destination, destinationLabel, addHistory = true) => {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  pageLoader.querySelector('.page-loader-label').textContent = `Loading ${destinationLabel}`;
+  pageLoader.setAttribute('aria-hidden', 'false');
+  pageLoader.className = 'page-loader is-active';
+
+  try {
+    const [response] = await Promise.all([
+      fetch(destination.href),
+      new Promise((resolve) => window.setTimeout(resolve, reducedMotion ? 0 : 650)),
+    ]);
+    if (!response.ok) throw new Error('Could not load page');
+
+    const nextDocument = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const currentMain = document.querySelector('main');
+    const nextMain = nextDocument.querySelector('main');
+    if (!currentMain || !nextMain) throw new Error('Page content was missing');
+
+    currentMain.replaceWith(nextMain);
+    document.title = nextDocument.title;
+    if (addHistory) window.history.pushState({}, '', destination.href);
+    window.scrollTo(0, 0);
+    nav?.classList.remove('is-open');
+    menuButton?.setAttribute('aria-expanded', 'false');
+    updateCurrentNavigation(destination.pathname);
+    runTypewriter();
+    loadProjects();
+    handleScrollTarget(destination);
+    revealLoadedPage();
+  } catch {
+    try {
+      window.sessionStorage.setItem('page-loader-label', destinationLabel);
+    } catch {
+      // A normal navigation remains available as a fallback.
+    }
+    window.location.assign(destination.href);
+  }
+};
+
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[href]');
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
+
+  const destination = new URL(link.href, window.location.href);
+  if (destination.origin !== window.location.origin || destination.pathname === '/kr/' || link.classList.contains('language-switch')) return;
+  if (destination.pathname === window.location.pathname && destination.search === window.location.search && destination.hash) return;
+
+  const isWriting = link.closest('.latest-post-card') || /(?:\/blog(?:\.html|\/)?|\/\d{4}\/\d{2}\/\d{2}\/)/.test(destination.pathname);
+  const isGuestbook = /\/guestbook\.html$/.test(destination.pathname);
+  const isHome = /\/(?:index\.html)?$/.test(destination.pathname);
+  if (!isWriting && !isGuestbook && !isHome) return;
+
+  event.preventDefault();
+  const destinationLabel = isWriting ? 'Writing' : isGuestbook ? 'Guestbook' : 'Home';
+  loadInternalPage(destination, destinationLabel);
+});
+
+window.addEventListener('popstate', () => {
+  const destination = new URL(window.location.href);
+  const destinationLabel = destination.pathname.startsWith('/blog') ? 'Writing' : destination.pathname === '/guestbook.html' ? 'Guestbook' : 'Home';
+  loadInternalPage(destination, destinationLabel, false);
+});
+
+runTypewriter();
+loadProjects();
+handleScrollTarget();
