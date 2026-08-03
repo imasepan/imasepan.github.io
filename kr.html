@@ -1,4 +1,5 @@
 ---
+permalink: /kr/
 ---
 <!doctype html>
 <html lang="ko">
@@ -10,22 +11,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <header class="site-header">
       <div class="brand-controls">
-        <a class="wordmark" href="kr.html">imasepan<span>_</span></a>
+        <a class="wordmark" href="/kr/">imasepan<span>_</span></a>
         <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
       </div>
       <div class="header-controls">
         <nav id="site-nav" class="site-nav" aria-label="주요 탐색">
           <a href="#about">소개</a>
           <a href="#projects">프로젝트</a>
-          <a href="blog.html">글</a>
-          <a href="guestbook.html">방명록</a>
+          <a href="/blog/">글</a>
+          <a href="/guestbook.html">방명록</a>
         </nav>
-        <a class="language-switch" href="index.html" lang="en" aria-label="Switch to English">EN</a>
+        <a class="language-switch" href="/" lang="en" aria-label="Switch to English">EN</a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">메뉴</button>
       </div>
     </header>
@@ -58,7 +59,7 @@
           </div>
         </div>
         {% assign latest_post = site.posts.first %}
-        <a class="latest-post-card" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}blog.html{% endif %}">
+        <a class="latest-post-card" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}/blog/{% endif %}">
           <p class="eyebrow">최근 글</p>
           {% if latest_post %}
             <h2>{{ latest_post.title }}</h2>
@@ -81,7 +82,7 @@
           <h2 id="about-title">안녕하세요, 저는 <span>진현</span>이에요.</h2>
           <p>저는 <strong>한국과 미국</strong>을 기반으로 하는 25살 <strong>컴퓨터공학과 학생</strong>입니다. 이곳에서는 제 머릿속에서 일어나는 일, 거기서 나온 것들, 그리고 그 밖의 모든 것을 이야기해요.</p>
           <p>요즘은 특히 <strong>영화, 책, 그리고 졸업 <small><small><small>(ㅋㅋ)</small></small></small></strong>에 관심이 많아요.</p>
-          <p class="about-contact">이야기해요 - <a href="mailto:[your-email@example.com]">jinhyuncharliekim@gmail.com</a></p>
+          <p class="about-contact">이야기해요 - <a href="mailto:jinhyuncharliekim@gmail.com">jinhyuncharliekim@gmail.com</a></p>
         </div>
       </section>
 
@@ -99,7 +100,7 @@
       </section>
 
       <section class="section split-section single-card" aria-label="방명록">
-        <a class="feature-card feature-link accent-card" href="guestbook.html">
+        <a class="feature-card feature-link accent-card" href="/guestbook.html">
           <p class="eyebrow">04 / 방명록</p>
           <h2>짧은 인사를 남겨 주세요.</h2>
           <p>사이트가 마음에 들었다면 메시지를 남겨 주세요! (좋은 메시지라면 더 좋아요).</p>
@@ -115,10 +116,10 @@
     </main>
 
     <footer class="site-footer">
-      <a class="wordmark" href="kr.html">imasepan<span>_</span></a>
+      <a class="wordmark" href="/kr/">imasepan<span>_</span></a>
       <p>일주일 동안 정신없이 작업하다가, 그 뒤로는 완전히 잊어버리는 모습을 지켜봐 주세요.</p>
       <a href="https://github.com/imasepan" target="_blank" rel="noreferrer">github.com/imasepan ↗</a>
     </footer>
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
   </body>
 </html>

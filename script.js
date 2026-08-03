@@ -82,15 +82,17 @@ document.querySelectorAll('a[href]').forEach((link) => {
 
     const isWriting = link.closest('.latest-post-card') || /(?:\/blog(?:\.html|\/)?|\/\d{4}\/\d{2}\/\d{2}\/)/.test(destination.pathname);
     const isGuestbook = /\/guestbook\.html$/.test(destination.pathname);
-    if (!isWriting && !isGuestbook) return;
+    const isHome = link.matches('.page-back') && /\/(?:index\.html)?$/.test(destination.pathname);
+    if (!isWriting && !isGuestbook && !isHome) return;
 
     event.preventDefault();
-    pageLoader.querySelector('.page-loader-label').textContent = `Loading ${isWriting ? 'Writing' : 'Guestbook'}`;
+    const destinationLabel = isWriting ? 'Writing' : isGuestbook ? 'Guestbook' : 'Home';
+    pageLoader.querySelector('.page-loader-label').textContent = `Loading ${destinationLabel}`;
     pageLoader.setAttribute('aria-hidden', 'false');
     pageLoader.classList.add('is-active');
 
     try {
-      window.sessionStorage.setItem('page-loader-label', isWriting ? 'Writing' : 'Guestbook');
+      window.sessionStorage.setItem('page-loader-label', destinationLabel);
     } catch {
       // The outgoing animation can still play without a matching reveal.
     }
