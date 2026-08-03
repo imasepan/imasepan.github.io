@@ -3,6 +3,31 @@ const nav = document.querySelector('.site-nav');
 const isKorean = document.documentElement.lang === 'ko';
 
 const scrollTarget = new URLSearchParams(window.location.search).get('scroll');
+const typewriterText = document.querySelector('[data-typewriter]');
+
+if (typewriterText && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const fullText = typewriterText.textContent.trim();
+  const fullHeight = typewriterText.getBoundingClientRect().height;
+  let characterIndex = 0;
+
+  typewriterText.setAttribute('aria-label', fullText);
+  typewriterText.style.minHeight = `${fullHeight}px`;
+  typewriterText.textContent = '';
+  typewriterText.classList.add('has-caret');
+
+  const typeNextCharacter = () => {
+    typewriterText.textContent += fullText[characterIndex];
+    characterIndex += 1;
+
+    if (characterIndex < fullText.length) {
+      window.setTimeout(typeNextCharacter, fullText[characterIndex - 1] === ' ' ? 120 : 70);
+    } else {
+      window.setTimeout(() => typewriterText.classList.remove('has-caret'), 2000);
+    }
+  };
+
+  window.setTimeout(typeNextCharacter, 250);
+}
 
 if (scrollTarget) {
   const target = document.getElementById(scrollTarget);
