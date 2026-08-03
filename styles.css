@@ -47,7 +47,7 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
 .hero { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(260px, .75fr); align-items: center; gap: clamp(42px, 6vw, 90px); }
 .hero-intro { min-width: 0; }
 .hero h1 { font-size: clamp(48px, 5.7vw, 88px); }
-.latest-post-card { min-height: 330px; padding: 30px; border: 1px solid var(--line); background: var(--line); color: inherit; text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; transition: background-color .25s ease, box-shadow .25s ease, transform .25s cubic-bezier(.2, .8, .2, 1); }
+.latest-post-card { position: relative; min-height: 330px; padding: 30px; border: 1px solid var(--line); background: var(--line); color: inherit; text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; transition: background-color .25s ease, box-shadow .25s ease, transform .25s cubic-bezier(.2, .8, .2, 1); }
 .latest-post-card:hover { background: var(--orange); box-shadow: 6px 6px 0 var(--ink); transform: translate(-3px, -3px); }
 .latest-post-card h2 { font-size: clamp(30px, 3vw, 46px); }
 .latest-post-card > p:not(.eyebrow) { margin: 20px 0; color: var(--muted); }
@@ -62,6 +62,7 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
   .site-header .header-controls { width: 100%; margin-top: 54px; flex-direction: column; align-items: flex-start; gap: 28px; }
   .site-header .site-nav { width: 100%; flex-direction: column; gap: 18px; }
   .site-header .site-nav a { display: block; }
+  .latest-post-card { left: -36px; top: 76px; }
 }
 
 /* Loading interstitial for Writing and Guestbook */
@@ -84,7 +85,7 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
   .brand-controls { gap: 10px; }
   .theme-toggle { padding: 6px 8px; }
   .hero { display: grid; grid-template-columns: 1fr; gap: 46px; }
-  .latest-post-card { min-height: 280px; }
+  .latest-post-card { left: 0; top: 0; min-height: 280px; }
 }
 
 @media (prefers-reduced-motion: reduce) { ::view-transition-new(root) { animation: none; } .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after { animation: none; } .button, .text-link, .about-contact a, .project-card, .feature-link, .site-footer > a:last-child, .page-loader { transition: none; } .button:hover, .text-link:hover, .about-contact a:hover, .project-card:hover, .feature-link:hover, .site-footer > a:last-child:hover { transform: none; } }
