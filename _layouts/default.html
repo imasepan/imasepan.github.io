@@ -13,13 +13,16 @@
   <body>
     <header class="site-header">
       <a class="wordmark" href="/">imasepan<span>_</span></a>
-      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
-      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-        <a href="/#about">About</a>
-        <a href="/#projects">Projects</a>
-        <a href="/blog/"{% if page.url == "/blog/" or page.layout == "post" %} aria-current="page"{% endif %}>Writing</a>
-        <a href="/guestbook.html">Guestbook</a>
-      </nav>
+      <div class="header-controls">
+        <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+          <a href="/#about">About</a>
+          <a href="/#projects">Projects</a>
+          <a href="/blog/"{% if page.url == "/blog/" or page.layout == "post" %} aria-current="page"{% endif %}>Writing</a>
+          <a href="/guestbook.html">Guestbook</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      </div>
     </header>
     <main class="page-main">
       {{ content }}
