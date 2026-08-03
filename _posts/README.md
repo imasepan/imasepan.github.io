@@ -1,6 +1,10 @@
 # Blog post template
 
-Copy this file, rename it using this pattern, and edit it in Obsidian:
+You do not need Obsidian. You can publish directly from GitHub:
+
+1. Open the `_posts` folder in the repository.
+2. Choose **Add file → Create new file**.
+3. Name the file using this pattern:
 
 YYYY-MM-DD-your-post-title.md
 
@@ -13,6 +17,8 @@ date: 2026-08-03
 description: A short one-sentence preview for the blog page.
 ---
 
+Write the post below the second `---` using normal Markdown:
+
 Start writing here.
 
-Everything in _posts is public once you commit and push it to GitHub.
+Choose **Commit changes** when you are ready. GitHub Pages will build and publish it automatically. Everything in `_posts` is public once committed.
