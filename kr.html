@@ -11,6 +11,151 @@ permalink: /kr/
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css?v=20260804-2" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand-controls">
+        <a class="wordmark" href="/kr/">imasepan<span>_</span></a>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
+      </div>
+      <div class="header-controls">
+        <nav id="site-nav" class="site-nav" aria-label="주요 탐색">
+          <a href="#about">소개</a>
+          <a href="#projects">프로젝트</a>
+          <a href="/blog/">글</a>
+          <a href="/guestbook.html">방명록</a>
+        </nav>
+        <a class="language-switch" href="/" lang="en" aria-label="Switch to English">EN</a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">메뉴</button>
+      </div>
+    </header>
+
+    <section class="music-banner" aria-label="추천 Spotify 플레이리스트">
+      <div class="music-banner-inner">
+        <p><span>지금 재생 중</span> / 이 사이트 분위기에 잘 어울리는 내가 좋아하는 노래들!</p>
+        <iframe
+          class="spotify-player"
+          title="Spotify 플레이리스트"
+          src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator"
+          width="100%"
+          height="80"
+          frameborder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          scrolling="no"
+        ></iframe>
+      </div>
+    </section>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-intro">
+          <p class="eyebrow">내 페이지</p>
+          <h1 id="hero-title">내 블로그,<br />내 프로젝트,<br />내가 좋아하는 것들</h1>
+          <div class="hero-photo-panel">
+            <p class="hero-copy">저의 커리어, 저의 성격을 알아갈 수 있는 곳.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#projects">프로젝트 보기 <span aria-hidden="true">↓</span></a>
+              <a class="button button-quiet" href="https://github.com/imasepan" target="_blank" rel="noreferrer">GitHub ↗</a>
+            </div>
+          </div>
+        </div>
+        {% assign latest_post = site.posts.first %}
+        <a class="latest-post-card" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}/blog/{% endif %}">
+          <p class="eyebrow">최근 글</p>
+          {% if latest_post %}
+            <h2>{{ latest_post.title }}</h2>
+            <p>{{ latest_post.excerpt | strip_html | truncatewords: 24 }}</p>
+            <span class="text-link">글 읽기 →</span>
+          {% else %}
+            <h2>기억해 둘 만한 글.</h2>
+            <p>첫 번째 글이 곧 올라옵니다.</p>
+            <span class="text-link">글 보러 가기 →</span>
+          {% endif %}
+        </a>
+      </section>
+
+      <section id="about" class="section about-section" aria-labelledby="about-title">
+        <div class="about-label">
+          <p class="eyebrow">01 / 소개</p>
+          <p class="about-note">저의 짧은 자기소개</p>
+          <figure class="about-photo">
+            <img src="/assets/portrait.jpg" alt="해질녘 후지산 앞 바닷가에 친구와 함께 서 있는 김진현" />
+            <figcaption>(제가 왼쪽이에요)</figcaption>
+          </figure>
+        </div>
+        <div class="about-copy">
+          <h2 id="about-title">안녕하세요, <span>김진현</span>입니다.</h2>
+          <p>저는 <strong>한국과 미국</strong>에 사는 26살 <strong>컴퓨터공학과 대학생</strong>입니다. 이 웹사이트는 제 생각이랑 프로젝트를 소개하는 곳이에요.</p>
+          <p>제 관심사는 주로 <strong>영화, 책, 그리고 졸업 <small><small><small>(ㅋㅋㅋ...)</small></small></small></strong>입니다.</p>
+          <p class="about-contact">연락 주세요~~ - <a href="mailto:jinhyuncharliekim@gmail.com">jinhyuncharliekim@gmail.com</a></p>
+        </div>
+      </section>
+
+      <section class="photo-strip" aria-label="사진 배치 미리보기">
+        <div class="photo-placeholder photo-placeholder-wide" role="img" aria-label="넓은 일상 사진 자리 표시자">
+          <span>02 / place or workspace</span>
+          <strong>넓은 사진을 넣어 주세요</strong>
+          <small>가로 · 3:2</small>
+        </div>
+        <div class="photo-placeholder photo-placeholder-detail" role="img" aria-label="디테일 사진 자리 표시자">
+          <span>03 / detail</span>
+          <strong>좋아하는 것 하나</strong>
+          <small>정사각형 · 1:1</small>
+        </div>
+      </section>
+
+      <section id="projects" class="section" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">02 / 프로젝트</p>
+            <h2 id="projects-title">제가 만들었던 멋진 것들 (때로 도움 받았는데...) (사실 자주 도움을 받았어요....)</h2>
+          </div>
+          <a class="text-link" href="https://github.com/imasepan?tab=repositories" target="_blank" rel="noreferrer">모든 저장소 ↗</a>
+        </div>
+        <div id="project-list" class="project-grid" aria-live="polite">
+          <p class="loading">공개 저장소 불러오는 중…</p>
+        </div>
+      </section>
+
+      <section class="section split-section single-card" aria-label="방명록">
+        <a class="feature-card feature-link accent-card" href="/guestbook.html">
+          <p class="eyebrow">04 / 방명록</p>
+          <h2>짧은 소감을 남겨 주세요.</h2>
+          <p>사이트가 마음에 들었다면 메시지를 남겨 주세요! (좋은 메시지라면 더 좋아요).</p>
+          <span class="text-link">방명록 쓰기 →</span>
+        </a>
+      </section>
+
+      <section class="section future-section" aria-labelledby="future-title">
+        <p class="eyebrow">곧 / 대화</p>
+        <h2 id="future-title">사이트 가이드가 찾아올 예정이에요.</h2>
+        <p>언젠가는 사이트와 제가 쓴 글에 관해 미니 미에게 물어볼 수 있게 될 거예요!</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="wordmark" href="/kr/">imasepan<span>_</span></a>
+      <p>귀차니즘을 버텨서 열심히 살게요~</p>
+      <a href="https://github.com/imasepan" target="_blank" rel="noreferrer">github.com/imasepan ↗</a>
+    </footer>
+    <script src="/script.js?v=20260803-2"></script>
+  </body>
+</html>
+---
+permalink: /kr/
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="내가 만든 것들을 모아둔 곳" />
+    <title>imasepan — 홈</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css?v=20260804-1" />
   </head>
   <body>
