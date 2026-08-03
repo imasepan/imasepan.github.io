@@ -1,3 +1,5 @@
+---
+---
 <!doctype html>
 <html lang="en">
   <head>
@@ -12,7 +14,10 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="wordmark" href="index.html">imasepan<span>_</span></a>
+      <div class="brand-controls">
+        <a class="wordmark" href="index.html">imasepan<span>_</span></a>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
+      </div>
       <div class="header-controls">
         <nav id="site-nav" class="site-nav" aria-label="Main navigation">
           <a href="#about">About</a>
@@ -21,7 +26,6 @@
           <a href="guestbook.html">Guestbook</a>
         </nav>
         <a class="language-switch" href="kr.html" lang="ko">한국어</a>
-        <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       </div>
     </header>
@@ -44,14 +48,28 @@
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
-        <p class="eyebrow">My pages</p>
-        <h1 id="hero-title">my blog, my projects,<br />and my favourite things</h1>
-        <p class="hero-copy">get to know me as a professional and as a person.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#projects">See projects <span aria-hidden="true">↓</span></a>
-          <a class="button button-quiet" href="https://github.com/imasepan" target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a class="button button-quiet" href="blog.html">Read the blog →</a>
+        <div class="hero-intro">
+          <p class="eyebrow">My pages</p>
+          <h1 id="hero-title">my blog, my projects,<br />and my favourite things</h1>
+          <p class="hero-copy">get to know me as a professional and as a person.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#projects">See projects <span aria-hidden="true">↓</span></a>
+            <a class="button button-quiet" href="https://github.com/imasepan" target="_blank" rel="noreferrer">GitHub ↗</a>
+          </div>
         </div>
+        {% assign latest_post = site.posts.first %}
+        <a class="latest-post-card" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}blog.html{% endif %}">
+          <p class="eyebrow">Latest writing</p>
+          {% if latest_post %}
+            <h2>{{ latest_post.title }}</h2>
+            <p>{{ latest_post.excerpt | strip_html | truncatewords: 24 }}</p>
+            <span class="text-link">Read entry →</span>
+          {% else %}
+            <h2>Notes worth keeping.</h2>
+            <p>The first entry is coming soon.</p>
+            <span class="text-link">Visit writing →</span>
+          {% endif %}
+        </a>
       </section>
 
       <section id="about" class="section about-section" aria-labelledby="about-title">
@@ -80,13 +98,7 @@
         </div>
       </section>
 
-      <section class="section split-section" aria-label="Writing and guestbook">
-        <a class="feature-card feature-link" href="blog.html">
-          <p class="eyebrow">03 / writing</p>
-          <h2>My blog!</h2>
-          <p>here's where i ramble about stuff or talk about my day or voice the thoughts that occur after 9pm.</p>
-          <span class="text-link">Read the blog →</span>
-        </a>
+      <section class="section split-section single-card" aria-label="Guestbook">
         <a class="feature-card feature-link accent-card" href="guestbook.html">
           <p class="eyebrow">04 / guestbook</p>
           <h2>Leave a small note.</h2>

@@ -49,6 +49,33 @@ systemTheme.addEventListener('change', (event) => {
   if (!readSavedTheme()) applyTheme(event.matches ? 'dark' : 'light');
 });
 
+const pageLoader = document.createElement('div');
+pageLoader.className = 'page-loader';
+pageLoader.setAttribute('aria-hidden', 'true');
+pageLoader.innerHTML = '<span class="page-loader-label">Loading</span>';
+document.body.appendChild(pageLoader);
+
+document.querySelectorAll('a[href]').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
+
+    const destination = new URL(link.href, window.location.href);
+    if (destination.origin !== window.location.origin) return;
+
+    const isWriting = link.closest('.latest-post-card') || /(?:\/blog(?:\.html|\/)?|\/\d{4}\/\d{2}\/\d{2}\/)/.test(destination.pathname);
+    const isGuestbook = /\/guestbook\.html$/.test(destination.pathname);
+    if (!isWriting && !isGuestbook) return;
+
+    event.preventDefault();
+    pageLoader.querySelector('.page-loader-label').textContent = `Loading ${isWriting ? 'Writing' : 'Guestbook'}`;
+    pageLoader.setAttribute('aria-hidden', 'false');
+    pageLoader.classList.add('is-active');
+
+    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650;
+    window.setTimeout(() => window.location.assign(destination.href), delay);
+  });
+});
+
 const scrollTarget = new URLSearchParams(window.location.search).get('scroll');
 const typewriterText = document.querySelector('[data-typewriter]');
 
