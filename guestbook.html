@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Guestbook for imasepan's website." />
+    <title>imasepan — guestbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="index.html">imasepan<span>_</span></a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+        <a href="index.html#projects">Projects</a>
+        <a href="blog.html">Writing</a>
+        <a href="guestbook.html" aria-current="page">Guestbook</a>
+      </nav>
+    </header>
+    <main class="page-main">
+      <section class="page-intro">
+        <p class="eyebrow">03 / guestbook</p>
+        <h1>Glad you’re here.</h1>
+        <p>Leave a note, a link, or a hello. This guestbook will use GitHub Discussions, so entries remain public and easy to moderate.</p>
+      </section>
+      <section class="guestbook-callout">
+        <p class="eyebrow">Guestbook opens soon</p>
+        <h2>One small setup step remains.</h2>
+        <p>Enable Discussions in this repository, then create a discussion category called <strong>Guestbook</strong>. After that, this page can show and accept entries directly.</p>
+        <a class="button button-primary" href="https://github.com/imasepan/imasepan.github.io/discussions" target="_blank" rel="noreferrer">Open Discussions ↗</a>
+      </section>
+    </main>
+    <footer class="site-footer"><a class="wordmark" href="index.html">imasepan<span>_</span></a><p>Built slowly, updated often.</p></footer>
+    <script src="script.js"></script>
+  </body>
+</html>
