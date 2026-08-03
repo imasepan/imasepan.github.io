@@ -30,7 +30,8 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
 .photo-placeholder span, .photo-placeholder small { font: 11px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
 .photo-placeholder strong { margin: 6px 0 2px; font-size: 18px; letter-spacing: -.025em; }
 .photo-placeholder-portrait { width: min(100%, 220px); aspect-ratio: 4 / 5; margin-top: 34px; }
-.about-photo { width: min(100%, 360px); margin: 34px 0 0; }
+.about-photo, .about-section .about-photo { width: min(100%, 480px); margin: 34px 0 0; }
+.about-section { grid-template-columns: minmax(300px, .95fr) minmax(0, 1.05fr); }
 .about-photo img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 72%; border: 1px solid var(--line); }
 .about-photo figcaption { margin-top: 9px; color: var(--muted); font: 11px var(--mono); }
 .photo-strip { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(220px, .8fr); gap: 16px; padding-bottom: 110px; }
