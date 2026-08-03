@@ -1,6 +1,47 @@
 const menuButton = document.querySelector('.menu-button');
 const nav = document.querySelector('.site-nav');
 const isKorean = document.documentElement.lang === 'ko';
+const themeToggle = document.querySelector('.theme-toggle');
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+const readSavedTheme = () => {
+  try {
+    const savedTheme = window.localStorage.getItem('theme');
+    return savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : null;
+  } catch {
+    return null;
+  }
+};
+
+const applyTheme = (theme) => {
+  document.documentElement.dataset.theme = theme;
+
+  if (themeToggle) {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    themeToggle.textContent = nextTheme === 'dark' ? 'Dark' : 'Light';
+    themeToggle.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
+    themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+  }
+};
+
+applyTheme(readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+
+    try {
+      window.localStorage.setItem('theme', nextTheme);
+    } catch {
+      // The selected theme still applies for this page when storage is unavailable.
+    }
+  });
+}
+
+systemTheme.addEventListener('change', (event) => {
+  if (!readSavedTheme()) applyTheme(event.matches ? 'dark' : 'light');
+});
 
 const scrollTarget = new URLSearchParams(window.location.search).get('scroll');
 const typewriterText = document.querySelector('[data-typewriter]');

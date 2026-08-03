@@ -1,4 +1,4 @@
-:root { --ink: #4F4D46; --paper: #EDE8D0; --muted: #787569; --line: #C9C5B1; --lime: #C9C5B1; --orange: #D0D5ED; --serif: Georgia, 'Times New Roman', serif; --sans: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace; }
+:root { color-scheme: light; --ink: #4F4D46; --paper: #EDE8D0; --muted: #787569; --line: #C9C5B1; --lime: #C9C5B1; --orange: #D0D5ED; --serif: Georgia, 'Times New Roman', serif; --sans: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); font-size: 16px; line-height: 1.5; }
@@ -24,13 +24,19 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
 .header-controls { display: flex; align-items: center; gap: 22px; }
 .language-switch { color: var(--muted); text-decoration: none; font: 500 13px var(--mono); }
 .language-switch:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
+.theme-toggle { padding: 7px 10px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 500 12px var(--mono); cursor: pointer; }
+.theme-toggle:hover { border-color: var(--ink); color: var(--ink); }
+.theme-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
 @media (max-width: 720px) { .header-controls { gap: 16px; } .language-switch { font-size: 12px; } }
 
 .typewriter-text.has-caret::after { content: ''; display: inline-block; width: .08em; height: .85em; margin-left: .08em; background: var(--orange); vertical-align: -.06em; animation: typewriter-caret .75s steps(1, end) infinite; }
 @keyframes typewriter-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
 @media (prefers-color-scheme: dark) {
-  :root { --ink: #EDE8D0; --paper: #4F4D46; --muted: #C9C5B1; --line: #787569; --lime: #787569; --orange: #D0D5ED; }
+  :root { color-scheme: dark; --ink: #EDE8D0; --paper: #4F4D46; --muted: #C9C5B1; --line: #787569; --lime: #787569; --orange: #D0D5ED; }
 }
+
+:root[data-theme='light'] { color-scheme: light; --ink: #4F4D46; --paper: #EDE8D0; --muted: #787569; --line: #C9C5B1; --lime: #C9C5B1; --orange: #D0D5ED; }
+:root[data-theme='dark'] { color-scheme: dark; --ink: #EDE8D0; --paper: #4F4D46; --muted: #C9C5B1; --line: #787569; --lime: #787569; --orange: #D0D5ED; }
 
 @media (prefers-reduced-motion: reduce) { .typewriter-text.has-caret::after { animation: none; } }
