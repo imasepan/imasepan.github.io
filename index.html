@@ -10,6 +10,150 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260804-3" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand-controls">
+        <a class="wordmark" href="index.html">imasepan<span>_</span></a>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
+      </div>
+      <div class="header-controls">
+        <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+          <a href="#about">About</a>
+          <a href="#projects">Projects</a>
+          <a href="blog.html">Writing</a>
+          <a href="guestbook.html">Guestbook</a>
+        </nav>
+        <a class="language-switch" href="/kr/" lang="ko">한국어</a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      </div>
+    </header>
+
+    <section class="music-banner" aria-label="Featured Spotify playlist">
+      <div class="music-banner-inner">
+        <p><span>Now playing</span> / My favourite songs! (that fit the mood of this website).</p>
+        <iframe
+          class="spotify-player"
+          title="Spotify playlist"
+          src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator"
+          width="100%"
+          height="80"
+          frameborder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          scrolling="no"
+        ></iframe>
+      </div>
+    </section>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-intro">
+          <p class="eyebrow">My pages</p>
+          <h1 id="hero-title">my blog,<br />my projects,<br />and my favourite things</h1>
+          <div class="hero-photo-panel">
+            <p class="hero-copy">get to know me as a professional and as a person.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#projects">See projects <span aria-hidden="true">↓</span></a>
+              <a class="button button-quiet" href="https://github.com/imasepan" target="_blank" rel="noreferrer">GitHub ↗</a>
+            </div>
+          </div>
+        </div>
+        {% assign latest_post = site.posts.first %}
+        <a class="latest-post-card" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}blog.html{% endif %}">
+          <p class="eyebrow">Latest writing</p>
+          {% if latest_post %}
+            <h2>{{ latest_post.title }}</h2>
+            <p>{{ latest_post.excerpt | strip_html | truncatewords: 24 }}</p>
+            <span class="text-link">Read entry →</span>
+          {% else %}
+            <h2>Notes worth keeping.</h2>
+            <p>The first entry is coming soon.</p>
+            <span class="text-link">Visit writing →</span>
+          {% endif %}
+        </a>
+      </section>
+
+      <section id="about" class="section about-section" aria-labelledby="about-title">
+        <div class="about-label">
+          <p class="eyebrow">01 / about</p>
+          <p class="about-note">some stuff about me</p>
+          <figure class="about-photo">
+            <img src="/assets/portrait.jpg" alt="Jin Hyun and a friend standing by the sea in front of Mount Fuji at sunset" />
+            <figcaption>(i’m on the left)</figcaption>
+          </figure>
+        </div>
+        <div class="about-copy">
+          <h2 id="about-title">hey, i’m <span>Jin Hyun</span>.</h2>
+          <p>I’m a 25 year old <strong>Computer Engineering student</strong> based in <strong>South Korea and the US</strong>. Here's where I talk about what goes on in my head, advertise what comes out of my head, and everything else.</p>
+          <p>Right now, I’m especially interested in <strong>movies, books, and graduating <small><small><small>(lol)</small></small></strong>.</p>
+          <p class="about-contact">let's talk - <a href="mailto:jinhyuncharliekim@gmail.com">jinhyuncharliekim@gmail.com</a></p>
+        </div>
+      </section>
+
+      <section class="photo-strip" aria-label="Photo placement preview">
+        <div class="photo-placeholder photo-placeholder-wide" role="img" aria-label="Wide lifestyle photo placeholder">
+          <span>02 / place or workspace</span>
+          <strong>A wide photo here</strong>
+          <small>landscape · 3:2</small>
+        </div>
+        <div class="photo-placeholder photo-placeholder-detail" role="img" aria-label="Detail photo placeholder">
+          <span>03 / detail</span>
+          <strong>A favourite thing</strong>
+          <small>square · 1:1</small>
+        </div>
+      </section>
+
+      <section id="projects" class="section" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">02 / projects</p>
+            <h2 id="projects-title">Stuff I made that was cool (sometimes with help) (always with help)</h2>
+          </div>
+          <a class="text-link" href="https://github.com/imasepan?tab=repositories" target="_blank" rel="noreferrer">All repositories ↗</a>
+        </div>
+        <div id="project-list" class="project-grid" aria-live="polite">
+          <p class="loading">Loading public repositories…</p>
+        </div>
+      </section>
+
+      <section class="section split-section single-card" aria-label="Guestbook">
+        <a class="feature-card feature-link accent-card" href="guestbook.html">
+          <p class="eyebrow">04 / guestbook</p>
+          <h2>Leave a small note.</h2>
+          <p>If you liked my site, leave a message! (i like it when the messages are nice).</p>
+          <span class="text-link">Sign the guestbook →</span>
+        </a>
+      </section>
+
+      <section class="section future-section" aria-labelledby="future-title">
+        <p class="eyebrow">Soon / a conversation</p>
+        <h2 id="future-title">A site guide is on its way.</h2>
+        <p>eventually, you’ll be able to ask a mini me about the site and stuff i wrote on it!</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="wordmark" href="index.html">imasepan<span>_</span></a>
+      <p>Watch me work on this like crazy for a week and then forget all about it.</p>
+      <a href="https://github.com/imasepan" target="_blank" rel="noreferrer">github.com/imasepan ↗</a>
+    </footer>
+    <script src="script.js?v=20260804-3"></script>
+  </body>
+</html>
+---
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Stuff for my stuff" />
+    <title>imasepan — home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css?v=20260804-2" />
   </head>
   <body>
