@@ -79,7 +79,7 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
   :root { color-scheme: dark; --ink: #EDE8D0; --paper: #4F4D46; --muted: #C9C5B1; --line: #787569; --lime: #787569; --orange: #D0D5ED; --name-accent: #D0D5ED; --analog-grid-opacity: .18; --analog-grain-opacity: .05; }
 }
 
-:root[data-theme='light'] { color-scheme: light; --ink: #4F4D46; --paper: #EDE8D0; --muted: #787569; --line: #C9C5B1; --lime: #C9C5B1; --orange: #D0D5ED; --name-accent: #DBD1ED; --analog-grid-opacity: .26; --analog-grain-opacity: .07; }
+:root[data-theme='light'] { color-scheme: light; --ink: #4F4D46; --paper: #EDE8D0; --muted: #787569; --line: #C9C5B1; --lime: #C9C5B1; --orange: #D0D5ED; --name-accent: #D6D39A; --analog-grid-opacity: .26; --analog-grain-opacity: .07; }
 :root[data-theme='dark'] { color-scheme: dark; --ink: #EDE8D0; --paper: #4F4D46; --muted: #C9C5B1; --line: #787569; --lime: #787569; --orange: #D0D5ED; --name-accent: #D0D5ED; --analog-grid-opacity: .18; --analog-grain-opacity: .05; }
 
 /* Desktop navigation rail and home-page editorial layout */
