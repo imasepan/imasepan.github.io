@@ -482,6 +482,72 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .about-photo figcaption.is-exiting { animation: none; opacity: 0; clip-path: inset(0 100% 0 0 round 999px); }
 }
 
+/* Portrait cursor label, inspired by the reference gallery. */
+@media (hover: hover) and (pointer: fine) {
+  .about-photo figcaption {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    margin: 0;
+    padding: .2rem .45rem .25rem;
+    background: color-mix(in srgb, var(--ink) 60%, transparent);
+    color: var(--paper);
+    border: 0;
+    border-radius: 0;
+    backdrop-filter: blur(8px);
+    font: 400 18px/1 var(--sans);
+    white-space: nowrap;
+    pointer-events: none;
+    transform-origin: left top;
+    opacity: 0;
+    scale: .87;
+    rotate: 0deg;
+    will-change: left, top, rotate, opacity, scale;
+  }
+
+  .about-photo figcaption.is-entering {
+    animation: portrait-tooltip-in .4s cubic-bezier(.34, 1.56, .64, 1) forwards;
+  }
+
+  .about-photo figcaption.is-exiting {
+    animation: portrait-tooltip-out .1s ease forwards;
+  }
+}
+
+@keyframes portrait-tooltip-in {
+  from {
+    opacity: 0;
+    scale: .87;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes portrait-tooltip-out {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: .95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+  .about-photo figcaption.is-entering {
+    animation: none;
+    opacity: 1;
+    scale: 1;
+  }
+
+  .about-photo figcaption.is-exiting {
+    animation: none;
+    opacity: 0;
+  }
 
 /* Square outline caption for the portrait. */
 @media (hover: hover) and (pointer: fine) {
