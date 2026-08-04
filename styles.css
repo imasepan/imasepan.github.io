@@ -254,3 +254,11 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .site-header .language-switch:hover { background: var(--orange); color: #4F4D46; text-decoration: none; transform: translate(-2px, -2px) scale(1.04); }
 .site-header.is-open .language-switch { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition-delay: 0s; }
 @media (max-width: 720px) { .site-header .header-controls { gap: 10px; } .site-header .language-switch { min-height: 50px; padding: 0 12px; } }
+
+
+/* Portrait hover caption */
+.about-photo { position: relative; }
+.about-photo figcaption { position: absolute; left: 50%; bottom: 18px; z-index: 2; margin: 0; padding: 8px 12px; background: var(--lime); color: var(--ink); border: 1px solid var(--ink); border-radius: 12px 12px 12px 3px; box-shadow: 3px 3px 0 var(--ink); font: 11px var(--mono); white-space: nowrap; opacity: 0; transform: translate(8px, 8px) scale(.96); pointer-events: none; transition: opacity .18s ease, transform .18s ease; }
+.about-photo figcaption::after { content: ""; position: absolute; left: 12px; bottom: -7px; width: 12px; height: 12px; background: var(--lime); border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); transform: skewY(-30deg) rotate(20deg); }
+.about-photo:hover figcaption, .about-photo:focus-within figcaption { opacity: 1; transform: translate(8px, 0) scale(1); }
+.about-photo img { cursor: help; }
