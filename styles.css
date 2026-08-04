@@ -262,3 +262,15 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .about-photo figcaption::after { content: ""; position: absolute; left: 12px; bottom: -7px; width: 12px; height: 12px; background: var(--lime); border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); transform: skewY(-30deg) rotate(20deg); }
 .about-photo:hover figcaption, .about-photo:focus-within figcaption { opacity: 1; transform: translate(8px, 0) scale(1); }
 .about-photo img { cursor: help; }
+
+
+/* Cursor-following portrait bubble */
+.about-photo { --bubble-x: 50%; --bubble-y: 50%; }
+.about-photo figcaption { left: var(--bubble-x); top: var(--bubble-y); bottom: auto; transform-origin: left bottom; transform: translate(14px, calc(-100% - 14px)) scale(.86) rotate(-3deg); opacity: 0; }
+.about-photo:hover figcaption, .about-photo:focus-within figcaption { opacity: 1; transform: translate(14px, calc(-100% - 14px)) scale(1) rotate(0); animation: portrait-bubble-pop .34s cubic-bezier(.2, .9, .25, 1.35) both; }
+@keyframes portrait-bubble-pop {
+  0% { opacity: 0; transform: translate(10px, calc(-100% - 6px)) scale(.72) rotate(-5deg); }
+  65% { opacity: 1; transform: translate(16px, calc(-100% - 16px)) scale(1.06) rotate(1deg); }
+  100% { opacity: 1; transform: translate(14px, calc(-100% - 14px)) scale(1) rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) { .about-photo figcaption { animation: none !important; transition: opacity .01ms; } }
