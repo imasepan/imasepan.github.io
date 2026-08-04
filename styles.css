@@ -57,7 +57,7 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
 .guestbook-main { min-height: calc(100vh - 80px); padding-top: 1px; padding-bottom: 1px; background-image: linear-gradient(90deg, rgba(79, 77, 70, .58), rgba(79, 77, 70, .16)), url('/assets/guestbook-background.jpg'); background-size: cover; background-position: center; }
 .guestbook-main .page-back { margin-left: 34px; color: #F7F3E3; text-shadow: 0 1px 8px rgba(0, 0, 0, .55); }
 .guestbook-main .page-intro { width: min(720px, calc(100% - 68px)); margin: 30px 34px 0; padding: 48px; border: 0; background: rgba(237, 232, 208, .88); color: #4F4D46; backdrop-filter: blur(7px); }
-.guestbook-main .page-intro .eyebrow, .guestbook-main .page-intro > p:last-child { color: (var--paper); }
+.guestbook-main .page-intro .eyebrow, .guestbook-main .page-intro > p:last-child { color: (var--ink); }
 .guestbook-main .guestbook-callout { margin: 18px 34px 70px; background: rgba(201, 197, 177, .92); color: #4F4D46; backdrop-filter: blur(7px); }
 .guestbook-main .guestbook-callout .eyebrow, .guestbook-main .guestbook-callout > p:not(.eyebrow) { color: (var-paper); }
 .page-back { display: inline-block; margin-top: 34px; color: var(--muted); text-decoration: none; font: 13px var(--mono); }.page-back:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }.page-back + .page-intro { padding-top: 70px; }
@@ -597,7 +597,6 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .about-photo figcaption {
     padding: .4rem .6rem .45rem;
     background: transparent;
- /* color: var(--paper); */
     color: #EDE8D0;
     border: 1px solid currentColor;
     border-radius: 0;
