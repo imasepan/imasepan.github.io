@@ -274,3 +274,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   100% { opacity: 1; transform: translate(14px, calc(-100% - 14px)) scale(1) rotate(0); }
 }
 @media (prefers-reduced-motion: reduce) { .about-photo figcaption { animation: none !important; transition: opacity .01ms; } }
+
+
+/* Cleaner portrait bubble */
+.about-photo figcaption { box-shadow: none; }
