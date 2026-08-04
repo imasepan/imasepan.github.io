@@ -326,3 +326,33 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   padding-left: 10px;
   padding-right: 10px;
 }
+
+
+/* Reference-inspired portrait caption */
+.about-photo figcaption {
+  position: static;
+  display: block;
+  margin-top: 14px;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font: 400 18px/1.15 var(--sans);
+  letter-spacing: 0;
+  white-space: normal;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition: color .2s ease;
+}
+.about-photo figcaption::after { display: none; }
+.about-photo:hover figcaption,
+.about-photo:focus-within figcaption {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+.about-photo,
+.about-photo img { cursor: default; }
