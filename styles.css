@@ -292,3 +292,37 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .page-back { display: block; width: fit-content; margin: 34px 0 0 auto; }
 .guestbook-main .page-back { margin-right: 34px; }
 @media (max-width: 720px) { .page-back, .guestbook-main .page-back { margin-right: 20px; } }
+
+
+/* Align the floating header controls as one compact stack. */
+.site-header {
+  --floating-control-width: 190px;
+  --floating-control-height: 50px;
+}
+
+.site-header .brand-controls,
+.site-header .header-controls {
+  width: var(--floating-control-width);
+}
+
+.site-header .brand-controls {
+  height: var(--floating-control-height);
+  min-height: var(--floating-control-height);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.site-header .header-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.site-header .language-switch,
+.site-header .menu-button {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--floating-control-height);
+  padding-left: 10px;
+  padding-right: 10px;
+}
