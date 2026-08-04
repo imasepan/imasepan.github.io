@@ -513,3 +513,25 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .post-page .post-content h2 { margin-top: 44px; }
   .post-page .post-back { margin-top: 52px; }
 }
+
+
+/* Guestbook without the photo background. */
+.guestbook-main {
+  background-color: var(--paper);
+  background-image: none;
+  color: var(--ink);
+}
+.guestbook-main .page-back {
+  color: var(--muted);
+  text-shadow: none;
+}
+.guestbook-main .page-intro {
+  background: var(--line);
+  color: var(--ink);
+  backdrop-filter: none;
+}
+.guestbook-main .guestbook-callout {
+  background: var(--lime);
+  color: var(--ink);
+  backdrop-filter: none;
+}
