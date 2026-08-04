@@ -564,3 +564,17 @@ document.addEventListener('click', (event) => {
 runTypewriter();
 loadProjects();
 handleScrollTarget();
+
+
+// Keep the portrait caption close to the pointer.
+const portraitHoverTarget = document.querySelector(".about-photo");
+if (portraitHoverTarget) {
+  const movePortraitBubble = (event) => {
+    const bounds = portraitHoverTarget.getBoundingClientRect();
+    portraitHoverTarget.style.setProperty("--bubble-x", `${event.clientX - bounds.left}px`);
+    portraitHoverTarget.style.setProperty("--bubble-y", `${event.clientY - bounds.top}px`);
+  };
+
+  portraitHoverTarget.addEventListener("pointerenter", movePortraitBubble, { passive: true });
+  portraitHoverTarget.addEventListener("pointermove", movePortraitBubble, { passive: true });
+}
