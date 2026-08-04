@@ -1,4 +1,4 @@
-:root { color-scheme: light; --ink: #4F4D46; --paper: #EDE8D0; --muted: #787569; --line: #C9C5B1; --lime: #C9C5B1; --orange: #D0D5ED; --name-accent: #DBD1ED; --serif: Georgia, 'Times New Roman', serif; --sans: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace; }
+:root { color-scheme: light; --ink: #4F4D46; --paper: #EDE8D0; --muted: #787569; --line: #C9C5B1; --lime: #C9C5B1; --orange: #D0D5ED; --name-accent: #D6D39A; --serif: Georgia, 'Times New Roman', serif; --sans: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 html.inertia-enabled { scroll-behavior: auto; }
