@@ -100,9 +100,9 @@ const startAnalogRipple = () => {
     { x: .82, y: .38, radiusX: .38, radiusY: .28, core: .18, edge: .78 },
     { x: .45, y: .84, radiusX: .52, radiusY: .34, core: .16, edge: .82 }
   ];
-  const wakeRadius = 78;
-  const wakeBand = 22;
-  const wakeStrength = .72;
+  const wakeRadius = 82;
+  const wakeBand = 26;
+  const wakeStrength = 1.05;
   let width = 0;
   let height = 0;
   let points = [];
@@ -160,8 +160,8 @@ const startAnalogRipple = () => {
         wake = Math.exp(-(ringDistance ** 2) / (2 * wakeBand ** 2)) * wakeStrength;
       }
 
-      const dotSize = 2 + (wake * .8);
-      context.globalAlpha = Math.min(1, point.opacity * (.9 + (wake * .35)));
+      const dotSize = 2 + (wake * 1.35);
+      context.globalAlpha = Math.min(1, point.opacity * (.9 + (wake * .55)));
       context.fillRect(point.x - (dotSize / 2), point.y - (dotSize / 2), dotSize, dotSize);
     });
 
