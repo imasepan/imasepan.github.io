@@ -100,10 +100,10 @@ const startAnalogRipple = () => {
     { x: .82, y: .38, radiusX: .38, radiusY: .28, core: .18, edge: .78 },
     { x: .45, y: .84, radiusX: .52, radiusY: .34, core: .16, edge: .82 }
   ];
-  const rippleLifetime = 900;
-  const rippleSpeed = .3;
-  const rippleBand = 38;
-  const rippleStrength = 11;
+  const rippleLifetime = 1200;
+  const rippleSpeed = .26;
+  const rippleBand = 68;
+  const rippleStrength = 4;
   let width = 0;
   let height = 0;
   let points = [];
@@ -165,14 +165,14 @@ const startAnalogRipple = () => {
         const distanceFromWave = distance - (age * rippleSpeed);
         const envelope = Math.exp(-(distanceFromWave ** 2) / (2 * rippleBand ** 2)) * (1 - (age / rippleLifetime));
         if (envelope < .015) return;
-        const wave = Math.sin(distanceFromWave * .18) * envelope * rippleStrength;
+        const wave = Math.sin(distanceFromWave * .075) * envelope * rippleStrength;
         offsetX += (distanceX / distance) * wave;
         offsetY += (distanceY / distance) * wave;
         peak = Math.max(peak, envelope);
       });
 
-      const dotSize = 2 + (peak * 1.2);
-      context.globalAlpha = Math.min(1, point.opacity * (.88 + (peak * .9)));
+      const dotSize = 2 + (peak * .45);
+      context.globalAlpha = Math.min(1, point.opacity * (.9 + (peak * .45)));
       context.fillRect(point.x + offsetX - (dotSize / 2), point.y + offsetY - (dotSize / 2), dotSize, dotSize);
     });
 
@@ -235,10 +235,10 @@ const startAnalogRipple = () => {
     if (!isActive || event.pointerType === 'touch') return;
     const now = window.performance.now();
     const distanceFromLast = lastRippleX === null ? Infinity : Math.hypot(event.clientX - lastRippleX, event.clientY - lastRippleY);
-    if (now - lastRippleTime < 70 || distanceFromLast < 12) return;
+    if (now - lastRippleTime < 90 || distanceFromLast < 16) return;
 
     ripples.push({ x: event.clientX, y: event.clientY, startedAt: now });
-    if (ripples.length > 4) ripples.shift();
+    if (ripples.length > 3) ripples.shift();
     lastRippleTime = now;
     lastRippleX = event.clientX;
     lastRippleY = event.clientY;
