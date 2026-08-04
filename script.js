@@ -629,3 +629,48 @@ if (portraitHoverTarget && portraitCaption && portraitPointerQuery.matches) {
     previousPointerX = null;
   }, { passive: true });
 }
+
+
+// Turn Spotify links placed inside a post into a compact embedded player.
+const enhancePostSpotifyLinks = () => {
+  const postContent = document.querySelector('.post-content');
+  if (!postContent || document.querySelector('.post-spotify')) return;
+
+  const spotifyLink = postContent.querySelector('a[href*="open.spotify.com/"]');
+  if (!spotifyLink) return;
+
+  const source = spotifyLink.href;
+  const path = source.replace(/^https?:\\/\\//, '').split('?')[0];
+  const embedSource = path.includes('open.spotify.com/embed/')
+    ? source.split('?')[0]
+    : source.split('?')[0].replace('open.spotify.com/', 'open.spotify.com/embed/');
+  const postTitle = document.querySelector('.post-header h1')?.textContent.trim() || 'this post';
+
+  const player = document.createElement('aside');
+  player.className = 'post-spotify';
+  player.setAttribute('aria-label', 'Spotify player');
+
+  const label = document.createElement('p');
+  label.className = 'eyebrow';
+  label.textContent = 'soundtrack';
+
+  const iframe = document.createElement('iframe');
+  iframe.className = 'post-spotify-player';
+  iframe.title = 'Spotify player for ' + postTitle;
+  iframe.src = embedSource + '?utm_source=generator';
+  iframe.width = '100%';
+  iframe.height = '152';
+  iframe.setAttribute('frameborder', '0');
+  iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+  iframe.loading = 'lazy';
+
+  player.append(label, iframe);
+  const linkParagraph = spotifyLink.closest('p');
+  if (linkParagraph && linkParagraph.textContent.trim() === spotifyLink.textContent.trim()) {
+    linkParagraph.replaceWith(player);
+  } else {
+    spotifyLink.replaceWith(player);
+  }
+};
+
+enhancePostSpotifyLinks();
