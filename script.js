@@ -49,6 +49,45 @@ systemTheme.addEventListener('change', (event) => {
   if (!readSavedTheme()) applyTheme(event.matches ? 'dark' : 'light');
 });
 
+const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+const createSignalField = () => {
+  if (document.querySelector('.signal-field')) return;
+
+  const field = document.createElement('div');
+  field.className = 'signal-field';
+  field.setAttribute('aria-hidden', 'true');
+
+  const signalWidths = [18, 34, 12, 48, 26, 40, 15, 31, 54, 22, 44, 17, 37, 25, 50, 20, 42, 29, 14, 46, 24, 35, 19, 52];
+  field.innerHTML = signalWidths.map((width, index) => {
+    const y = 5 + ((index * 17) % 91);
+    const duration = 22 + ((index * 7) % 24);
+    const delay = -((index * 11) % 39);
+    const thickness = index % 7 === 0 ? 3 : index % 3 === 0 ? 2 : 1;
+    return `<span style="--signal-y:${y}%;--signal-width:${width}vw;--signal-duration:${duration}s;--signal-delay:${delay}s;--signal-thickness:${thickness}px"></span>`;
+  }).join('');
+
+  document.body.prepend(field);
+};
+
+const startSignalParallax = () => {
+  if (reducedMotionQuery.matches) return;
+  let animationFrame = null;
+
+  const updateSignalPosition = () => {
+    const offset = Math.min(window.scrollY * 0.035, 90);
+    document.documentElement.style.setProperty('--signal-scroll', `${-offset}px`);
+    animationFrame = null;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!animationFrame) animationFrame = window.requestAnimationFrame(updateSignalPosition);
+  }, { passive: true });
+};
+
+createSignalField();
+startSignalParallax();
+
 const pageLoader = document.createElement('div');
 pageLoader.className = 'page-loader';
 pageLoader.setAttribute('aria-hidden', 'true');

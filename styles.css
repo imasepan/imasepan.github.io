@@ -4,8 +4,19 @@ html { scroll-behavior: smooth; }
 ::view-transition-old(root) { animation: none; }
 ::view-transition-new(root) { animation: theme-wipe .7s cubic-bezier(.65, 0, .35, 1); }
 @keyframes theme-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
-body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); font-size: 16px; line-height: 1.5; }
+body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); font-size: 16px; line-height: 1.5; isolation: isolate; }
 a { color: inherit; }
+.site-header, .music-banner, main, .site-footer { position: relative; z-index: 1; }
+.signal-field { position: fixed; inset: -90px 0 0; z-index: 0; overflow: hidden; pointer-events: none; color: var(--muted); transform: translateY(var(--signal-scroll, 0px)); transition: color .7s ease; }
+.signal-field::before { content: ''; position: absolute; width: min(72vw, 920px); aspect-ratio: 1; left: 10%; top: 5%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--orange) 32%, transparent) 0, transparent 68%); filter: blur(24px); opacity: .4; animation: signal-haze 18s ease-in-out infinite alternate; }
+.signal-field::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0 31px, color-mix(in srgb, var(--muted) 11%, transparent) 32px); opacity: .32; animation: signal-grid 24s linear infinite; }
+.signal-field span { position: absolute; top: var(--signal-y); left: calc(var(--signal-width) * -1.4); width: var(--signal-width); height: var(--signal-thickness); background: currentColor; opacity: .13; animation: signal-drift var(--signal-duration) var(--signal-delay) linear infinite; }
+.signal-field span:nth-child(2n) { animation-direction: reverse; opacity: .08; }
+.signal-field span:nth-child(5n) { box-shadow: calc(var(--signal-width) * .42) 7px 0 currentColor, calc(var(--signal-width) * -.25) 14px 0 currentColor; }
+@keyframes signal-drift { to { transform: translateX(calc(100vw + var(--signal-width) * 2.8)); } }
+@keyframes signal-grid { to { transform: translateY(64px); } }
+@keyframes signal-haze { from { transform: translate3d(-8%, -4%, 0) scale(.88); } to { transform: translate3d(32%, 18%, 0) scale(1.18); } }
+@media (max-width: 720px) { .signal-field span:nth-child(n+13) { display: none; } .signal-field::before { width: 120vw; left: -30%; opacity: .3; } }
 .site-header, .site-footer, main { max-width: 1200px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
 .site-header { min-height: 88px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
 .wordmark { font-family: var(--mono); font-size: 18px; font-weight: 500; text-decoration: none; letter-spacing: -.06em; }.wordmark span { color: var(--orange); }
@@ -120,4 +131,4 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
   .guestbook-main .guestbook-callout { margin: 14px 0 52px; }
 }
 
-@media (prefers-reduced-motion: reduce) { ::view-transition-new(root) { animation: none; } .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after { animation: none; } .button, .text-link, .about-contact a, .project-card, .feature-link, .site-footer > a:last-child, .page-loader { transition: none; } .button:hover, .text-link:hover, .about-contact a:hover, .project-card:hover, .feature-link:hover, .site-footer > a:last-child:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-new(root) { animation: none; } .signal-field { transform: none; }.signal-field::before, .signal-field::after, .signal-field span, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after { animation: none; } .button, .text-link, .about-contact a, .project-card, .feature-link, .site-footer > a:last-child, .page-loader { transition: none; } .button:hover, .text-link:hover, .about-contact a:hover, .project-card:hover, .feature-link:hover, .site-footer > a:last-child:hover { transform: none; } }
