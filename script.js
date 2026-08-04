@@ -68,7 +68,7 @@ const createAnalogField = () => {
     return `<span class="analog-mark" style="--analog-x:${x}%;--analog-y:${y}%;--analog-delay:${delay}s;--analog-duration:${duration}s">${glyph}</span>`;
   }).join('');
 
-  field.innerHTML = `<div class="analog-grid"></div><div class="analog-grain"></div>${marks}`;
+  field.innerHTML = `<div class="analog-grid"></div><canvas class="analog-ripple" aria-hidden="true"></canvas><div class="analog-grain"></div>${marks}`;
   document.body.prepend(field);
 };
 
@@ -87,42 +87,290 @@ const startAnalogParallax = () => {
   }, { passive: true });
 };
 
-const startAnalogPointerResponse = () => {
+const startAnalogRipple = () => {
+  const field = document.querySelector('.analog-field');
+  const canvas = field?.querySelector('.analog-ripple');
   const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
-  if (reducedMotionQuery.matches || !finePointerQuery.matches) return;
+  const context = canvas?.getContext('2d', { alpha: true });
+  if (!field || !canvas || !context) return;
 
+  const root = document.documentElement;
+  const clusters = [
+    { x: .18, y: .13, radiusX: .44, radiusY: .30, core: .25, edge: .78 },
+    { x: .82, y: .38, radiusX: .38, radiusY: .28, core: .18, edge: .78 },
+    { x: .45, y: .84, radiusX: .52, radiusY: .34, core: .16, edge: .82 }
+  ];
+  const rippleLifetime = 900;
+  const rippleSpeed = .3;
+  const rippleBand = 38;
+  const rippleStrength = 11;
+  let width = 0;
+  let height = 0;
+  let points = [];
+  let ripples = [];
   let animationFrame = null;
-  let pointerX = window.innerWidth / 2;
-  let pointerY = window.innerHeight / 2;
+  let resizeFrame = null;
+  let lastDraw = 0;
+  let lastRippleTime = -Infinity;
+  let lastRippleX = null;
+  let lastRippleY = null;
+  let dotColor = '#787569';
+  let isActive = false;
 
-  const updatePointerPosition = () => {
-    const normalizedX = (pointerX / Math.max(window.innerWidth, 1)) - .5;
-    const normalizedY = (pointerY / Math.max(window.innerHeight, 1)) - .5;
-    document.documentElement.style.setProperty('--analog-pointer-shift-x', `${normalizedX * 18}px`);
-    document.documentElement.style.setProperty('--analog-pointer-shift-y', `${normalizedY * 12}px`);
-    animationFrame = null;
+  const readDotColor = () => {
+    dotColor = window.getComputedStyle(root).getPropertyValue('--muted').trim() || '#787569';
   };
 
-  const resetPointerPosition = () => {
-    pointerX = window.innerWidth / 2;
-    pointerY = window.innerHeight / 2;
-    if (!animationFrame) animationFrame = window.requestAnimationFrame(updatePointerPosition);
+  const maskOpacityAt = (x, y) => clusters.reduce((opacity, cluster) => {
+    const normalizedX = (x - (cluster.x * width)) / Math.max(cluster.radiusX * width, 1);
+    const normalizedY = (y - (cluster.y * height)) / Math.max(cluster.radiusY * height, 1);
+    const distance = Math.hypot(normalizedX, normalizedY);
+    if (distance <= cluster.core) return 1;
+    if (distance >= cluster.edge) return opacity;
+    const fade = 1 - ((distance - cluster.core) / (cluster.edge - cluster.core));
+    return Math.max(opacity, fade);
+  }, 0);
+
+  const buildLattice = () => {
+    const baseSpacing = width <= 720 ? 23 : 19;
+    const spacing = Math.max(baseSpacing, Math.sqrt((width * height) / 8000));
+    const nextPoints = [];
+
+    for (let y = 0; y <= height; y += spacing) {
+      for (let x = 0; x <= width; x += spacing) {
+        const opacity = maskOpacityAt(x, y);
+        if (opacity > .025) nextPoints.push({ x, y, opacity });
+      }
+    }
+
+    points = nextPoints;
+  };
+
+  const drawLattice = (timestamp = 0) => {
+    context.clearRect(0, 0, width, height);
+    context.fillStyle = dotColor;
+    const activeRipples = ripples.filter((ripple) => timestamp - ripple.startedAt < rippleLifetime);
+    ripples = activeRipples;
+
+    points.forEach((point) => {
+      let offsetX = 0;
+      let offsetY = 0;
+      let peak = 0;
+
+      activeRipples.forEach((ripple) => {
+        const age = timestamp - ripple.startedAt;
+        const distanceX = point.x - ripple.x;
+        const distanceY = point.y - ripple.y;
+        const distance = Math.max(Math.hypot(distanceX, distanceY), 1);
+        const distanceFromWave = distance - (age * rippleSpeed);
+        const envelope = Math.exp(-(distanceFromWave ** 2) / (2 * rippleBand ** 2)) * (1 - (age / rippleLifetime));
+        if (envelope < .015) return;
+        const wave = Math.sin(distanceFromWave * .18) * envelope * rippleStrength;
+        offsetX += (distanceX / distance) * wave;
+        offsetY += (distanceY / distance) * wave;
+        peak = Math.max(peak, envelope);
+      });
+
+      const dotSize = 2 + (peak * 1.2);
+      context.globalAlpha = Math.min(1, point.opacity * (.88 + (peak * .9)));
+      context.fillRect(point.x + offsetX - (dotSize / 2), point.y + offsetY - (dotSize / 2), dotSize, dotSize);
+    });
+
+    context.globalAlpha = 1;
+  };
+
+  const animateRipples = (timestamp) => {
+    if (timestamp - lastDraw < 30) {
+      animationFrame = window.requestAnimationFrame(animateRipples);
+      return;
+    }
+
+    lastDraw = timestamp;
+    drawLattice(timestamp);
+    if (ripples.length) {
+      animationFrame = window.requestAnimationFrame(animateRipples);
+    } else {
+      animationFrame = null;
+      lastDraw = 0;
+    }
+  };
+
+  const resizeCanvas = () => {
+    width = Math.max(window.innerWidth, 1);
+    height = Math.max(window.innerHeight, 1);
+    const areaScale = Math.sqrt(8000000 / (width * height));
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5, areaScale);
+    canvas.width = Math.round(width * pixelRatio);
+    canvas.height = Math.round(height * pixelRatio);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    context.imageSmoothingEnabled = false;
+    ripples = [];
+    readDotColor();
+    buildLattice();
+    drawLattice();
+  };
+
+  const stopRipples = () => {
+    if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+    animationFrame = null;
+    resizeFrame = null;
+    lastDraw = 0;
+    ripples = [];
+    context.clearRect(0, 0, width, height);
+  };
+
+  const configureRipple = () => {
+    const nextActive = finePointerQuery.matches && !reducedMotionQuery.matches;
+    if (nextActive === isActive) return;
+    stopRipples();
+    isActive = nextActive;
+    field.classList.toggle('has-ripple', isActive);
+    if (isActive) resizeCanvas();
   };
 
   window.addEventListener('pointermove', (event) => {
-    if (event.pointerType === 'touch' || reducedMotionQuery.matches) return;
-    pointerX = event.clientX;
-    pointerY = event.clientY;
-    if (!animationFrame) animationFrame = window.requestAnimationFrame(updatePointerPosition);
+    if (!isActive || event.pointerType === 'touch') return;
+    const now = window.performance.now();
+    const distanceFromLast = lastRippleX === null ? Infinity : Math.hypot(event.clientX - lastRippleX, event.clientY - lastRippleY);
+    if (now - lastRippleTime < 70 || distanceFromLast < 12) return;
+
+    ripples.push({ x: event.clientX, y: event.clientY, startedAt: now });
+    if (ripples.length > 4) ripples.shift();
+    lastRippleTime = now;
+    lastRippleX = event.clientX;
+    lastRippleY = event.clientY;
+    if (!animationFrame) animationFrame = window.requestAnimationFrame(animateRipples);
   }, { passive: true });
-  window.addEventListener('blur', resetPointerPosition);
-  document.documentElement.addEventListener('pointerleave', resetPointerPosition);
-  reducedMotionQuery.addEventListener('change', resetPointerPosition);
+  window.addEventListener('resize', () => {
+    if (!isActive || resizeFrame) return;
+    resizeFrame = window.requestAnimationFrame(() => {
+      resizeFrame = null;
+      resizeCanvas();
+    });
+  }, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopRipples();
+    else if (isActive) drawLattice();
+  });
+  finePointerQuery.addEventListener('change', configureRipple);
+  reducedMotionQuery.addEventListener('change', configureRipple);
+  new MutationObserver(() => {
+    readDotColor();
+    if (isActive) drawLattice(window.performance.now());
+  }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  configureRipple();
+};
+
+const startInertialScroll = () => {
+  const desktopPointerQuery = window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
+  const root = document.documentElement;
+  const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+  const navigationKeys = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Tab']);
+  let currentY = window.scrollY;
+  let targetY = window.scrollY;
+  let animationFrame = null;
+  let lastFrameTime = 0;
+  let isEnabled = false;
+
+  const stopInertia = () => {
+    if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+    lastFrameTime = 0;
+    root.classList.remove('inertia-enabled');
+    currentY = window.scrollY;
+    targetY = window.scrollY;
+  };
+
+  const normalizeWheelDelta = (event) => {
+    let delta = event.deltaY;
+    if (event.deltaMode === 1) delta *= 16;
+    if (event.deltaMode === 2) delta *= window.innerHeight * .85;
+    return clamp(delta, -240, 240);
+  };
+
+  const nestedScrollerCanMove = (path, delta) => path.some((node) => {
+    if (!(node instanceof Element) || node === document.body || node === root) return false;
+    if (node.matches('iframe, .spotify-player, [data-native-scroll], textarea, select, input, [contenteditable="true"]')) return true;
+    const overflowY = window.getComputedStyle(node).overflowY;
+    if (!/(auto|scroll|overlay)/.test(overflowY) || node.scrollHeight <= node.clientHeight + 1) return false;
+    const bottom = node.scrollHeight - node.clientHeight;
+    return (delta < 0 && node.scrollTop > 1) || (delta > 0 && node.scrollTop < bottom - 1);
+  });
+
+  const stepInertia = (timestamp) => {
+    const elapsed = clamp(lastFrameTime ? timestamp - lastFrameTime : 16, 8, 32);
+    lastFrameTime = timestamp;
+    const easing = 1 - Math.exp(-elapsed / 140);
+    currentY += (targetY - currentY) * easing;
+    window.scrollTo(0, currentY);
+
+    if (Math.abs(targetY - currentY) < .45) {
+      window.scrollTo(0, targetY);
+      animationFrame = null;
+      lastFrameTime = 0;
+      root.classList.remove('inertia-enabled');
+      return;
+    }
+
+    animationFrame = window.requestAnimationFrame(stepInertia);
+  };
+
+  const onWheel = (event) => {
+    if (!isEnabled || event.defaultPrevented || event.ctrlKey || event.metaKey || document.body.classList.contains('menu-open') || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    const delta = normalizeWheelDelta(event);
+    if (!delta || nestedScrollerCanMove(event.composedPath(), delta)) return;
+    event.preventDefault();
+
+    const queuedDirection = Math.sign(targetY - currentY);
+    if (animationFrame && queuedDirection && Math.sign(delta) !== queuedDirection) stopInertia();
+
+    if (!animationFrame) currentY = targetY = window.scrollY;
+    const maximumScroll = Math.max(0, root.scrollHeight - window.innerHeight);
+    const maximumQueue = window.innerHeight * 1.25;
+    targetY = clamp(targetY + (delta * .92), Math.max(0, currentY - maximumQueue), Math.min(maximumScroll, currentY + maximumQueue));
+    if (!animationFrame) {
+      root.classList.add('inertia-enabled');
+      animationFrame = window.requestAnimationFrame(stepInertia);
+    }
+  };
+
+  const configureInertia = () => {
+    const nextEnabled = desktopPointerQuery.matches && !reducedMotionQuery.matches;
+    if (nextEnabled === isEnabled) return;
+    if (isEnabled) window.removeEventListener('wheel', onWheel);
+    stopInertia();
+    isEnabled = nextEnabled;
+    if (isEnabled) window.addEventListener('wheel', onWheel, { passive: false });
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!animationFrame) currentY = targetY = window.scrollY;
+  }, { passive: true });
+  window.addEventListener('pointerdown', stopInertia, { passive: true });
+  window.addEventListener('resize', stopInertia, { passive: true });
+  window.addEventListener('blur', stopInertia);
+  window.addEventListener('hashchange', stopInertia);
+  window.addEventListener('popstate', stopInertia);
+  document.addEventListener('focusin', stopInertia);
+  document.addEventListener('keydown', (event) => {
+    if (navigationKeys.has(event.key)) stopInertia();
+  }, true);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopInertia();
+  });
+  desktopPointerQuery.addEventListener('change', configureInertia);
+  reducedMotionQuery.addEventListener('change', configureInertia);
+  configureInertia();
+  return stopInertia;
 };
 
 createAnalogField();
 startAnalogParallax();
-startAnalogPointerResponse();
+startAnalogRipple();
+const stopInertialScroll = startInertialScroll();
 
 const pageLoader = document.createElement('div');
 pageLoader.className = 'page-loader';
@@ -182,7 +430,11 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
   const target = document.getElementById(scrollTarget);
 
   if (target) {
+    stopInertialScroll();
+    const initialScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
     window.scrollTo(0, 0);
+    document.documentElement.style.scrollBehavior = initialScrollBehavior;
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -196,6 +448,7 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
 const setMenuState = (isOpen, returnFocus = false) => {
   if (!menuButton || !nav || !siteHeader) return;
 
+  stopInertialScroll();
   nav.classList.toggle('is-open', isOpen);
   siteHeader.classList.toggle('is-open', isOpen);
   document.body.classList.toggle('menu-open', isOpen);
@@ -259,6 +512,7 @@ const loadProjects = () => {
 
 const navigateWithLoader = (destination, destinationLabel) => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  stopInertialScroll();
   pageLoader.querySelector('.page-loader-label').textContent = `Loading ${destinationLabel}`;
   pageLoader.setAttribute('aria-hidden', 'false');
   pageLoader.className = 'page-loader is-active';
@@ -286,6 +540,7 @@ document.addEventListener('click', (event) => {
     if (currentTarget && isHomePath(window.location.pathname)) {
       event.preventDefault();
       setMenuState(false, true);
+      stopInertialScroll();
       currentTarget.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
       window.history.pushState({}, '', `/#${homeSection}`);
       return;
