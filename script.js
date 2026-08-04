@@ -631,6 +631,29 @@ if (portraitHoverTarget && portraitCaption && portraitPointerQuery.matches) {
 }
 
 
+// Give the portrait a subtle depth shift as the pointer moves across it.
+const portraitImage = portraitHoverTarget?.querySelector("img");
+if (portraitHoverTarget && portraitImage && portraitPointerQuery.matches) {
+  const movePortraitImage = (event) => {
+    const bounds = portraitHoverTarget.getBoundingClientRect();
+    const normalizedX = ((event.clientX - bounds.left) / bounds.width) - .5;
+    const normalizedY = ((event.clientY - bounds.top) / bounds.height) - .5;
+    portraitHoverTarget.style.setProperty("--portrait-shift-x", `${(-normalizedX * 10).toFixed(2)}px`);
+    portraitHoverTarget.style.setProperty("--portrait-shift-y", `${(-normalizedY * 8).toFixed(2)}px`);
+    portraitHoverTarget.classList.add("is-hovering");
+  };
+
+  const resetPortraitImage = () => {
+    portraitHoverTarget.style.setProperty("--portrait-shift-x", "0px");
+    portraitHoverTarget.style.setProperty("--portrait-shift-y", "0px");
+    portraitHoverTarget.classList.remove("is-hovering");
+  };
+
+  portraitHoverTarget.addEventListener("pointerenter", movePortraitImage, { passive: true });
+  portraitHoverTarget.addEventListener("pointermove", movePortraitImage, { passive: true });
+  portraitHoverTarget.addEventListener("pointerleave", resetPortraitImage, { passive: true });
+}
+
 // Turn Spotify links placed inside a post into a compact embedded player.
 const enhancePostSpotifyLinks = () => {
   const postContent = document.querySelector('.post-content');
