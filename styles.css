@@ -590,3 +590,33 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .about-photo figcaption.is-entering { animation: none; opacity: 1; scale: 1; clip-path: inset(0); }
   .about-photo figcaption.is-exiting { animation: none; opacity: 0; clip-path: inset(0 100% 0 0 round 999px); }
 }
+
+
+/* Square outline caption for the portrait. */
+@media (hover: hover) and (pointer: fine) {
+  .about-photo figcaption {
+    padding: .4rem .6rem .45rem;
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid currentColor;
+    border-radius: 0;
+    box-shadow: none;
+    clip-path: inset(0 100% 0 0);
+  }
+  .about-photo figcaption::before {
+    content: none;
+    margin-right: 0;
+  }
+}
+@keyframes portrait-tag-reveal {
+  from { opacity: 0; scale: .94; clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; scale: 1; clip-path: inset(0); }
+}
+@keyframes portrait-tag-hide {
+  from { opacity: 1; scale: 1; clip-path: inset(0); }
+  to { opacity: 0; scale: .97; clip-path: inset(0 100% 0 0); }
+}
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+  .about-photo figcaption.is-entering { clip-path: inset(0); }
+  .about-photo figcaption.is-exiting { clip-path: inset(0 100% 0 0); }
+}
