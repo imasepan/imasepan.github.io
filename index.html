@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260804-20" />
+    <link rel="stylesheet" href="styles.css?v=20260804-21" />
   </head>
   <body>
     <header class="site-header">
@@ -61,17 +61,22 @@
           </div>
         </div>
         {% assign latest_post = site.posts.first %}
-        <a class="latest-post-card" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}blog.html{% endif %}">
-          <p class="eyebrow">Latest writing</p>
-          {% if latest_post %}
-            <h2>{{ latest_post.title }}</h2>
-            <p>{{ latest_post.excerpt | strip_html | truncatewords: 24 }}</p>
-            <span class="text-link">Read entry →</span>
-          {% else %}
-            <h2>Notes worth keeping.</h2>
-            <p>The first entry is coming soon.</p>
-            <span class="text-link">Visit writing →</span>
+        <a class="latest-post-card{% if latest_post and latest_post.image %} has-image{% endif %}" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}blog.html{% endif %}">
+          {% if latest_post and latest_post.image %}
+            <img class="latest-post-image" src="{{ latest_post.image | relative_url }}" alt="" />
           {% endif %}
+          <div class="latest-post-content">
+            <p class="eyebrow">Latest writing</p>
+            {% if latest_post %}
+              <h2>{{ latest_post.title }}</h2>
+              <p>{{ latest_post.excerpt | strip_html | strip_newlines | truncatewords: 24 }}</p>
+              <span class="text-link">Read entry →</span>
+            {% else %}
+              <h2>Notes worth keeping.</h2>
+              <p>The first entry is coming soon.</p>
+              <span class="text-link">Visit writing →</span>
+            {% endif %}
+          </div>
         </a>
       </section>
 
@@ -125,6 +130,6 @@
       <p>always doing something</p>
       <a href="https://github.com/imasepan" target="_blank" rel="noreferrer">github.com/imasepan ↗</a>
     </footer>
-    <script src="script.js?v=20260804-16"></script>
+    <script src="script.js?v=20260804-17"></script>
   </body>
 </html>
