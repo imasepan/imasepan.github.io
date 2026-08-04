@@ -158,8 +158,8 @@ body.menu-open { overflow: hidden; }
 .site-header .site-nav a:focus-visible { outline: 2px solid var(--orange); outline-offset: 7px; }
 .site-header .language-switch { position: fixed; z-index: 2; right: 38px; bottom: 104px; opacity: 0; visibility: hidden; pointer-events: none; transform: translateX(calc(100% + 80px)); transition: opacity .28s ease, visibility 0s linear .55s, transform .55s .08s cubic-bezier(.22, 1, .36, 1); }
 .site-header.is-open .site-nav, .site-header.is-open .language-switch { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(0); transition-delay: .08s, 0s, .08s; }
-.menu-button { position: relative; z-index: 3; inset: auto; display: inline-flex; min-width: 76px; min-height: 54px; padding: 0 18px; align-items: center; justify-content: center; border: 1px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); box-shadow: 5px 5px 0 var(--ink); font: 500 13px var(--mono); letter-spacing: .04em; cursor: pointer; pointer-events: auto; transition: background-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s ease; }
-.menu-button:hover { background: var(--orange); color: #4F4D46; transform: translate(-2px, -2px) scale(1.04); box-shadow: 7px 7px 0 var(--ink); }
+.menu-button { position: relative; z-index: 3; inset: auto; display: inline-flex; min-width: 110px; min-height: 48px; padding: 0 24px; align-items: center; justify-content: center; border: 1px solid var(--ink); border-radius: 0px; background: var(--paper); color: var(--ink); box-shadow: 5px 5px 0 var(--ink); font: 500 13px var(--mono); letter-spacing: .04em; cursor: pointer; pointer-events: auto; transition: background-color .25s ease, color .25s ease, box-shadow: none; }
+.menu-button:hover { background: var(--ink); color: #4F4D46; transform: translate(-2px, -2px) scale(1.04); box-shadow: none; }
 .site-header.is-open .menu-button { background: var(--ink); color: var(--paper); }
 .menu-button:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
 
