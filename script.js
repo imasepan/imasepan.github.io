@@ -1,5 +1,6 @@
 const menuButton = document.querySelector('.menu-button');
 const nav = document.querySelector('.site-nav');
+const siteHeader = document.querySelector('.site-header');
 const isKorean = document.documentElement.lang === 'ko';
 const themeToggle = document.querySelector('.theme-toggle');
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -158,11 +159,40 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
   }
 };
 
-if (menuButton && nav) {
+const setMenuState = (isOpen, returnFocus = false) => {
+  if (!menuButton || !nav || !siteHeader) return;
+
+  nav.classList.toggle('is-open', isOpen);
+  siteHeader.classList.toggle('is-open', isOpen);
+  document.body.classList.toggle('menu-open', isOpen);
+  document.querySelectorAll('.music-banner, main, .site-footer').forEach((region) => {
+    region.inert = isOpen;
+  });
+  menuButton.setAttribute('aria-expanded', String(isOpen));
+  menuButton.textContent = isOpen ? (isKorean ? '닫기' : 'Close') : (isKorean ? '메뉴' : 'Menu');
+  nav.setAttribute('aria-hidden', String(!isOpen));
+
+  if (isOpen) window.requestAnimationFrame(() => nav.querySelector('a')?.focus());
+  if (!isOpen && returnFocus) menuButton.focus();
+};
+
+if (menuButton && nav && siteHeader) {
+  setMenuState(false);
+
   menuButton.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('is-open');
-    menuButton.setAttribute('aria-expanded', String(isOpen));
-    menuButton.textContent = isOpen ? (isKorean ? '닫기' : 'Close') : (isKorean ? '메뉴' : 'Menu');
+    setMenuState(!siteHeader.classList.contains('is-open'));
+  });
+
+  siteHeader.addEventListener('click', (event) => {
+    if (event.target === siteHeader && siteHeader.classList.contains('is-open')) setMenuState(false, true);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && siteHeader.classList.contains('is-open')) setMenuState(false, true);
+  });
+
+  nav.addEventListener('click', (event) => {
+    if (event.target.closest('a[href]')) setMenuState(false);
   });
 }
 
@@ -221,8 +251,7 @@ document.addEventListener('click', (event) => {
     const currentTarget = document.getElementById(homeSection);
     if (currentTarget && isHomePath(window.location.pathname)) {
       event.preventDefault();
-      nav?.classList.remove('is-open');
-      menuButton?.setAttribute('aria-expanded', 'false');
+      setMenuState(false, true);
       currentTarget.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
       window.history.pushState({}, '', `/#${homeSection}`);
       return;
