@@ -247,3 +247,10 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 @media (prefers-reduced-motion: reduce) {
   .site-header::before, .site-header::after, .site-header .brand-controls, .site-header .site-nav, .site-header .language-switch, .menu-button { transition: none; }
 }
+
+/* Keep the language switch beside the floating menu control. */
+.site-header .header-controls { display: flex; flex-direction: row; width: auto; margin: 0; align-items: center; gap: 12px; pointer-events: none; }
+.site-header .language-switch { position: relative; inset: auto; z-index: 3; display: inline-flex; min-height: 48px; padding: 0 16px; align-items: center; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); box-shadow: 5px 5px 0 var(--ink); opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: background-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s ease; }
+.site-header .language-switch:hover { background: var(--orange); color: #4F4D46; text-decoration: none; transform: translate(-2px, -2px) scale(1.04); }
+.site-header.is-open .language-switch { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition-delay: 0s; }
+@media (max-width: 720px) { .site-header .header-controls { gap: 10px; } .site-header .language-switch { min-height: 50px; padding: 0 12px; } }
