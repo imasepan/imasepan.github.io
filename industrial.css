@@ -26,6 +26,13 @@
 .layout-toggle:hover { background: var(--orange); color: #4F4D46; transform: translate(-1px, -1px); }
 .layout-toggle:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
 
+/* Keep the existing compact control width: language/menu share row one, layout spans row two. */
+.site-header .header-controls > .language-switch { grid-column: 1; grid-row: 1; }
+.site-header .header-controls > .menu-button { grid-column: 2; grid-row: 1; }
+.site-header .header-controls > .layout-toggle { grid-column: 1 / -1; grid-row: 2; }
+.site-header .header-controls:not(:has(.language-switch)) > .layout-toggle { grid-column: 1; grid-row: 1; }
+.site-header .header-controls:not(:has(.language-switch)) > .menu-button { grid-column: 2; grid-row: 1; }
+
 .industrial-hud { display: none; }
 
 html[data-layout='industrial'] {
