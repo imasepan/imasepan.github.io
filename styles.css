@@ -278,3 +278,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 
 /* Cleaner portrait bubble */
 .about-photo figcaption { box-shadow: none; }
+
+
+/* Use the normal cursor over the portrait */
+.about-photo, .about-photo img { cursor: default; }
