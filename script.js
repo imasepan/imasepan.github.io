@@ -303,7 +303,7 @@ const startInertialScroll = () => {
   const stepInertia = (timestamp) => {
     const elapsed = clamp(lastFrameTime ? timestamp - lastFrameTime : 16, 8, 32);
     lastFrameTime = timestamp;
-    const easing = 1 - Math.exp(-elapsed / 140);
+    const easing = 1 - Math.exp(-elapsed / 220);
     currentY += (targetY - currentY) * easing;
     window.scrollTo(0, currentY);
 
