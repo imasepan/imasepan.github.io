@@ -640,7 +640,7 @@ const enhancePostSpotifyLinks = () => {
   if (!spotifyLink) return;
 
   const source = spotifyLink.href;
-  const path = source.replace(/^https?:\\/\\//, '').split('?')[0];
+  const path = source.replace(/^https?:\/\//, '').split('?')[0];
   const embedSource = path.includes('open.spotify.com/embed/')
     ? source.split('?')[0]
     : source.split('?')[0].replace('open.spotify.com/', 'open.spotify.com/embed/');
