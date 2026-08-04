@@ -228,7 +228,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .site-header .site-nav { top: 142px; right: 24px; width: calc(100vw - 48px); gap: 18px; }
   .site-header .site-nav a { font-size: clamp(38px, 12vw, 58px); }
   .site-header .language-switch { right: 24px; bottom: 94px; }
-  .menu-button { inset: auto; min-width: 60px; min-height: 50px; }
+  .menu-button { inset: auto; min-width: 58px; min-height: 50px; }
   .hero { min-height: 100svh; padding-top: 96px; padding-bottom: 96px; }
   .hero h1 { font-size: clamp(54px, 16vw, 82px); }
   .hero-photo-panel { min-height: 72svh; margin-top: 24px; padding: 28px 24px; }
