@@ -286,3 +286,9 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 
 /* Hide the cursor over the portrait */
 .about-photo, .about-photo img { cursor: none; }
+
+
+/* Keep back links clear of the menu */
+.page-back { display: block; width: fit-content; margin: 34px 0 0 auto; }
+.guestbook-main .page-back { margin-right: 34px; }
+@media (max-width: 720px) { .page-back, .guestbook-main .page-back { margin-right: 20px; } }
