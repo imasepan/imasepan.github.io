@@ -535,3 +535,58 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   color: var(--ink);
   backdrop-filter: none;
 }
+
+
+/* A custom portrait hover: subtle depth plus an editorial tag. */
+@media (hover: hover) and (pointer: fine) {
+  .about-photo {
+    position: relative;
+    overflow: hidden;
+  }
+  .about-photo img {
+    transform: translate3d(var(--portrait-shift-x, 0px), var(--portrait-shift-y, 0px), 0) scale(1);
+    transition: transform .35s cubic-bezier(.2, .8, .2, 1), filter .35s ease;
+    will-change: transform;
+  }
+  .about-photo.is-hovering img {
+    transform: translate3d(var(--portrait-shift-x, 0px), var(--portrait-shift-y, 0px), 0) scale(1.045);
+    filter: saturate(1.06) contrast(1.02);
+  }
+  .about-photo figcaption {
+    padding: .58rem .82rem .62rem;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    box-shadow: 4px 4px 0 var(--orange);
+    font: 500 12px/1 var(--mono);
+    letter-spacing: .02em;
+    clip-path: inset(0 100% 0 0 round 999px);
+    scale: .94;
+    will-change: left, top, opacity, scale, clip-path;
+  }
+  .about-photo figcaption::before {
+    content: '01 /';
+    margin-right: .6rem;
+    color: var(--muted);
+  }
+  .about-photo figcaption.is-entering {
+    animation: portrait-tag-reveal .45s cubic-bezier(.2, .8, .2, 1) forwards;
+  }
+  .about-photo figcaption.is-exiting {
+    animation: portrait-tag-hide .16s ease forwards;
+  }
+}
+@keyframes portrait-tag-reveal {
+  from { opacity: 0; scale: .94; clip-path: inset(0 100% 0 0 round 999px); }
+  to { opacity: 1; scale: 1; clip-path: inset(0 0 0 0 round 999px); }
+}
+@keyframes portrait-tag-hide {
+  from { opacity: 1; scale: 1; clip-path: inset(0 0 0 0 round 999px); }
+  to { opacity: 0; scale: .97; clip-path: inset(0 100% 0 0 round 999px); }
+}
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+  .about-photo img { transition: none; }
+  .about-photo figcaption.is-entering { animation: none; opacity: 1; scale: 1; clip-path: inset(0); }
+  .about-photo figcaption.is-exiting { animation: none; opacity: 0; clip-path: inset(0 100% 0 0 round 999px); }
+}
