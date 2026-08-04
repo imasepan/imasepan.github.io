@@ -100,22 +100,23 @@ const startAnalogRipple = () => {
     { x: .82, y: .38, radiusX: .38, radiusY: .28, core: .18, edge: .78 },
     { x: .45, y: .84, radiusX: .52, radiusY: .34, core: .16, edge: .82 }
   ];
-  const rippleLifetime = 1200;
-  const rippleSpeed = .26;
-  const rippleBand = 68;
-  const rippleStrength = 4;
+  const wakeRadius = 78;
+  const wakeBand = 22;
+  const wakeStrength = .72;
   let width = 0;
   let height = 0;
   let points = [];
-  let ripples = [];
   let animationFrame = null;
   let resizeFrame = null;
   let lastDraw = 0;
-  let lastRippleTime = -Infinity;
-  let lastRippleX = null;
-  let lastRippleY = null;
+  let lastFrame = 0;
+  let pointerX = -10000;
+  let pointerY = -10000;
+  let targetX = -10000;
+  let targetY = -10000;
   let dotColor = '#787569';
   let isActive = false;
+  let hasPointer = false;
 
   const readDotColor = () => {
     dotColor = window.getComputedStyle(root).getPropertyValue('--muted').trim() || '#787569';
@@ -146,53 +147,52 @@ const startAnalogRipple = () => {
     points = nextPoints;
   };
 
-  const drawLattice = (timestamp = 0) => {
+  const drawLattice = () => {
     context.clearRect(0, 0, width, height);
     context.fillStyle = dotColor;
-    const activeRipples = ripples.filter((ripple) => timestamp - ripple.startedAt < rippleLifetime);
-    ripples = activeRipples;
 
     points.forEach((point) => {
-      let offsetX = 0;
-      let offsetY = 0;
-      let peak = 0;
+      let wake = 0;
 
-      activeRipples.forEach((ripple) => {
-        const age = timestamp - ripple.startedAt;
-        const distanceX = point.x - ripple.x;
-        const distanceY = point.y - ripple.y;
-        const distance = Math.max(Math.hypot(distanceX, distanceY), 1);
-        const distanceFromWave = distance - (age * rippleSpeed);
-        const envelope = Math.exp(-(distanceFromWave ** 2) / (2 * rippleBand ** 2)) * (1 - (age / rippleLifetime));
-        if (envelope < .015) return;
-        const wave = Math.sin(distanceFromWave * .075) * envelope * rippleStrength;
-        offsetX += (distanceX / distance) * wave;
-        offsetY += (distanceY / distance) * wave;
-        peak = Math.max(peak, envelope);
-      });
+      if (hasPointer) {
+        const distance = Math.hypot(point.x - pointerX, point.y - pointerY);
+        const ringDistance = distance - wakeRadius;
+        wake = Math.exp(-(ringDistance ** 2) / (2 * wakeBand ** 2)) * wakeStrength;
+      }
 
-      const dotSize = 2 + (peak * .45);
-      context.globalAlpha = Math.min(1, point.opacity * (.9 + (peak * .45)));
-      context.fillRect(point.x + offsetX - (dotSize / 2), point.y + offsetY - (dotSize / 2), dotSize, dotSize);
+      const dotSize = 2 + (wake * .8);
+      context.globalAlpha = Math.min(1, point.opacity * (.9 + (wake * .35)));
+      context.fillRect(point.x - (dotSize / 2), point.y - (dotSize / 2), dotSize, dotSize);
     });
 
     context.globalAlpha = 1;
   };
 
-  const animateRipples = (timestamp) => {
-    if (timestamp - lastDraw < 30) {
-      animationFrame = window.requestAnimationFrame(animateRipples);
+  const animateWake = (timestamp) => {
+    if (timestamp - lastDraw < 24) {
+      animationFrame = window.requestAnimationFrame(animateWake);
       return;
     }
 
+    const elapsed = Math.min(lastFrame ? timestamp - lastFrame : 16, 32);
+    const easing = 1 - Math.exp(-elapsed / 120);
+    pointerX += (targetX - pointerX) * easing;
+    pointerY += (targetY - pointerY) * easing;
+    lastFrame = timestamp;
     lastDraw = timestamp;
-    drawLattice(timestamp);
-    if (ripples.length) {
-      animationFrame = window.requestAnimationFrame(animateRipples);
+    drawLattice();
+
+    if (hasPointer && Math.hypot(targetX - pointerX, targetY - pointerY) > .25) {
+      animationFrame = window.requestAnimationFrame(animateWake);
     } else {
       animationFrame = null;
       lastDraw = 0;
+      lastFrame = 0;
     }
+  };
+
+  const queueWake = () => {
+    if (!animationFrame) animationFrame = window.requestAnimationFrame(animateWake);
   };
 
   const resizeCanvas = () => {
@@ -202,30 +202,32 @@ const startAnalogRipple = () => {
     const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5, areaScale);
     canvas.width = Math.round(width * pixelRatio);
     canvas.height = Math.round(height * pixelRatio);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     context.imageSmoothingEnabled = false;
-    ripples = [];
     readDotColor();
     buildLattice();
     drawLattice();
   };
 
-  const stopRipples = () => {
+  const stopWake = () => {
     if (animationFrame) window.cancelAnimationFrame(animationFrame);
     if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
     animationFrame = null;
     resizeFrame = null;
     lastDraw = 0;
-    ripples = [];
+    lastFrame = 0;
+    hasPointer = false;
+    pointerX = targetX = -10000;
+    pointerY = targetY = -10000;
     context.clearRect(0, 0, width, height);
   };
 
   const configureRipple = () => {
     const nextActive = finePointerQuery.matches && !reducedMotionQuery.matches;
     if (nextActive === isActive) return;
-    stopRipples();
+    stopWake();
     isActive = nextActive;
     field.classList.toggle('has-ripple', isActive);
     if (isActive) resizeCanvas();
@@ -233,16 +235,18 @@ const startAnalogRipple = () => {
 
   window.addEventListener('pointermove', (event) => {
     if (!isActive || event.pointerType === 'touch') return;
-    const now = window.performance.now();
-    const distanceFromLast = lastRippleX === null ? Infinity : Math.hypot(event.clientX - lastRippleX, event.clientY - lastRippleY);
-    if (now - lastRippleTime < 90 || distanceFromLast < 16) return;
 
-    ripples.push({ x: event.clientX, y: event.clientY, startedAt: now });
-    if (ripples.length > 3) ripples.shift();
-    lastRippleTime = now;
-    lastRippleX = event.clientX;
-    lastRippleY = event.clientY;
-    if (!animationFrame) animationFrame = window.requestAnimationFrame(animateRipples);
+    targetX = event.clientX;
+    targetY = event.clientY;
+    if (!hasPointer) {
+      pointerX = targetX;
+      pointerY = targetY;
+      hasPointer = true;
+      drawLattice();
+      return;
+    }
+
+    queueWake();
   }, { passive: true });
   window.addEventListener('resize', () => {
     if (!isActive || resizeFrame) return;
@@ -252,14 +256,14 @@ const startAnalogRipple = () => {
     });
   }, { passive: true });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopRipples();
-    else if (isActive) drawLattice();
+    if (document.hidden) stopWake();
+    else if (isActive) resizeCanvas();
   });
   finePointerQuery.addEventListener('change', configureRipple);
   reducedMotionQuery.addEventListener('change', configureRipple);
   new MutationObserver(() => {
     readDotColor();
-    if (isActive) drawLattice(window.performance.now());
+    if (isActive) drawLattice();
   }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   configureRipple();
 };
