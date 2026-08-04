@@ -68,7 +68,7 @@ const createAnalogField = () => {
     return `<span class="analog-mark" style="--analog-x:${x}%;--analog-y:${y}%;--analog-delay:${delay}s;--analog-duration:${duration}s">${glyph}</span>`;
   }).join('');
 
-  field.innerHTML = `<div class="analog-grid"></div><div class="analog-grain"></div><div class="analog-sweep"></div>${marks}`;
+  field.innerHTML = `<div class="analog-grid"></div><div class="analog-grain"></div>${marks}`;
   document.body.prepend(field);
 };
 
@@ -87,8 +87,42 @@ const startAnalogParallax = () => {
   }, { passive: true });
 };
 
+const startAnalogPointerResponse = () => {
+  const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+  if (reducedMotionQuery.matches || !finePointerQuery.matches) return;
+
+  let animationFrame = null;
+  let pointerX = window.innerWidth / 2;
+  let pointerY = window.innerHeight / 2;
+
+  const updatePointerPosition = () => {
+    const normalizedX = (pointerX / Math.max(window.innerWidth, 1)) - .5;
+    const normalizedY = (pointerY / Math.max(window.innerHeight, 1)) - .5;
+    document.documentElement.style.setProperty('--analog-pointer-shift-x', `${normalizedX * 18}px`);
+    document.documentElement.style.setProperty('--analog-pointer-shift-y', `${normalizedY * 12}px`);
+    animationFrame = null;
+  };
+
+  const resetPointerPosition = () => {
+    pointerX = window.innerWidth / 2;
+    pointerY = window.innerHeight / 2;
+    if (!animationFrame) animationFrame = window.requestAnimationFrame(updatePointerPosition);
+  };
+
+  window.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'touch' || reducedMotionQuery.matches) return;
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+    if (!animationFrame) animationFrame = window.requestAnimationFrame(updatePointerPosition);
+  }, { passive: true });
+  window.addEventListener('blur', resetPointerPosition);
+  document.documentElement.addEventListener('pointerleave', resetPointerPosition);
+  reducedMotionQuery.addEventListener('change', resetPointerPosition);
+};
+
 createAnalogField();
 startAnalogParallax();
+startAnalogPointerResponse();
 
 const pageLoader = document.createElement('div');
 pageLoader.className = 'page-loader';
