@@ -434,3 +434,25 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .latest-post-card.has-image h2 { text-shadow: 0 2px 24px rgba(0, 0, 0, .55); }
 .latest-post-card.has-image:hover { background: var(--ink); }
 .latest-post-card.has-image:hover .latest-post-image { transform: scale(1.045); filter: saturate(1.06); }
+
+
+/* Spotify embeds added to individual writing posts. */
+.post-spotify {
+  max-width: 760px;
+  margin: 0 0 44px;
+  padding: 26px 0 0;
+  border-top: 1px solid var(--line);
+}
+.post-spotify .eyebrow { margin-bottom: 12px; }
+.post-spotify-player {
+  display: block;
+  width: 100%;
+  min-height: 152px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--ink);
+}
+@media (max-width: 720px) {
+  .post-spotify { margin-bottom: 34px; padding-top: 20px; }
+  .post-spotify-player { border-radius: 9px; }
+}
