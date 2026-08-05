@@ -5,16 +5,21 @@
 - [x] Read the Version 1 brief and reconcile it with the remote repository.
 - [x] Create the canonical `docs/` documentation system.
 - [x] Establish an isolated implementation branch/worktree from remote `main`.
-- [ ] Decide the least disruptive final route for the perspective selector and Home/Friend.
+- [x] Decide the least disruptive final route for the perspective selector and Home/Friend (`/` selector; `/home/` Home/Friend).
 
 ## High Priority
 
-- [ ] Build the perspective selector.
+- [x] Build the perspective selector.
 - [ ] Build `/studio/` Version 1 using real repository projects.
 - [ ] Preserve and verify Home/Friend routes and links.
 - [ ] Implement featured-project selection for hover, keyboard, click, and controlled scroll.
 - [ ] Implement the glitch strip with static and reduced-motion fallbacks.
 - [ ] Validate all required desktop, tablet, mobile, accessibility, and console checks.
+
+## Newly Discovered
+
+- [ ] Run final rendered visual checks once a local GitHub Pages/Jekyll preview is available to the browser; this environment blocks browser access to its localhost preview.
+- [ ] Enable the Studio selector option only when `/studio/` exists, so the selector never exposes a dead route.
 
 ## Medium Priority
 
