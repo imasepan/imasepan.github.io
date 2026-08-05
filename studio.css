@@ -34,8 +34,6 @@ footer { position: fixed; right: 0; bottom: 0; left: 0; }
 .project-feature, .project-row {
   transition-timing-function: ease-out;
 }
-<<<<<<< Updated upstream
-=======
 
 /* Fixed project window: the white highlight stays in place while tiles loop. */
 .studio-main {
@@ -104,4 +102,3 @@ footer { position: fixed; right: 0; bottom: 0; left: 0; }
   .studio-projects > .project-feature.is-active,
   .studio-projects > .project-list > .project-row.is-active { height: 360px; min-height: 360px; }
 }
->>>>>>> Stashed changes
