@@ -74,7 +74,7 @@ footer { position: fixed; right: 0; bottom: 0; left: 0; }
   left: 0;
   z-index: var(--project-z, 1);
   transform: translate3d(0, var(--project-y, 0), 0);
-  transition-duration: .28s;
+  transition-duration: .52s;
   transition-timing-function: ease-out;
   will-change: transform;
 }

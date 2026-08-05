@@ -111,12 +111,6 @@
           const index = projects.indexOf(project);
           if (index >= 0) selectProject(index);
         });
-        projects.forEach((project, index) => {
-          project.addEventListener('pointerenter', (event) => {
-            if (event.pointerType !== 'touch') selectProject(index);
-          });
-        });
-
         new ResizeObserver(updateProjectPosition).observe(viewport);
         new ResizeObserver(updateProjectPosition).observe(track);
         reducedMotion.addEventListener('change', updateProjectPosition);
@@ -191,7 +185,7 @@
           move(Math.sign(wheelDistance));
           wheelDistance = 0;
           wheelLocked = true;
-          window.setTimeout(() => { wheelLocked = false; }, 260);
+          window.setTimeout(() => { wheelLocked = false; }, 520);
         };
 
         window.addEventListener('wheel', consumeWheel, { passive: false });
@@ -219,11 +213,6 @@
           const project = event.target.closest('.project-feature, .project-row');
           const index = projects.indexOf(project);
           if (index >= 0) selectProject(index);
-        });
-        projects.forEach((project, index) => {
-          project.addEventListener('pointerenter', (event) => {
-            if (event.pointerType !== 'touch') selectProject(index);
-          });
         });
 
         new ResizeObserver(updateProjectPositions).observe(viewport);
