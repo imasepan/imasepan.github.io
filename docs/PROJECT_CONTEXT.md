@@ -5,8 +5,8 @@
 **Published site:** https://imasepan.github.io
 **Remote default branch:** `main`
 **Remote baseline inspected:** `b06a91f`
-**Current phase:** Isolated Version 1 implementation setup
-**Phase 1 implementation:** Not started
+**Current phase:** Perspective selector complete
+**Phase 1 implementation:** First milestone complete
 
 ## Overview
 
@@ -21,11 +21,10 @@ The repository contains Jin Hyun Kim’s warm personal GitHub Pages/Jekyll websi
 
 ## Implementation status
 
-The stale nested `main` checkout remains preserved. An isolated `codex/version1-setup` worktree is based on fetched `origin/main` at `b06a91f`; all Version 1 implementation must proceed there.
+The stale nested `main` checkout remains preserved. An isolated `codex/version1-setup` worktree is based on fetched `origin/main` at `b06a91f`; all Version 1 implementation proceeds there. The root route is now a static perspective selector and the unchanged cozy site is available at `/home/`.
 
 ## Current priorities
 
-1. Decide the least disruptive perspective-selector and Home/Friend route.
-2. Build the selector and `/studio/` from real repository projects.
-3. Implement selection and the accessible glitch-strip fallbacks.
-4. Validate Studio and unchanged Home/Friend routes before publishing.
+1. Build `/studio/` from real repository projects and make its selector option available.
+2. Implement featured-project selection and the accessible glitch-strip fallbacks.
+3. Complete visual, keyboard, touch, reduced-motion, and route validation for Studio and Home/Friend.
