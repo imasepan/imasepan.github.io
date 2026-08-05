@@ -75,23 +75,25 @@
         };
 
         const selectProject = (nextIndex) => {
-          const wrapped = nextIndex < 0 || nextIndex >= projects.length;
           const selected = (nextIndex + projects.length) % projects.length;
           if (selected === activeIndex && track.dataset.ready) return;
+          const previousIndex = activeIndex;
+          const shouldAnimate = (index) => track.dataset.ready
+            && (index === previousIndex || index === selected);
           activeIndex = selected;
           projects.forEach((project, index) => {
             project.classList.toggle('is-active', index === activeIndex);
             project.classList.toggle('is-before', index < activeIndex);
             project.classList.toggle('is-after', index > activeIndex);
-            project.classList.toggle('is-wrapping', wrapped);
+            project.classList.toggle('is-teleporting', !shouldAnimate(index));
             if (index === activeIndex) project.setAttribute('aria-current', 'true');
             else project.removeAttribute('aria-current');
           });
           if (progress) progress.style.transform = `scaleY(${(activeIndex + 1) / projects.length})`;
           updateProjectPositions();
           track.dataset.ready = 'true';
-          if (wrapped) requestAnimationFrame(() => requestAnimationFrame(() => {
-            projects.forEach((project) => project.classList.remove('is-wrapping'));
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            projects.forEach((project) => project.classList.remove('is-teleporting'));
           }));
         };
 
