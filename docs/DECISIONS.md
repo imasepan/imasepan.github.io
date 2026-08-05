@@ -19,3 +19,7 @@ Version 1 implementation begins from an isolated branch/worktree based on `origi
 ## 2026-08-05 — Selector and Home route
 
 The root route is the static perspective selector. Home/Friend is preserved at `/home/`, and its shared navigation now points there. The Studio option is intentionally marked in progress until the actual `/studio/` page is implemented, avoiding a dead link.
+
+## 2026-08-05 — Initial Studio project record
+
+The initial Studio landing page uses the repository-confirmed `PlayerMarket` project already referenced by Home/Friend. Its unavailable description and technology metadata are explicitly marked pending rather than invented.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-05 — Studio landing page
+
+Summary: Added the initial Version 1 Studio page at `/studio/`: a black editorial frame, identity rail, navigation, responsive featured project card, decorative static colour strip, and the repository-confirmed PlayerMarket project record.
+
+Routing: The root selector now links to the live Studio route. Home/Friend remains independently available at `/home/`.
+
+Validation: static HTML, JavaScript, route, focus-style, and reduced-motion checks passed. A rendered Jekyll preview and browser localhost validation remain unavailable in this environment because Ruby/Jekyll is not installed and the browser cannot connect to its local server.
+
 ## 2026-08-05 — Home/Friend route preservation
 
 Summary: Restored the unchanged cozy English Home/Friend page at `/home/` after the root became the perspective selector.

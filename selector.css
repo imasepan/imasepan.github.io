@@ -99,7 +99,6 @@ a.perspective-option:focus-visible {
 
 a.perspective-option:focus-visible { outline: 3px solid #00d2d2; outline-offset: 3px; }
 
-.perspective-option-studio { color: #73736e; cursor: not-allowed; }
 .option-content { display: grid; gap: 9px; margin-right: auto; }
 .option-title { font-size: clamp(27px, 4.6vw, 58px); letter-spacing: -.055em; line-height: 1; }
 .option-description { max-width: 420px; font: clamp(12px, 1.2vw, 15px)/1.35 var(--mono); }
