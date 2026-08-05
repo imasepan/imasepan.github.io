@@ -32,6 +32,7 @@
           <a class="project-row" href="https://github.com/imasepan/charlie-s_fork" target="_blank" rel="noreferrer"><span>03</span><strong>charlie-s_fork</strong><i aria-hidden="true">→</i><em>TYPESCRIPT&nbsp;&nbsp; FORK</em></a>
           <a class="project-row" href="https://github.com/imasepan/ECE-461-Team-20-Repo" target="_blank" rel="noreferrer"><span>04</span><strong>ECE 461 Team Project</strong><i aria-hidden="true">→</i><em>TYPESCRIPT&nbsp;&nbsp; SOFTWARE ENGINEERING</em></a>
         </div>
+<<<<<<< Updated upstream
       </section>
     </main>
     <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b><i></i></b><small>▼</small></aside>
@@ -124,3 +125,113 @@
     </script>
   </body>
 </html>
+=======
+      </section>
+    </main>
+    <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b><i></i></b><small>▼</small></aside>
+    <footer>© 2026 <span>BASED IN SEOUL, KOREA</span></footer>
+    <script>
+      (() => {
+        const viewport = document.querySelector('.studio-main');
+        const track = document.querySelector('.studio-projects');
+        if (!viewport || !track) return;
+
+        const projects = [...track.querySelectorAll('.project-feature, .project-row')];
+        const progress = document.querySelector('.studio-scroll i');
+        let activeIndex = 0;
+        let wheelDistance = 0;
+        let touchY = null;
+        let wheelLocked = false;
+
+        const updateProjectPositions = () => {
+          const compact = window.innerWidth <= 800;
+          const activeTop = compact ? 0 : 18;
+          const activeHeight = compact ? 360 : 394;
+          const rowHeight = compact ? 94 : 100;
+          const gap = compact ? 8 : 12;
+          projects.forEach((project, index) => {
+            let distance = index - activeIndex;
+            const half = projects.length / 2;
+            if (distance > half) distance -= projects.length;
+            if (distance < -half) distance += projects.length;
+            if (projects.length % 2 === 0 && distance === -half) distance = half;
+            const y = distance < 0
+              ? activeTop + (distance * (rowHeight + gap))
+              : distance > 0
+                ? activeTop + activeHeight + gap + ((distance - 1) * (rowHeight + gap))
+                : activeTop;
+            project.style.setProperty('--project-y', `${y}px`);
+            project.style.setProperty('--project-z', String(projects.length - Math.abs(distance)));
+            project.style.setProperty('--project-distance', Math.abs(distance));
+          });
+        };
+
+        const selectProject = (nextIndex) => {
+          // Treat the project rail as a carousel: moving beyond either end
+          // returns to the opposite side instead of stopping at an edge.
+          const selected = (nextIndex + projects.length) % projects.length;
+          if (selected === activeIndex && track.style.transform) return;
+          activeIndex = selected;
+          projects.forEach((project, index) => {
+            project.classList.toggle('is-active', index === activeIndex);
+            project.classList.toggle('is-before', index < activeIndex);
+            project.classList.toggle('is-after', index > activeIndex);
+            if (index === activeIndex) project.setAttribute('aria-current', 'true');
+            else project.removeAttribute('aria-current');
+          });
+          if (progress) progress.style.transform = `scaleY(${(activeIndex + 1) / projects.length})`;
+          updateProjectPositions();
+        };
+
+        const move = (direction) => selectProject(activeIndex + direction);
+        const consumeWheel = (event) => {
+          if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+          event.preventDefault();
+          wheelDistance += event.deltaY;
+          if (wheelLocked || Math.abs(wheelDistance) < 64) return;
+          move(Math.sign(wheelDistance));
+          wheelDistance = 0;
+          wheelLocked = true;
+          window.setTimeout(() => { wheelLocked = false; }, 260);
+        };
+
+        window.addEventListener('wheel', consumeWheel, { passive: false });
+        window.addEventListener('keydown', (event) => {
+          const keys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '];
+          if (!keys.includes(event.key)) return;
+          event.preventDefault();
+          if (event.key === 'Home') selectProject(0);
+          else if (event.key === 'End') selectProject(projects.length - 1);
+          else move(event.key === 'ArrowUp' || event.key === 'PageUp' ? -1 : 1);
+        });
+
+        viewport.addEventListener('touchstart', (event) => { touchY = event.touches[0].clientY; }, { passive: true });
+        viewport.addEventListener('touchmove', (event) => {
+          if (touchY === null) return;
+          event.preventDefault();
+          const distance = touchY - event.touches[0].clientY;
+          if (Math.abs(distance) > 28) {
+            move(Math.sign(distance));
+            touchY = event.touches[0].clientY;
+          }
+        }, { passive: false });
+        viewport.addEventListener('touchend', () => { touchY = null; }, { passive: true });
+        track.addEventListener('focusin', (event) => {
+          const project = event.target.closest('.project-feature, .project-row');
+          const index = projects.indexOf(project);
+          if (index >= 0) selectProject(index);
+        });
+        projects.forEach((project, index) => {
+          project.addEventListener('pointerenter', (event) => {
+            if (event.pointerType !== 'touch') selectProject(index);
+          });
+        });
+
+        new ResizeObserver(updateProjectPositions).observe(viewport);
+        window.addEventListener('resize', updateProjectPositions);
+        selectProject(1);
+      })();
+    </script>
+  </body>
+</html>
+>>>>>>> Stashed changes

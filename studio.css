@@ -34,3 +34,74 @@ footer { position: fixed; right: 0; bottom: 0; left: 0; }
 .project-feature, .project-row {
   transition-timing-function: ease-out;
 }
+<<<<<<< Updated upstream
+=======
+
+/* Fixed project window: the white highlight stays in place while tiles loop. */
+.studio-main {
+  position: relative;
+  height: calc(100vh - 180px);
+  margin-top: clamp(12px, 2vh, 28px);
+}
+.studio-main::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 18px;
+  right: 0;
+  left: 0;
+  height: 394px;
+  background: #fafafa;
+  box-shadow: 0 18px 45px rgba(255,255,255,.13);
+  pointer-events: none;
+}
+.studio-projects {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  transition: none;
+}
+.project-list { display: contents; }
+.studio-projects > .project-feature,
+.studio-projects > .project-list > .project-row,
+.studio-projects > .project-feature.is-before,
+.studio-projects > .project-list > .project-row.is-before,
+.studio-projects > .project-feature.is-after,
+.studio-projects > .project-list > .project-row.is-after,
+.studio-projects > .project-feature.is-active,
+.studio-projects > .project-list > .project-row.is-active {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: var(--project-z, 1);
+  transform: translate3d(0, var(--project-y, 0), 0);
+  transition-duration: .28s;
+  transition-timing-function: ease-out;
+  will-change: transform;
+}
+.studio-projects > .project-feature.is-active,
+.studio-projects > .project-list > .project-row.is-active {
+  height: 394px;
+  background: transparent;
+  box-shadow: none;
+}
+.studio-projects > .project-feature:not(.is-active),
+.studio-projects > .project-list > .project-row:not(.is-active) {
+  height: 100px;
+}
+
+@media (max-width: 800px) {
+  .studio-main { margin-top: 18px; }
+  .studio-main::before { top: 0; height: 360px; }
+  .studio-projects > .project-feature.is-active,
+  .studio-projects > .project-list > .project-row.is-active { height: 360px; min-height: 360px; }
+  .studio-projects > .project-feature:not(.is-active),
+  .studio-projects > .project-list > .project-row:not(.is-active) { height: 94px; }
+}
+
+@media (max-width: 480px) {
+  .studio-projects > .project-feature.is-active,
+  .studio-projects > .project-list > .project-row.is-active { height: 360px; min-height: 360px; }
+}
+>>>>>>> Stashed changes
