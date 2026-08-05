@@ -31,10 +31,8 @@ permalink: /home/
         </nav>
         <a class="language-switch" href="{{ '/kr/' | relative_url }}" lang="ko">한국어</a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
-        <a class="home-return-button" href="https://imasepan.github.io/">Home</a>
       </div>
     </header>
-
 
     <section class="music-banner" aria-label="Featured Spotify playlist">
       <div class="music-banner-inner">
@@ -42,7 +40,6 @@ permalink: /home/
         <iframe class="spotify-player" title="Spotify playlist" src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator" width="100%" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" scrolling="no"></iframe>
       </div>
     </section>
-
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
@@ -61,3 +58,24 @@ permalink: /home/
           {% if latest_post and latest_post.image %}<img class="latest-post-image" src="{{ latest_post.image | relative_url }}" alt="" />{% endif %}
           <div class="latest-post-content">
             <p class="eyebrow">Latest writing</p>
+            {% if latest_post %}<h2>{{ latest_post.title }}</h2><p>{{ latest_post.excerpt | strip_html | strip_newlines | truncatewords: 24 }}</p><span class="text-link">Read entry →</span>{% else %}<h2>Notes worth keeping.</h2><p>The first entry is coming soon.</p><span class="text-link">Visit writing →</span>{% endif %}
+          </div>
+        </a>
+      </section>
+
+      <section id="about" class="section about-section" aria-labelledby="about-title">
+        <div class="about-label"><p class="eyebrow">about</p><figure class="about-photo"><img src="{{ '/assets/portrait.jpg' | relative_url }}" alt="me and a friend standing by the sea in front of Mount Fuji at sunset" /><figcaption>I’m on the left.</figcaption></figure></div>
+        <div class="about-copy"><h2 id="about-title">hey, i’m <span>Jin Hyun</span>.</h2><p>I’m a 24 year old <strong>Computer Engineering student</strong> based in <strong>South Korea and the US</strong>. Here's where I talk about what goes on in my head, advertise what comes out of my head, and everything else.</p><p>Right now, I’m especially interested in <strong>movies, books, and improving my skills in software engineering</strong>!</p><p class="about-contact">let's talk - <a href="mailto:jinhyuncharliekim@gmail.com">(my email!)</a></p></div>
+      </section>
+
+      <section id="projects" class="section" aria-labelledby="projects-title">
+        <div class="section-heading"><div><p class="eyebrow">projects</p><h2 id="projects-title">Stuff I made that was cool (sometimes with help)</h2></div><a class="text-link" href="https://github.com/imasepan?tab=repositories" target="_blank" rel="noreferrer">All repositories ↗</a></div>
+        <div id="project-list" class="project-grid" aria-live="polite"><p class="loading">Loading public repositories…</p></div>
+      </section>
+      <section class="section split-section single-card" aria-label="Guestbook"><a class="feature-card feature-link accent-card" href="{{ '/guestbook.html' | relative_url }}"><p class="eyebrow">guestbook</p><h2>Leave a small note.</h2><p>If you liked my site, leave a message! (i like it when the messages are nice).</p><span class="text-link">Sign the guestbook →</span></a></section>
+      <section class="section future-section" aria-labelledby="future-title"><p class="eyebrow">Soon / a conversation</p><h2 id="future-title">A site guide is on its way.</h2><p>eventually, you’ll be able to ask a mini me about the site and stuff i wrote on it!</p></section>
+    </main>
+    <footer class="site-footer"><a class="wordmark" href="{{ '/home/' | relative_url }}">imasepan<span>_</span></a><p>always doing something</p><a href="https://github.com/imasepan" target="_blank" rel="noreferrer">github.com/imasepan ↗</a></footer>
+    <script src="{{ '/script.js?v=20260804-18' | relative_url }}"></script>
+  </body>
+</html>
