@@ -538,7 +538,7 @@ document.addEventListener('click', (event) => {
   if (destination.origin !== window.location.origin || destination.pathname === '/kr/' || link.classList.contains('language-switch')) return;
 
   const homeSection = destination.hash.replace(/^#/, '') || new URLSearchParams(destination.search).get('scroll');
-  const isHomePath = (pathname) => /^\/(?:index\.html)?$/.test(pathname);
+  const isHomePath = (pathname) => /^\/(?:home\/(?:index\.html)?)?$/.test(pathname);
   if (homeSection && isHomePath(destination.pathname)) {
     const currentTarget = document.getElementById(homeSection);
     if (currentTarget && isHomePath(window.location.pathname)) {
