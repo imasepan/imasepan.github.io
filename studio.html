@@ -36,5 +36,59 @@
     </main>
     <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b></b><small>▼</small></aside>
     <footer>© 2026 <span>BASED IN SEOUL, KOREA</span></footer>
+    <script>
+      (() => {
+        const viewport = document.querySelector('.studio-main');
+        const track = document.querySelector('.studio-projects');
+        if (!viewport || !track) return;
+
+        let current = 0;
+        let target = 0;
+        let max = 0;
+        let raf;
+        const clamp = (value) => Math.max(0, Math.min(max, value));
+
+        const measure = () => {
+          max = Math.max(0, track.scrollHeight - viewport.clientHeight);
+          target = clamp(target);
+          current = clamp(current);
+        };
+        const animate = () => {
+          current += (target - current) * 0.085;
+          if (Math.abs(target - current) < 0.1) current = target;
+          track.style.transform = `translate3d(0, ${-current}px, 0)`;
+          raf = requestAnimationFrame(animate);
+        };
+        const nudge = (distance) => { target = clamp(target + distance); };
+
+        viewport.addEventListener('wheel', (event) => {
+          event.preventDefault();
+          nudge(event.deltaY * 0.9);
+        }, { passive: false });
+
+        let touchY = 0;
+        viewport.addEventListener('touchstart', (event) => { touchY = event.touches[0].clientY; }, { passive: true });
+        viewport.addEventListener('touchmove', (event) => {
+          event.preventDefault();
+          const y = event.touches[0].clientY;
+          nudge((touchY - y) * 1.25);
+          touchY = y;
+        }, { passive: false });
+
+        window.addEventListener('keydown', (event) => {
+          if (!['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) return;
+          event.preventDefault();
+          if (event.key === 'Home') target = 0;
+          else if (event.key === 'End') target = max;
+          else nudge((event.key === 'ArrowUp' || event.key === 'PageUp' ? -1 : 1) * (event.key.includes('Page') ? viewport.clientHeight * .8 : 120));
+        });
+
+        new ResizeObserver(measure).observe(viewport);
+        new ResizeObserver(measure).observe(track);
+        measure();
+        cancelAnimationFrame(raf);
+        animate();
+      })();
+    </script>
   </body>
 </html>
