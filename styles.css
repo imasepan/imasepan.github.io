@@ -519,7 +519,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .guestbook-main {
   background-color: var(--paper);
   background-image: none;
-  color: var(--paper);
+  color: var(--ink);
 }
 .guestbook-main .page-back {
   color: var(--muted);
@@ -527,12 +527,12 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 }
 .guestbook-main .page-intro {
   background: var(--line);
-  color: var(--paper);
+  color: var(--ink);
   backdrop-filter: none;
 }
 .guestbook-main .guestbook-callout {
   background: var(--lime);
-  color: var(--paper);
+  color: var(--ink);
   backdrop-filter: none;
 }
 
