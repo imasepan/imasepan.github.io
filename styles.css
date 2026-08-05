@@ -620,3 +620,15 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .about-photo figcaption.is-entering { clip-path: inset(0); }
   .about-photo figcaption.is-exiting { clip-path: inset(0 100% 0 0); }
 }
+
+/* Guestbook dark-mode contrast and right-aligned back link. */
+.guestbook-main .page-intro .eyebrow,
+.guestbook-main .page-intro > p:last-child,
+.guestbook-main .guestbook-callout .eyebrow,
+.guestbook-main .guestbook-callout > p:not(.eyebrow) {
+  color: var(--ink);
+}
+.guestbook-main .page-back {
+  margin-left: auto;
+  margin-right: 34px;
+}
