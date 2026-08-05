@@ -367,7 +367,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
     margin: 0;
     padding: .2rem .45rem .25rem;
     background: color-mix(in srgb, var(--ink) 60%, transparent);
-    color: var(--paper);
+    color: #EDE8D0;
     border: 0;
     border-radius: 0;
     backdrop-filter: blur(8px);
