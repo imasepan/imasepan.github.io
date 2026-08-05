@@ -546,7 +546,7 @@ document.addEventListener('click', (event) => {
       setMenuState(false, true);
       stopInertialScroll();
       currentTarget.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-      window.history.pushState({}, '', `/#${homeSection}`);
+      window.history.pushState({}, '', `/home/#${homeSection}`);
       return;
     }
   }

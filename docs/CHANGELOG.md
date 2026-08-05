@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-05 — Home/Friend route preservation
+
+Summary: Restored the unchanged cozy English Home/Friend page at `/home/` after the root became the perspective selector.
+
+Routing: Shared Home/Friend navigation, Writing back-links, the Korean-to-English language switch, and in-page history updates now consistently return to `/home/`. The selector remains at `/` and Studio remains unavailable pending its own milestone.
+
+Validation: static route and asset checks passed. A rendered Jekyll preview and browser localhost validation remain unavailable in this environment because Ruby/Jekyll is not installed and the browser cannot connect to its local server.
+
 ## 2026-08-05 — Perspective selector
 
 Summary: Replaced the root Home/Friend entry page with a static, keyboard-accessible perspective selector that follows the Version 1 black, monochrome, typographic frame.
