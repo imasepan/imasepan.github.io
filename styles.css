@@ -606,7 +606,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .about-photo figcaption {
     padding: .4rem .6rem .45rem;
     background: transparent;
-    color: var(--paper);
+    color: #EDE8D0;
     border: 1px solid currentColor;
     border-radius: 0;
     box-shadow: none;
