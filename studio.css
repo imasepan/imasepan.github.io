@@ -45,7 +45,7 @@ footer { position: fixed; right: 0; bottom: 0; left: 0; }
   content: '';
   position: absolute;
   z-index: 1;
-  top: 18px;
+  top: 112px;
   right: 0;
   left: 0;
   height: 394px;
@@ -91,7 +91,7 @@ footer { position: fixed; right: 0; bottom: 0; left: 0; }
 
 @media (max-width: 800px) {
   .studio-main { margin-top: 18px; }
-  .studio-main::before { top: 0; height: 360px; }
+  .studio-main::before { top: 102px; height: 360px; }
   .studio-projects > .project-feature.is-active,
   .studio-projects > .project-list > .project-row.is-active { height: 360px; min-height: 360px; }
   .studio-projects > .project-feature:not(.is-active),
