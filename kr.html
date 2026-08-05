@@ -8,6 +8,7 @@ permalink: /kr/
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="내가 만든 것들을 모아둔 곳" />
     <title>imasepan — 홈</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -63,17 +64,22 @@ permalink: /kr/
           </div>
         </div>
         {% assign latest_post = site.posts.first %}
-        <a class="latest-post-card" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}/blog/{% endif %}">
-          <p class="eyebrow">최근 글</p>
-          {% if latest_post %}
-            <h2>{{ latest_post.title }}</h2>
-            <p>{{ latest_post.excerpt | strip_html | truncatewords: 24 }}</p>
-            <span class="text-link">글 읽기 →</span>
-          {% else %}
-            <h2>기억해 둘 만한 글.</h2>
-            <p>첫 번째 글이 곧 올라옵니다.</p>
-            <span class="text-link">글 보러 가기 →</span>
+        <a class="latest-post-card{% if latest_post and latest_post.image %} has-image{% endif %}" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}/blog/{% endif %}">
+          {% if latest_post and latest_post.image %}
+            <img class="latest-post-image" src="{{ latest_post.image | relative_url }}" alt="" />
           {% endif %}
+          <div class="latest-post-content">
+            <p class="eyebrow">최근 글</p>
+            {% if latest_post %}
+              <h2>{{ latest_post.title }}</h2>
+              <p>{{ latest_post.excerpt | strip_html | strip_newlines | truncatewords: 24 }}</p>
+              <span class="text-link">글 읽기 →</span>
+            {% else %}
+              <h2>기억해 둘 만한 글.</h2>
+              <p>첫 번째 글이 곧 올라옵니다.</p>
+              <span class="text-link">글 보러 가기 →</span>
+            {% endif %}
+          </div>
         </a>
       </section>
 
@@ -89,7 +95,7 @@ permalink: /kr/
           <h2 id="about-title">안녕하세요, <span>김진현</span>입니다.</h2>
           <p>저는 <strong>한국과 미국</strong>에 사는 26살 <strong>컴퓨터공학과 대학생</strong>입니다. 이 웹사이트는 제 생각이랑 프로젝트를 소개하는 곳이에요.</p>
           <p>저는 주로 <strong>영화, 책, 자기개발</strong>에 관심이 많습니다!</p>
-          <p class="about-contact">연락 주세요~~ - <a href="mailto:jinhyuncharliekim@gmail.com">jinhyuncharliekim@gmail.com</a></p>
+          <p class="about-contact">연락 주세요~~ - <a href="mailto:jinhyuncharliekim@gmail.com">my email :)</a></p>
         </div>
       </section>
 
