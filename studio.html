@@ -162,6 +162,7 @@
         const selectProject = (nextIndex) => {
           // Treat the project rail as a carousel: moving beyond either end
           // returns to the opposite side instead of stopping at an edge.
+          const wrapped = nextIndex < 0 || nextIndex >= projects.length;
           const selected = (nextIndex + projects.length) % projects.length;
           if (selected === activeIndex && track.style.transform) return;
           activeIndex = selected;
@@ -173,7 +174,11 @@
             else project.removeAttribute('aria-current');
           });
           if (progress) progress.style.transform = `scaleY(${(activeIndex + 1) / projects.length})`;
+          if (wrapped) projects.forEach((project) => project.style.setProperty('transition-duration', '0ms'));
           updateProjectPositions();
+          if (wrapped) requestAnimationFrame(() => requestAnimationFrame(() => {
+            projects.forEach((project) => project.style.removeProperty('transition-duration'));
+          }));
         };
 
         const move = (direction) => selectProject(activeIndex + direction);
