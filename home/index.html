@@ -1,4 +1,7 @@
 Exit code: 0
+Wall time: 0.4 seconds
+Output:
+Exit code: 0
 Wall time: 0.5 seconds
 Output:
 ---
@@ -66,7 +69,7 @@ Output:
           </div>
         </div>
         {% assign latest_post = site.posts.first %}
-        <a class="latest-post-card{% if latest_post and latest_post.image %} has-image{% endif %}" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}blog.html{% endif %}">
+        <a class="latest-post-card{% if latest_post and latest_post.image %} has-image{% endif %}" href="{% if latest_post %}{{ latest_post.url | relative_url }}{% else %}/blog/{% endif %}">
           {% if latest_post and latest_post.image %}
             <img class="latest-post-image" src="{{ latest_post.image | relative_url }}" alt="" />
           {% endif %}
@@ -115,7 +118,7 @@ Output:
       </section>
 
       <section class="section split-section single-card" aria-label="Guestbook">
-        <a class="feature-card feature-link accent-card" href="guestbook.html">
+        <a class="feature-card feature-link accent-card" href="/guestbook.html">
           <p class="eyebrow">guestbook</p>
           <h2>Leave a small note.</h2>
           <p>If you liked my site, leave a message! (i like it when the messages are nice).</p>
