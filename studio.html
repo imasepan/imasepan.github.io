@@ -79,7 +79,7 @@
           if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
           event.preventDefault();
           wheelDistance += event.deltaY;
-          if (Math.abs(wheelDistance) < 36) return;
+          if (Math.abs(wheelDistance) < 72) return;
           move(Math.sign(wheelDistance));
           wheelDistance = 0;
         };
@@ -119,7 +119,7 @@
         new ResizeObserver(updateProjectPosition).observe(viewport);
         new ResizeObserver(updateProjectPosition).observe(track);
         reducedMotion.addEventListener('change', updateProjectPosition);
-        selectProject(0);
+        selectProject(1);
       })();
     </script>
   </body>

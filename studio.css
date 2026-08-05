@@ -20,3 +20,17 @@ footer { position: fixed; right: 0; bottom: 0; left: 0; }
 @media (max-width: 800px) { .studio-header { padding: 25px 20px; align-items: flex-start; gap: 22px; }.studio-header nav { justify-content: flex-end; gap: 12px 18px; flex-wrap: wrap; }.studio-main { width: calc(100% - 40px); height: calc(100vh - 160px); margin-top: 48px; }.studio-meta, .studio-scroll { display: none; }.project-feature, .project-row { grid-template-columns: 47px minmax(0, 1fr) 30px; min-height: 94px; padding: 0 10px; }.feature-tech, .project-row em { display: none; }.project-feature.is-active { min-height: 420px; padding: 24px 10% 30px; }.project-feature.is-active .feature-tech { display: block; right: auto; left: 10%; bottom: 30px; }.project-row.is-active { min-height: 360px; padding: 24px 10% 30px; }.project-row.is-active em { display: block; grid-column: 1; } footer { padding: 28px 20px 22px; font-size: 11px; } }
 @media (max-width: 480px) { .studio-header { font-size: 11px; }.studio-name { max-width: 70px; }.project-feature.is-active { min-height: 380px; }.project-feature.is-active .feature-copy h1 { font-size: 51px; }.project-feature.is-active .feature-arrow { top: 31%; right: 8%; font-size: 42px; }.project-feature.is-active .feature-copy p { margin-top: 18px; } footer span { max-width: 120px; text-align: right; } }
 @media (prefers-reduced-motion: reduce) { .studio-projects, .project-feature, .project-row, .studio-scroll i { transition-duration: .01ms; } }
+
+/* Keep the focused tile fixed while the three-project window loops beneath it. */
+.studio-main { margin-top: clamp(28px, 4vh, 52px); }
+.project-feature.is-before, .project-row.is-before,
+.project-feature.is-after, .project-row.is-after,
+.project-feature.is-active, .project-row.is-active { transform: none; }
+.project-feature:hover .feature-arrow, .project-feature.is-active .feature-arrow,
+.project-row:hover i, .project-row.is-active i { transform: none; }
+
+/* Use a calm, non-elastic motion curve for scrolling and tile resizing. */
+.studio-projects { transition: transform .34s ease-out; }
+.project-feature, .project-row {
+  transition-timing-function: ease-out;
+}
