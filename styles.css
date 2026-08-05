@@ -620,6 +620,3 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .about-photo figcaption.is-entering { clip-path: inset(0); }
   .about-photo figcaption.is-exiting { clip-path: inset(0 100% 0 0); }
 }
-.layout-toggle {
-  display: none;
-}
