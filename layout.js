@@ -27,14 +27,6 @@
   var initialLayout = readRequestedLayout() || readSavedLayout() || 'classic';
   root.dataset.layout = initialLayout;
 
-  function updateToggle(button, layout) {
-    var industrial = layout === 'industrial';
-    button.textContent = industrial ? 'CLASSIC' : 'SYSTEM';
-    button.setAttribute('aria-label', industrial ? 'Switch to the classic layout' : 'Switch to the industrial layout');
-    button.setAttribute('aria-pressed', String(industrial));
-    button.dataset.layoutCurrent = layout;
-  }
-
   function closeMenu() {
     var header = document.querySelector('.site-header');
     var nav = document.querySelector('.site-nav');
@@ -47,9 +39,6 @@
   function setLayout(layout, persist) {
     var next = validLayouts.indexOf(layout) !== -1 ? layout : 'classic';
     root.dataset.layout = next;
-    document.querySelectorAll('.layout-toggle').forEach(function (button) {
-      updateToggle(button, next);
-    });
     closeMenu();
 
     if (persist) {
@@ -63,30 +52,7 @@
     document.dispatchEvent(new CustomEvent('imasepan:layout-change', { detail: { layout: next } }));
   }
 
-  function switchLayout() {
-    var next = root.dataset.layout === 'industrial' ? 'classic' : 'industrial';
-    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var apply = function () { setLayout(next, true); };
-
-    if (!reducedMotion && document.startViewTransition) {
-      document.startViewTransition(apply);
-    } else {
-      apply();
-    }
-  }
-
   function createInterface() {
-    var controls = document.querySelector('.site-header .header-controls');
-    if (controls && !controls.querySelector('.layout-toggle')) {
-      var button = document.createElement('button');
-      button.className = 'layout-toggle';
-      button.type = 'button';
-      var menuButton = controls.querySelector('.menu-button');
-      controls.insertBefore(button, menuButton || null);
-      updateToggle(button, root.dataset.layout);
-      button.addEventListener('click', switchLayout);
-    }
-
     if (!document.querySelector('.industrial-hud')) {
       var hud = document.createElement('div');
       hud.className = 'industrial-hud';
@@ -116,10 +82,6 @@
       updateClock();
       window.setInterval(updateClock, 1000);
     }
-
-    document.querySelectorAll('.layout-toggle').forEach(function (button) {
-      updateToggle(button, root.dataset.layout);
-    });
 
     var projectList = document.querySelector('#project-list');
     var labelProjects = function () {
