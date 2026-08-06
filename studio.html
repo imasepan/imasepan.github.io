@@ -17,6 +17,7 @@
         <a href="/index.html" aria-current="page">[ PERSONAL ]</a>
         <a href="index.html#about">[ ABOUT ]</a>
         <a href="mailto:jinhyuncharliekim@gmail.com">[ CONTACT ]</a>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">LIGHT MODE</button>
       </nav>
     </header>
     <aside class="studio-meta" aria-label="Profile details"><p>FULL STACK</p><p>SEOUL<br />USA</p><p>EST. &rsquo;01</p></aside>
@@ -37,6 +38,29 @@
     <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b><i></i></b><small>&darr;</small></aside>
     <footer>&copy; 2026 <span>BASED IN SEOUL AND THE US</span></footer>
     <script>
+      (() => {
+        const root = document.documentElement;
+        const toggle = document.querySelector('.theme-toggle');
+        const savedTheme = window.localStorage.getItem('studio-theme');
+        const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+
+        const applyTheme = (theme) => {
+          root.dataset.theme = theme;
+          if (toggle) {
+            const nextTheme = theme === 'dark' ? 'light' : 'dark';
+            toggle.textContent = `${nextTheme.toUpperCase()} MODE`;
+            toggle.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
+          }
+        };
+
+        applyTheme(savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : preferredTheme);
+        toggle?.addEventListener('click', () => {
+          const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+          applyTheme(nextTheme);
+          window.localStorage.setItem('studio-theme', nextTheme);
+        });
+      })();
+
       (() => {
         const viewport = document.querySelector('.studio-main');
         const track = document.querySelector('.studio-projects');
