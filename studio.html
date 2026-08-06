@@ -73,13 +73,22 @@
         let wheelDistance = 0;
         let touchY = null;
         let wheelResetTimer;
+        let isTransitioning = false;
+        let queuedDirection = 0;
+        let transitionTimer;
 
         const updateProjectPositions = () => {
           const compact = window.innerWidth <= 800;
-          const activeTop = compact ? 102 : 112;
-          const activeHeight = compact ? 360 : 394;
-          const rowHeight = compact ? 94 : 100;
+          const activeTop = compact ? 72 : 76;
+          const activeHeight = compact
+            ? Math.min(460, Math.max(360, window.innerHeight - 220))
+            : Math.min(620, Math.max(480, window.innerHeight - 190));
+          const rowHeight = compact ? 88 : 92;
           const gap = compact ? 8 : 12;
+
+          viewport.style.setProperty('--active-top', `${activeTop}px`);
+          viewport.style.setProperty('--active-height', `${activeHeight}px`);
+          viewport.style.setProperty('--row-height', `${rowHeight}px`);
 
           projects.forEach((project, index) => {
             let distance = index - activeIndex;
@@ -121,7 +130,27 @@
           }));
         };
 
-        const move = (direction) => selectProject(activeIndex + direction);
+        const move = (direction) => {
+          if (reducedMotion.matches) {
+            selectProject(activeIndex + direction);
+            return;
+          }
+          if (isTransitioning) {
+            queuedDirection = direction;
+            return;
+          }
+          isTransitioning = true;
+          selectProject(activeIndex + direction);
+          window.clearTimeout(transitionTimer);
+          transitionTimer = window.setTimeout(() => {
+            isTransitioning = false;
+            if (queuedDirection) {
+              const nextDirection = queuedDirection;
+              queuedDirection = 0;
+              move(nextDirection);
+            }
+          }, 640);
+        };
         const consumeWheel = (event) => {
           if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
           event.preventDefault();
