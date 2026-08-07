@@ -139,6 +139,41 @@ h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: 
   .guestbook-main .guestbook-callout { margin: 14px 0 52px; }
 }
 
+/* The scrolled header stays a square tile; expand it only through the menu button. */
+.site-header.is-scrolled:not(.is-open):hover,
+.site-header.is-scrolled:not(.is-open):focus-within {
+  width: 190px;
+  height: 124px;
+}
+.site-header.is-scrolled:not(.is-open):hover .brand-controls,
+.site-header.is-scrolled:not(.is-open):focus-within .brand-controls { width: 54px; }
+.site-header.is-scrolled:not(.is-open):hover .header-controls,
+.site-header.is-scrolled:not(.is-open):focus-within .header-controls {
+  left: 0;
+  top: 0;
+  width: 54px;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.site-header.is-scrolled:not(.is-open):hover .brand-controls .wordmark,
+.site-header.is-scrolled:not(.is-open):focus-within .brand-controls .wordmark,
+.site-header.is-scrolled:not(.is-open):hover .language-switch,
+.site-header.is-scrolled:not(.is-open):focus-within .language-switch {
+  opacity: 0;
+  pointer-events: none;
+}
+.site-header.is-scrolled:not(.is-open):hover .language-switch,
+.site-header.is-scrolled:not(.is-open):focus-within .language-switch { display: none; }
+.site-header.is-scrolled:not(.is-open):hover .menu-button,
+.site-header.is-scrolled:not(.is-open):focus-within .menu-button {
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  font-size: 0;
+}
+.site-header.is-scrolled:not(.is-open):hover .menu-button::after,
+.site-header.is-scrolled:not(.is-open):focus-within .menu-button::after { display: block; }
+
 @media (prefers-reduced-motion: reduce) { ::view-transition-new(root) { animation: none; } .analog-field, .analog-grid, .analog-grain, .analog-mark { transform: none; } .analog-grid, .analog-grain, .analog-mark, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after { animation: none; } .analog-ripple { display: none; } .analog-field.has-ripple .analog-grid { opacity: var(--analog-grid-opacity, .26); } .analog-grid, .analog-grain, .analog-mark { translate: none; transition: none; } .button, .text-link, .about-contact a, .project-card, .feature-link, .site-footer > a:last-child, .page-loader { transition: none; } .button:hover, .text-link:hover, .about-contact a:hover, .project-card:hover, .feature-link:hover, .site-footer > a:last-child:hover { transform: none; } }
 
 /* Floating navigation panel and full-screen editorial sections */
@@ -1028,3 +1063,35 @@ body.menu-open { overflow: auto; }
    interactive after the compact button has been pressed. */
 .site-header.is-open { pointer-events: auto; }
 .site-header.is-open .menu-button { pointer-events: auto; }
+
+/* Keep the scrolled control minimized until it is pressed. */
+.site-header.is-scrolled:not(.is-open):hover,
+.site-header.is-scrolled:not(.is-open):focus-within {
+  width: 190px;
+  height: 124px;
+}
+.site-header.is-scrolled:not(.is-open):hover .brand-controls,
+.site-header.is-scrolled:not(.is-open):focus-within .brand-controls { width: 54px; }
+.site-header.is-scrolled:not(.is-open):hover .header-controls,
+.site-header.is-scrolled:not(.is-open):focus-within .header-controls {
+  left: 0;
+  top: 0;
+  width: 54px;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.site-header.is-scrolled:not(.is-open):hover .brand-controls .wordmark,
+.site-header.is-scrolled:not(.is-open):focus-within .brand-controls .wordmark,
+.site-header.is-scrolled:not(.is-open):hover .language-switch,
+.site-header.is-scrolled:not(.is-open):focus-within .language-switch { opacity: 0; pointer-events: none; }
+.site-header.is-scrolled:not(.is-open):hover .language-switch,
+.site-header.is-scrolled:not(.is-open):focus-within .language-switch { display: none; }
+.site-header.is-scrolled:not(.is-open):hover .menu-button,
+.site-header.is-scrolled:not(.is-open):focus-within .menu-button {
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  font-size: 0;
+}
+.site-header.is-scrolled:not(.is-open):hover .menu-button::after,
+.site-header.is-scrolled:not(.is-open):focus-within .menu-button::after { display: inline; }
