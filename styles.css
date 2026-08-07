@@ -405,7 +405,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .site-header.is-scrolled:focus-within .header-controls {
   left: 200px;
   width: 190px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
