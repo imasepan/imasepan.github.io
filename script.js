@@ -91,8 +91,20 @@ const startHeaderScrollState = () => {
   if (!siteHeader) return;
 
   let animationFrame = null;
+  let previousScrollY = window.scrollY;
+  let returningTimer = null;
   const updateHeaderState = () => {
-    siteHeader.classList.toggle('is-scrolled', window.scrollY > 48);
+    const currentScrollY = window.scrollY;
+    const isReturning = currentScrollY < previousScrollY && currentScrollY > 0 && currentScrollY <= 180;
+
+    siteHeader.classList.toggle('is-scrolled', currentScrollY > 48 && !isReturning);
+    if (isReturning) {
+      siteHeader.classList.remove('is-returning');
+      window.clearTimeout(returningTimer);
+      window.requestAnimationFrame(() => siteHeader.classList.add('is-returning'));
+      returningTimer = window.setTimeout(() => siteHeader.classList.remove('is-returning'), 420);
+    }
+    previousScrollY = currentScrollY;
     animationFrame = null;
   };
 
