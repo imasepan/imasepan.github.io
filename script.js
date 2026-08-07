@@ -506,15 +506,16 @@ const setMenuState = (isOpen, returnFocus = false) => {
   nav.classList.toggle('is-open', isOpen);
   siteHeader.classList.toggle('is-open', isOpen);
   document.body.classList.toggle('menu-open', isOpen);
-  document.querySelectorAll('.music-banner, main, .site-footer').forEach((region) => {
-    region.inert = isOpen;
-  });
+  if (!isOpen) {
+    siteHeader.classList.remove('controls-open');
+    wordmark?.setAttribute('aria-expanded', 'false');
+  }
   menuButton.setAttribute('aria-expanded', String(isOpen));
   menuButton.textContent = isOpen ? (isKorean ? '닫기' : 'Close') : (isKorean ? '메뉴' : 'Menu');
   nav.setAttribute('aria-hidden', String(!isOpen));
 
   if (isOpen) window.requestAnimationFrame(() => nav.querySelector('a')?.focus());
-  if (!isOpen && returnFocus) menuButton.focus();
+  if (!isOpen && returnFocus) wordmark?.focus();
 };
 
 if (menuButton && nav && siteHeader) {
@@ -528,6 +529,12 @@ if (menuButton && nav && siteHeader) {
     if (event.target === siteHeader && siteHeader.classList.contains('is-open')) setMenuState(false, true);
   });
 
+  document.addEventListener('click', (event) => {
+    if ((siteHeader.classList.contains('is-open') || siteHeader.classList.contains('controls-open')) && !siteHeader.contains(event.target)) {
+      setMenuState(false);
+    }
+  });
+
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && siteHeader.classList.contains('is-open')) setMenuState(false, true);
   });
@@ -539,8 +546,14 @@ if (menuButton && nav && siteHeader) {
 
 if (wordmark && siteHeader) {
   wordmark.addEventListener('click', () => {
-    const isOpen = siteHeader.classList.toggle('controls-open');
-    wordmark.setAttribute('aria-expanded', String(isOpen));
+    const shouldOpen = !siteHeader.classList.contains('controls-open');
+    if (!shouldOpen) {
+      setMenuState(false);
+      return;
+    }
+
+    siteHeader.classList.add('controls-open');
+    wordmark.setAttribute('aria-expanded', 'true');
   });
 
   wordmark.addEventListener('dblclick', () => {
