@@ -1,4 +1,5 @@
 const menuButton = document.querySelector('.menu-button');
+const wordmark = document.querySelector('.wordmark');
 const nav = document.querySelector('.site-nav');
 const siteHeader = document.querySelector('.site-header');
 const isKorean = document.documentElement.lang === 'ko';
@@ -533,6 +534,17 @@ if (menuButton && nav && siteHeader) {
 
   nav.addEventListener('click', (event) => {
     if (event.target.closest('a[href]')) setMenuState(false);
+  });
+}
+
+if (wordmark && siteHeader) {
+  wordmark.addEventListener('click', () => {
+    const isOpen = siteHeader.classList.toggle('controls-open');
+    wordmark.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  wordmark.addEventListener('dblclick', () => {
+    window.location.href = isKorean ? '/kr/' : '/';
   });
 }
 

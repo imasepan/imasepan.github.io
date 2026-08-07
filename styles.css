@@ -22,7 +22,7 @@ a { color: inherit; }
 @media (max-width: 720px) { .analog-grid { background-size: 23px 23px; } .analog-mark:nth-of-type(n+11) { display: none; } }
 .site-header, .site-footer, main { max-width: 1200px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
 .site-header { min-height: 88px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
-.wordmark { font-family: var(--mono); font-size: 18px; font-weight: 500; text-decoration: none; letter-spacing: -.06em; }.wordmark span { color: var(--orange); }
+.wordmark { padding: 0; border: 0; background: transparent; color: inherit; font: 500 18px var(--mono); letter-spacing: -.06em; cursor: pointer; }.wordmark span { color: var(--orange); }
 .site-nav { display: flex; gap: 28px; }.site-nav a { color: var(--muted); text-decoration: none; font-size: 14px; }.site-nav a:hover, .site-nav a[aria-current='page'] { color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
 .menu-button { display: none; border: 0; background: none; font: 500 14px var(--mono); color: var(--ink); }
 .music-banner { overflow: hidden; background: var(--ink); color: var(--paper); }.music-banner-inner { max-width: 1200px; margin: 0 auto; padding: 10px 32px; display: grid; grid-template-columns: minmax(210px, .75fr) minmax(0, 1.25fr); align-items: center; gap: 28px; }.music-banner p { margin: 0; color: var(--line); font-size: 14px; }.music-banner p span { display: block; margin-bottom: 5px; color: var(--lime); font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .06em; }.spotify-player { display: block; overflow: hidden; border: 0; border-radius: 10px; }
@@ -165,7 +165,7 @@ body.menu-open { overflow: hidden; }
 .site-header.is-open .site-nav, .site-header.is-open .language-switch { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(0); transition-delay: .08s, 0s, .08s; }
 .menu-button { position: relative; z-index: 3; inset: auto; display: inline-flex; min-width: 110px; min-height: 48px; padding: 0 24px; align-items: center; justify-content: center; border: 1px solid var(--ink); border-radius: 0px; background: var(--paper); color: var(--ink); box-shadow: 5px 5px 0 var(--ink); font: 500 13px var(--mono); letter-spacing: .04em; cursor: pointer; pointer-events: auto; transition: background-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s cubic-bezier(.2, .8, .2, 1); }
 .menu-button:hover, .site-header.is-open .menu-button:hover { background: var(--orange); color: var(--ink); transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); }
-.site-header.is-open .menu-button { background: var(--ink); color: var(--paper); }
+.site-header.is-open .menu-button { background: color-mix(in srgb, var(--paper) 72%, transparent); color: var(--ink); }
 .menu-button:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
 
 main:not(.page-main) { width: 100%; max-width: none; padding: 0; }
@@ -328,7 +328,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .post-card:hover, .post-card:focus-within {
   background: var(--orange);
   border-color: var(--ink);
-  color: #4F4D46;
+  color: inherit;
   box-shadow: 7px 7px 0 var(--ink);
   transform: translate(-4px, -4px);
 }
@@ -403,12 +403,27 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   min-height: var(--floating-control-height);
   padding-top: 0;
   padding-bottom: 0;
+  background: color-mix(in srgb, var(--paper) 62%, transparent);
 }
 
 .site-header .header-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+}
+
+.site-header.controls-open .header-controls,
+.site-header.is-open .header-controls {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition-delay: 0s;
 }
 
 .site-header .language-switch,
@@ -418,6 +433,9 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   min-height: var(--floating-control-height);
   padding-left: 10px;
   padding-right: 10px;
+  border-color: var(--ink);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
 }
 
 /* On longer pages, keep the navigation out of the way until it is needed. */
