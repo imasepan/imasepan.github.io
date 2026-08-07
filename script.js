@@ -501,6 +501,7 @@ const setMenuState = (isOpen, returnFocus = false) => {
   if (!menuButton || !nav || !siteHeader) return;
 
   stopInertialScroll();
+  siteHeader.classList.remove('is-returning');
   nav.classList.toggle('is-open', isOpen);
   siteHeader.classList.toggle('is-open', isOpen);
   document.body.classList.toggle('menu-open', isOpen);
