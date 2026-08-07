@@ -431,7 +431,9 @@ const runTypewriter = () => {
     if (characterIndex < fullText.length) {
       window.setTimeout(typeNextCharacter, fullText[characterIndex - 1] === ' ' ? 120 : 70);
     } else {
-      if (hero) hero.classList.add('hero-tiles-ready');
+      window.setTimeout(() => {
+        if (hero) hero.classList.add('hero-tiles-ready');
+      }, 500);
       window.setTimeout(() => typewriterText.classList.remove('has-caret'), 2000);
     }
   };
