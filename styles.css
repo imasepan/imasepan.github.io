@@ -389,8 +389,10 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 
 /* On longer pages, keep the navigation out of the way until it is needed. */
 .site-header.is-scrolled {
-  width: 54px;
-  height: 54px;
+  /* Keep a stable hover target while the controls unfold. The header is
+     pointer-transparent between controls, so this does not block the page. */
+  width: 190px;
+  height: 124px;
   padding: 0;
   gap: 0;
   transition: width .35s cubic-bezier(.22, 1, .36, 1), height .35s cubic-bezier(.22, 1, .36, 1);
