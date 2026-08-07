@@ -348,9 +348,9 @@ h2 {
   color: #4F4D46;
 }
 .hero-photo-panel .button-primary {
-  background: #EDE8D0;
-  border-color: #EDE8D0;
-  color: #4F4D46;
+  background: rgba(0, 0, 0, .16);
+  border-color: rgba(237, 232, 208, .7);
+  color: #EDE8D0;
 }
 /* Shared button styles, variants, hover motion, and section-level text links. */
 .button {
