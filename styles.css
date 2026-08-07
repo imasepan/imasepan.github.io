@@ -1,3 +1,4 @@
+/* Global design tokens: colors, fonts, and the light-mode defaults used throughout the site. */
 :root {
   color-scheme: light;
   --ink: #4F4D46;
@@ -10,15 +11,18 @@
   --sans: 'DM Sans', sans-serif;
   --mono: 'DM Mono', monospace;
 }
+/* Use border-box sizing so dimensions include padding and borders. */
 * {
   box-sizing: border-box;
 }
+/* Enable smooth anchor scrolling, except when inertia scrolling takes control. */
 html {
   scroll-behavior: smooth;
 }
 html.inertia-enabled {
   scroll-behavior: auto;
 }
+/* Disable the outgoing view animation and wipe the incoming page during theme changes. */
 ::view-transition-old(root) {
   animation: none;
 }
@@ -33,6 +37,7 @@ html.inertia-enabled {
     clip-path: inset(0);
   }
 }
+/* Establish the page's base typography, colors, spacing, and stacking context. */
 body {
   margin: 0;
   color: var(--ink);
@@ -49,6 +54,7 @@ a {
   position: relative;
   z-index: 1;
 }
+/* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
 .analog-field {
   position: fixed;
   inset: -72px 0;
@@ -151,6 +157,7 @@ a {
     opacity: .06;
   }
 }
+/* Reduce the analog background density and number of marks on small screens. */
 @media (max-width: 720px) {
   .analog-grid {
     background-size: 23px 23px;
@@ -159,12 +166,14 @@ a {
     display: none;
   }
 }
+/* Constrain the main page regions to a shared centered content width. */
 .site-header, .site-footer, main {
   max-width: 1200px;
   margin: 0 auto;
   padding-left: 32px;
   padding-right: 32px;
 }
+/* Define the default horizontal header, wordmark, navigation, and menu button. */
 .site-header {
   min-height: 88px;
   display: flex;
@@ -205,6 +214,7 @@ a {
   font: 500 14px var(--mono);
   color: var(--ink);
 }
+/* Style the music announcement strip and its embedded Spotify player. */
 .music-banner {
   overflow: hidden;
   background: var(--ink);
@@ -238,6 +248,7 @@ a {
   border: 0;
   border-radius: 10px;
 }
+/* Build the hero introduction, typewriter caret, image panel, and entrance animation. */
 .hero {
   min-height: 620px;
   display: flex;
@@ -336,6 +347,7 @@ h2 {
   background: #C9C5B1;
   color: #4F4D46;
 }
+/* Shared button styles, variants, hover motion, and section-level text links. */
 .button {
   display: inline-flex;
   align-items: center;
@@ -361,6 +373,7 @@ h2 {
 .button-quiet {
   border-color: var(--line);
 }
+/* Shared section spacing followed by about, projects, feature cards, and the future callout. */
 .section {
   padding: 110px 0;
   border-top: 1px solid var(--line);
@@ -538,6 +551,7 @@ h2 {
   color: var(--line);
   margin: 24px 0 0;
 }
+/* Shared inner-page structure for introductions, writing lists, guestbook callouts, and back links. */
 .page-main {
   min-height: calc(100vh - 230px);
 }
@@ -636,6 +650,7 @@ h2 {
 .page-back + .page-intro {
   padding-top: 70px;
 }
+/* Lay out the footer and its interactive return-to-top link. */
 .site-footer {
   display: flex;
   align-items: center;
@@ -662,6 +677,7 @@ h2 {
   box-shadow: 3px 3px 0 var(--ink);
   transform: translate(-1px, -1px) scale(1.04);
 }
+/* Collapse navigation, grids, hero spacing, page sections, and footer layout on mobile. */
 @media (max-width: 720px) {
   .site-header, .site-footer, main {
     padding-left: 20px;
@@ -747,6 +763,7 @@ h2 {
     gap: 10px;
   }
 }
+/* Provide language and theme controls, including their keyboard-focus states. */
 .header-controls {
   display: flex;
   align-items: center;
@@ -804,6 +821,7 @@ h2 {
     opacity: 0;
   }
 }
+/* Supply automatic and explicit light/dark theme variable palettes. */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
@@ -842,7 +860,7 @@ h2 {
   --analog-grid-opacity: .18;
   --analog-grain-opacity: .05;
 }
-/* Desktop navigation rail and home-page editorial layout */
+/* Desktop navigation rail, editorial hero layout, latest-post card, and related desktop sizing. */
 .brand-controls {
   display: flex;
   align-items: center;
@@ -942,6 +960,7 @@ h2 {
   }
 }
 /* Loading interstitial for Writing and Guestbook */
+/* Cover the page during navigation and animate the loader's sweep, reveal, and pulse states. */
 .page-loader {
   position: fixed;
   inset: 0;
@@ -1106,6 +1125,7 @@ h2 {
 .site-header.is-scrolled:not(.is-open):hover .menu-button::after, .site-header.is-scrolled:not(.is-open):focus-within .menu-button::after {
   display: block;
 }
+/* Respect reduced-motion preferences by removing nonessential transitions and animations. */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(root) {
     animation: none;
@@ -1619,6 +1639,7 @@ main:not(.page-main) > .future-section {
   align-items: end;
   gap: clamp(40px, 7vw, 120px);
 }
+/* Style the blog introduction and image-backed post cards, including hover overlays. */
 .blog-intro-copy {
   min-width: 0;
 }
@@ -1750,6 +1771,7 @@ main:not(.page-main) > .future-section {
   }
 }
 /* Keep the language switch beside the floating menu control. */
+/* Fine-tune the desktop header controls and their responsive behavior. */
 .site-header .header-controls {
   display: flex;
   flex-direction: row;
@@ -1800,6 +1822,7 @@ main:not(.page-main) > .future-section {
   }
 }
 /* Portrait hover caption */
+/* Add portrait framing, caption positioning, and cursor-following hover behavior. */
 .about-photo {
   position: relative;
 }
@@ -2099,7 +2122,7 @@ main:not(.page-main) > .future-section {
     width: 100%;
   }
 }
-/* Reference-inspired portrait caption */
+/* Set the portrait caption's default editorial presentation. */
 .about-photo figcaption {
   position: static;
   display: block;
@@ -2129,7 +2152,7 @@ main:not(.page-main) > .future-section {
 .about-photo, .about-photo img {
   cursor: default;
 }
-/* Portrait cursor label, inspired by the reference gallery. */
+/* On precise pointers, turn the portrait caption into a cursor-following tooltip. */
 @media (hover: hover) and (pointer: fine) {
   .about-photo figcaption {
     position: fixed;
@@ -2190,7 +2213,7 @@ main:not(.page-main) > .future-section {
     opacity: 0;
   }
 }
-/* Latest post image treatment. */
+/* Layer the latest-post image, gradient, content, and hover zoom treatment. */
 .latest-post-card.has-image {
   overflow: hidden;
   padding: 0;
@@ -2239,7 +2262,7 @@ main:not(.page-main) > .future-section {
   transform: scale(1.045);
   filter: saturate(1.06);
 }
-/* Spotify embeds added to individual writing posts. */
+/* Style Spotify embeds attached to individual writing posts. */
 .post-spotify {
   max-width: 760px;
   margin: 0 0 44px;
@@ -2266,7 +2289,7 @@ main:not(.page-main) > .future-section {
     border-radius: 9px;
   }
 }
-/* Keep long-form writing centered on the page while preserving readable line lengths. */
+/* Keep long-form writing centered while preserving readable line lengths and media spacing. */
 .post-page {
   width: min(100%, 760px);
   margin: 0 auto;
@@ -2340,7 +2363,7 @@ main:not(.page-main) > .future-section {
     margin-top: 52px;
   }
 }
-/* Guestbook without the photo background. */
+/* Override the guestbook page to use the paper palette without a photo background. */
 .guestbook-main {
   background-color: var(--paper);
   background-image: none;
@@ -2367,7 +2390,7 @@ main:not(.page-main) > .future-section {
   margin-left: auto;
   margin-right: 34px;
 }
-/* A custom portrait hover: subtle depth plus an editorial tag. */
+/* Add subtle portrait depth and an animated editorial tag on hover-capable devices. */
 @media (hover: hover) and (pointer: fine) {
   .about-photo {
     position: relative;
@@ -2447,7 +2470,7 @@ main:not(.page-main) > .future-section {
     clip-path: inset(0 100% 0 0 round 999px);
   }
 }
-/* Square outline caption for the portrait. */
+/* Finalize the portrait hover tag as a square outlined caption. */
 @media (hover: hover) and (pointer: fine) {
   .about-photo figcaption {
     padding: .4rem .6rem .45rem;
@@ -2495,7 +2518,7 @@ main:not(.page-main) > .future-section {
     clip-path: inset(0 100% 0 0);
   }
 }
-/* Final writing-page overrides keep the intro compact after the responsive defaults. */
+/* Keep writing-page introductions compact after the earlier responsive defaults. */
 .page-main:not(.guestbook-main) .page-intro {
   min-height: auto;
 }
@@ -2504,7 +2527,7 @@ main:not(.page-main) > .future-section {
     min-height: auto;
   }
 }
-/* Compact, non-blocking navigation menu. */
+/* Configure the compact, non-blocking navigation menu and its open/hover states. */
 body.menu-open {
   overflow: auto;
 }
