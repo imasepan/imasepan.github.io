@@ -253,6 +253,61 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   .site-header::before, .site-header::after, .site-header .brand-controls, .site-header .site-nav, .site-header .language-switch, .menu-button { transition: none; }
 }
 
+/* Writing page: larger, tactile entry tiles and a lifted intro. */
+.page-main:not(.guestbook-main) .page-intro {
+  min-height: auto;
+  padding-top: clamp(112px, 15svh, 210px);
+  padding-bottom: clamp(72px, 9svh, 130px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, .72fr);
+  align-items: end;
+  gap: clamp(40px, 7vw, 120px);
+}
+.blog-intro-copy { min-width: 0; }
+.blog-intro-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  filter: grayscale(1) contrast(1.04);
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), filter .35s ease, box-shadow .35s ease;
+}
+.blog-intro-image:hover { transform: translate(-4px, -4px); filter: grayscale(0) contrast(1); box-shadow: 6px 6px 0 var(--ink); }
+.post-list { padding-top: 0; }
+.post-card {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: clamp(300px, 38svh, 470px);
+  margin-bottom: 18px;
+  padding: clamp(30px, 4vw, 58px);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 88%, var(--line));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-decoration: none;
+  transition: background-color .3s ease, color .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s cubic-bezier(.2, .8, .2, 1);
+}
+.post-card:hover, .post-card:focus-within {
+  background: var(--orange);
+  border-color: var(--ink);
+  color: #4F4D46;
+  box-shadow: 7px 7px 0 var(--ink);
+  transform: translate(-4px, -4px);
+}
+.post-card:hover p:not(.post-meta), .post-card:focus-within p:not(.post-meta), .post-card:hover .post-meta, .post-card:focus-within .post-meta { color: #4F4D46; }
+.post-card h2 { max-width: 900px; margin-bottom: 18px; font-size: clamp(38px, 5.2vw, 76px); }
+.post-card > p:not(.post-meta) { max-width: 680px; font-size: clamp(17px, 1.4vw, 22px); }
+.post-card .text-link { margin-top: auto; }
+
+@media (max-width: 720px) {
+  .page-main:not(.guestbook-main) .page-intro { grid-template-columns: 1fr; gap: 34px; padding-top: 104px; }
+  .blog-intro-image { max-width: none; }
+  .post-card { min-height: 330px; margin-bottom: 14px; padding: 28px 22px; }
+}
+
 /* Keep the language switch beside the floating menu control. */
 .site-header .header-controls { display: flex; flex-direction: row; width: auto; margin: 0; align-items: center; gap: 12px; pointer-events: none; }
 .site-header .language-switch { position: relative; inset: auto; z-index: 3; display: inline-flex; min-height: 48px; padding: 0 16px; align-items: center; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); box-shadow: 5px 5px 0 var(--ink); opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: background-color .25s ease, color .25s ease, box-shadow .25s ease, transform .25s ease; }
@@ -782,4 +837,10 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
   .about-photo figcaption.is-entering { clip-path: inset(0); }
   .about-photo figcaption.is-exiting { clip-path: inset(0 100% 0 0); }
+}
+
+/* Final writing-page overrides keep the intro compact after the responsive defaults. */
+.page-main:not(.guestbook-main) .page-intro { min-height: auto; }
+@media (max-width: 720px) {
+  .page-main:not(.guestbook-main) .page-intro { min-height: auto; }
 }
