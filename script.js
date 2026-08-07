@@ -472,6 +472,27 @@ if (wordmark && siteHeader) {
   });
 }
 
+const menuButton = document.querySelector('.menu-button');
+
+if (menuButton && siteHeader && nav) {
+  const setMenuOpen = (open) => {
+    siteHeader.classList.toggle('is-open', open);
+    document.body.classList.toggle('menu-open', open);
+    menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    nav.setAttribute('aria-hidden', String(!open));
+  };
+
+  setMenuOpen(false);
+  menuButton.addEventListener('click', () => setMenuOpen(!siteHeader.classList.contains('is-open')));
+  nav.addEventListener('click', (event) => {
+    if (event.target.closest('a')) setMenuOpen(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setMenuOpen(false);
+  });
+}
+
 const loadProjects = () => {
   const projectList = document.querySelector('#project-list');
   if (!projectList || projectList.dataset.loaded) return;

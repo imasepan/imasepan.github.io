@@ -2015,6 +2015,45 @@ main:not(.page-main) > .future-section {
   cursor: default;
 }
 
+/* Header control reset: keep the public controls in one stable, compact row. */
+.site-header, .site-header.is-scrolled, .site-header.is-scrolled:hover, .site-header.is-scrolled:focus-within {
+  position: fixed; inset: 0 auto auto 0; box-sizing: border-box; display: flex;
+  width: 100%; height: auto; min-height: 0; margin: 0; padding: 16px 24px;
+  flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;
+  background: transparent; pointer-events: none;
+}
+.site-header .brand-controls, .site-header.is-scrolled .brand-controls, .site-header.is-scrolled:hover .brand-controls, .site-header.is-scrolled:focus-within .brand-controls {
+  display: flex; width: auto; padding: 10px 12px; align-items: center; gap: 14px; pointer-events: auto;
+}
+.site-header .header-controls, .site-header.is-scrolled .header-controls, .site-header.is-scrolled:hover .header-controls, .site-header.is-scrolled:focus-within .header-controls {
+  position: relative; display: flex; width: auto; align-items: center; gap: 10px; pointer-events: auto;
+}
+.site-header .brand-controls .wordmark, .site-header .brand-controls .theme-toggle, .site-header .language-switch, .site-header.is-scrolled .brand-controls .wordmark, .site-header.is-scrolled .brand-controls .theme-toggle, .site-header.is-scrolled .language-switch {
+  display: inline-flex; opacity: 1; pointer-events: auto;
+}
+.site-header .site-nav, .site-header.is-open .site-nav {
+  position: fixed; z-index: 45; top: 84px; right: 24px; left: auto; display: flex;
+  width: min(330px, calc(100vw - 48px)); max-height: calc(100svh - 108px); padding: 12px;
+  flex-direction: column; gap: 2px; overflow-y: auto; border: 1px solid var(--ink);
+  background: var(--paper); box-shadow: 6px 6px 0 var(--ink); opacity: 0; visibility: hidden;
+  pointer-events: none; transform: translateY(-8px);
+}
+.site-header.is-open .site-nav { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+.site-header .site-nav a {
+  display: block; width: 100%; box-sizing: border-box; padding: 10px; color: var(--ink);
+  font-size: clamp(22px, 4vw, 32px); line-height: 1.1;
+}
+.site-header .menu-button { display: inline-flex !important; min-width: 76px; min-height: 48px; padding: 0 14px; cursor: pointer; }
+@media (max-width: 480px) {
+  .site-header, .site-header.is-scrolled, .site-header.is-scrolled:hover, .site-header.is-scrolled:focus-within { padding: 12px; gap: 8px; }
+  .site-header .brand-controls { gap: 10px; padding: 9px 10px; }
+  .site-header .wordmark { font-size: 15px; }
+  .site-header .theme-toggle { min-width: 54px; padding-inline: 10px; }
+  .site-header .language-switch { display: none; }
+  .site-header .menu-button { min-width: 66px; min-height: 44px; padding-inline: 10px; }
+  .site-header .site-nav, .site-header.is-open .site-nav { top: 72px; right: 12px; width: calc(100vw - 24px); max-height: calc(100svh - 88px); }
+}
+
 /* Keep every header button visible in every header state. */
 .site-header .brand-controls,
 .site-header .header-controls,
@@ -2840,3 +2879,15 @@ body.menu-open {
   display: inline-flex !important;
   cursor: default;
 }
+
+/* Final mobile-safe header layout. This must remain last because this
+   stylesheet retains earlier experimental header variants for reference. */
+.site-header, .site-header.is-scrolled, .site-header.is-scrolled:hover, .site-header.is-scrolled:focus-within { position: fixed; inset: 0 auto auto 0; display: flex; box-sizing: border-box; width: 100%; height: auto; min-height: 0; margin: 0; padding: 16px 24px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; pointer-events: none; }
+.site-header .brand-controls, .site-header.is-scrolled .brand-controls, .site-header .header-controls, .site-header.is-scrolled .header-controls { position: relative; display: flex; width: auto; padding: 10px 12px; align-items: center; gap: 12px; pointer-events: auto; }
+.site-header .header-controls, .site-header.is-scrolled .header-controls { padding: 0; gap: 10px; }
+.site-header .brand-controls .wordmark, .site-header .brand-controls .theme-toggle, .site-header .language-switch, .site-header.is-scrolled .brand-controls .wordmark, .site-header.is-scrolled .brand-controls .theme-toggle, .site-header.is-scrolled .language-switch { display: inline-flex; opacity: 1; pointer-events: auto; }
+.site-header .site-nav, .site-header.is-open .site-nav { position: fixed; z-index: 45; top: 84px; right: 24px; left: auto; display: flex; width: min(330px, calc(100vw - 48px)); max-height: calc(100svh - 108px); padding: 12px; flex-direction: column; gap: 2px; overflow-y: auto; border: 1px solid var(--ink); background: var(--paper); box-shadow: 6px 6px 0 var(--ink); opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-8px); }
+.site-header.is-open .site-nav { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+.site-header .site-nav a { display: block; width: 100%; box-sizing: border-box; padding: 10px; color: var(--ink); font-size: clamp(22px, 4vw, 32px); line-height: 1.1; }
+.site-header .menu-button, .site-header.is-scrolled .menu-button { display: inline-flex !important; width: auto; min-width: 76px; min-height: 48px; padding: 0 14px; font-size: 13px; cursor: pointer; }
+@media (max-width: 480px) { .site-header, .site-header.is-scrolled, .site-header.is-scrolled:hover, .site-header.is-scrolled:focus-within { padding: 12px; gap: 6px; } .site-header .brand-controls { gap: 6px; padding: 7px; } .site-header .wordmark { font-size: 13px; } .site-header .theme-toggle { min-width: 44px; padding-inline: 6px; } .site-header .language-switch { display: none; } .site-header .menu-button, .site-header.is-scrolled .menu-button { min-width: 48px; min-height: 40px; padding-inline: 6px; font-size: 12px; } .site-header .site-nav, .site-header.is-open .site-nav { top: 68px; right: 12px; width: calc(100vw - 24px); max-height: calc(100svh - 84px); } }
