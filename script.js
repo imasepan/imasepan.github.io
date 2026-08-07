@@ -658,12 +658,11 @@ document.addEventListener('click', (event) => {
   }
 
   const isWriting = link.closest('.latest-post-card') || /(?:\/blog(?:\.html|\/)?|\/\d{4}\/\d{2}\/\d{2}\/)/.test(destination.pathname);
-  const isGuestbook = /\/guestbook\.html$/.test(destination.pathname);
   const isHome = isHomePath(destination.pathname);
-  if (!isWriting && !isGuestbook && !isHome) return;
+  if (!isWriting && !isHome) return;
 
   event.preventDefault();
-  const destinationLabel = isWriting ? 'Writing' : isGuestbook ? 'Guestbook' : 'Home';
+  const destinationLabel = isWriting ? 'Writing' : 'Home';
   navigateWithLoader(destination, destinationLabel);
 });
 
