@@ -95,14 +95,20 @@ const startHeaderScrollState = () => {
   let returningTimer = null;
   const updateHeaderState = () => {
     const currentScrollY = window.scrollY;
-    const isReturning = currentScrollY < previousScrollY && currentScrollY > 0 && currentScrollY <= 180;
+    const reachedTop = currentScrollY <= 1;
+    const isReturning = currentScrollY < previousScrollY && currentScrollY > 1 && currentScrollY <= 180;
 
     siteHeader.classList.toggle('is-scrolled', currentScrollY > 48 && !isReturning);
-    if (isReturning) {
+    if (reachedTop) {
+      window.clearTimeout(returningTimer);
+      siteHeader.classList.remove('is-returning', 'is-scrolled');
+    } else if (isReturning) {
       siteHeader.classList.remove('is-returning');
       window.clearTimeout(returningTimer);
       window.requestAnimationFrame(() => siteHeader.classList.add('is-returning'));
       returningTimer = window.setTimeout(() => siteHeader.classList.remove('is-returning'), 420);
+    } else {
+      siteHeader.classList.remove('is-returning');
     }
     previousScrollY = currentScrollY;
     animationFrame = null;
