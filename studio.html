@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Selected projects by Charlie Kim." />
-    <title>imasepan &mdash; Studio</title>
+    <title>imasepan — Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -17,50 +17,26 @@
         <a href="/index.html" aria-current="page">[ PERSONAL ]</a>
         <a href="index.html#about">[ ABOUT ]</a>
         <a href="mailto:jinhyuncharliekim@gmail.com">[ CONTACT ]</a>
-        <button class="theme-toggle" type="button" aria-label="Switch color theme">LIGHT MODE</button>
       </nav>
     </header>
-    <aside class="studio-meta" aria-label="Profile details"><p>FULL STACK</p><p>SEOUL<br />USA</p><p>EST. &rsquo;01</p></aside>
+    <aside class="studio-meta" aria-label="Profile details"><p>FULL STACK<br />DEVELOPER</p><p>SEOUL<br />KOREA</p><p>EST. ’01</p></aside>
     <main class="studio-main">
       <section class="studio-projects" aria-labelledby="studio-title">
         <a class="project-feature" href="https://github.com/imasepan/PlayerMarket" target="_blank" rel="noreferrer">
           <span class="project-number">01</span>
           <div class="feature-copy"><h1 id="studio-title">Player<br />Market</h1><p>A scouting tool for esports coaches and staff to discover emerging ranked talent.</p></div>
-          <span class="feature-arrow" aria-hidden="true">&rarr;</span><span class="feature-tech">TYPESCRIPT&nbsp;&nbsp;&nbsp; WEB APP</span>
+          <span class="feature-arrow" aria-hidden="true">→</span><span class="feature-tech">TYPESCRIPT&nbsp;&nbsp;&nbsp; WEB APP</span>
         </a>
         <div class="project-list">
-          <a class="project-row" href="https://github.com/imasepan/imasepan.github.io" target="_blank" rel="noreferrer"><span>02</span><strong>Personal Website</strong><i aria-hidden="true">&rarr;</i><em>HTML&nbsp;&nbsp; CSS&nbsp;&nbsp; JAVASCRIPT</em></a>
-          <a class="project-row" href="https://github.com/imasepan/charlie-s_fork" target="_blank" rel="noreferrer"><span>03</span><strong>charlie-s_fork</strong><i aria-hidden="true">&rarr;</i><em>TYPESCRIPT&nbsp;&nbsp; FORK</em></a>
-          <a class="project-row" href="https://github.com/imasepan/ECE-461-Team-20-Repo" target="_blank" rel="noreferrer"><span>04</span><strong>ECE 461 Team Project</strong><i aria-hidden="true">&rarr;</i><em>TYPESCRIPT&nbsp;&nbsp; SOFTWARE ENGINEERING</em></a>
+          <a class="project-row" href="https://github.com/imasepan/imasepan.github.io" target="_blank" rel="noreferrer"><span>02</span><strong>Personal Website</strong><i aria-hidden="true">→</i><em>HTML&nbsp;&nbsp; CSS&nbsp;&nbsp; JAVASCRIPT</em></a>
+          <a class="project-row" href="https://github.com/imasepan/charlie-s_fork" target="_blank" rel="noreferrer"><span>03</span><strong>charlie-s_fork</strong><i aria-hidden="true">→</i><em>TYPESCRIPT&nbsp;&nbsp; FORK</em></a>
+          <a class="project-row" href="https://github.com/imasepan/ECE-461-Team-20-Repo" target="_blank" rel="noreferrer"><span>04</span><strong>ECE 461 Team Project</strong><i aria-hidden="true">→</i><em>TYPESCRIPT&nbsp;&nbsp; SOFTWARE ENGINEERING</em></a>
         </div>
       </section>
     </main>
-    <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b><i></i></b><small>&darr;</small></aside>
-    <footer>&copy; 2026 <span>BASED IN SEOUL AND THE US</span></footer>
+    <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b><i></i></b><small>▼</small></aside>
+    <footer>© 2026 <span>BASED IN SEOUL, KOREA</span></footer>
     <script>
-      (() => {
-        const root = document.documentElement;
-        const toggle = document.querySelector('.theme-toggle');
-        const savedTheme = window.localStorage.getItem('studio-theme');
-        const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-
-        const applyTheme = (theme) => {
-          root.dataset.theme = theme;
-          if (toggle) {
-            const nextTheme = theme === 'dark' ? 'light' : 'dark';
-            toggle.textContent = `${nextTheme.toUpperCase()} MODE`;
-            toggle.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
-          }
-        };
-
-        applyTheme(savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : preferredTheme);
-        toggle?.addEventListener('click', () => {
-          const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-          applyTheme(nextTheme);
-          window.localStorage.setItem('studio-theme', nextTheme);
-        });
-      })();
-
       (() => {
         const viewport = document.querySelector('.studio-main');
         const track = document.querySelector('.studio-projects');
@@ -69,97 +45,45 @@
         const projects = [...track.querySelectorAll('.project-feature, .project-row')];
         const progress = document.querySelector('.studio-scroll i');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        let activeIndex = 1;
+        let activeIndex = 0;
         let wheelDistance = 0;
         let touchY = null;
-        let wheelResetTimer;
-        let isTransitioning = false;
-        let queuedDirection = 0;
-        let transitionTimer;
+        const wheelStep = 120;
 
-        const updateProjectPositions = () => {
-          const compact = window.innerWidth <= 800;
-          const activeTop = compact ? 72 : 76;
-          const activeHeight = compact
-            ? Math.min(460, Math.max(360, window.innerHeight - 220))
-            : Math.min(620, Math.max(480, window.innerHeight - 190));
-          const rowHeight = compact ? 88 : 92;
-          const gap = compact ? 8 : 12;
-
-          viewport.style.setProperty('--active-top', `${activeTop}px`);
-          viewport.style.setProperty('--active-height', `${activeHeight}px`);
-          viewport.style.setProperty('--row-height', `${rowHeight}px`);
-
-          projects.forEach((project, index) => {
-            let distance = index - activeIndex;
-            const half = projects.length / 2;
-            if (distance > half) distance -= projects.length;
-            if (distance < -half) distance += projects.length;
-            if (projects.length % 2 === 0 && distance === -half) distance = half;
-            const y = distance < 0
-              ? activeTop + (distance * (rowHeight + gap))
-              : distance > 0
-                ? activeTop + activeHeight + gap + ((distance - 1) * (rowHeight + gap))
-                : activeTop;
-            project.style.setProperty('--project-y', `${y}px`);
-            project.style.setProperty('--project-z', String(projects.length - Math.abs(distance)));
-            project.style.setProperty('--project-distance', Math.abs(distance));
-          });
+        const updateProjectPosition = () => {
+          const activeProject = projects[activeIndex];
+          if (!activeProject) return;
+          const activeCenter = activeProject.offsetTop + (activeProject.offsetHeight / 2);
+          // Bias the selected tile upward so there is room to preview both neighbours.
+          const viewportCenter = viewport.clientHeight * (window.innerWidth <= 800 ? .5 : .44);
+          const offset = activeCenter - viewportCenter;
+          track.style.transform = `translate3d(0, ${-offset}px, 0)`;
         };
 
         const selectProject = (nextIndex) => {
-          const selected = (nextIndex + projects.length) % projects.length;
-          if (selected === activeIndex && track.dataset.ready) return;
-          const previousIndex = activeIndex;
-          const shouldAnimate = (index) => track.dataset.ready
-            && (index === previousIndex || index === selected);
+          const selected = Math.max(0, Math.min(projects.length - 1, nextIndex));
+          if (selected === activeIndex && track.style.transform) return;
           activeIndex = selected;
           projects.forEach((project, index) => {
             project.classList.toggle('is-active', index === activeIndex);
             project.classList.toggle('is-before', index < activeIndex);
             project.classList.toggle('is-after', index > activeIndex);
-            project.classList.toggle('is-teleporting', !shouldAnimate(index));
+            project.style.setProperty('--project-distance', Math.abs(index - activeIndex));
             if (index === activeIndex) project.setAttribute('aria-current', 'true');
             else project.removeAttribute('aria-current');
           });
           if (progress) progress.style.transform = `scaleY(${(activeIndex + 1) / projects.length})`;
-          updateProjectPositions();
-          track.dataset.ready = 'true';
-          requestAnimationFrame(() => requestAnimationFrame(() => {
-            projects.forEach((project) => project.classList.remove('is-teleporting'));
-          }));
+          updateProjectPosition();
         };
 
-        const move = (direction) => {
-          if (reducedMotion.matches) {
-            selectProject(activeIndex + direction);
-            return;
-          }
-          if (isTransitioning) {
-            queuedDirection = direction;
-            return;
-          }
-          isTransitioning = true;
-          selectProject(activeIndex + direction);
-          window.clearTimeout(transitionTimer);
-          transitionTimer = window.setTimeout(() => {
-            isTransitioning = false;
-            if (queuedDirection) {
-              const nextDirection = queuedDirection;
-              queuedDirection = 0;
-              move(nextDirection);
-            }
-          }, 640);
-        };
+        const move = (direction) => selectProject(activeIndex + direction);
         const consumeWheel = (event) => {
           if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
           event.preventDefault();
           wheelDistance += event.deltaY;
-          if (Math.abs(wheelDistance) < 64) return;
+          if (Math.abs(wheelDistance) < wheelStep) return;
           move(Math.sign(wheelDistance));
           wheelDistance = 0;
-          window.clearTimeout(wheelResetTimer);
-          wheelResetTimer = window.setTimeout(() => { wheelDistance = 0; }, 180);
         };
 
         window.addEventListener('wheel', consumeWheel, { passive: false });
@@ -183,16 +107,22 @@
           }
         }, { passive: false });
         viewport.addEventListener('touchend', () => { touchY = null; }, { passive: true });
-        viewport.addEventListener('touchcancel', () => { touchY = null; }, { passive: true });
         track.addEventListener('focusin', (event) => {
           const project = event.target.closest('.project-feature, .project-row');
           const index = projects.indexOf(project);
           if (index >= 0) selectProject(index);
         });
+        track.addEventListener('pointermove', (event) => {
+          if (event.pointerType === 'touch') return;
+          const project = event.target.closest('.project-feature, .project-row');
+          const index = projects.indexOf(project);
+          if (index >= 0) selectProject(index);
+        });
 
-        new ResizeObserver(() => requestAnimationFrame(updateProjectPositions)).observe(viewport);
-        reducedMotion.addEventListener('change', updateProjectPositions);
-        selectProject(activeIndex);
+        new ResizeObserver(updateProjectPosition).observe(viewport);
+        new ResizeObserver(updateProjectPosition).observe(track);
+        reducedMotion.addEventListener('change', updateProjectPosition);
+        selectProject(0);
       })();
     </script>
   </body>

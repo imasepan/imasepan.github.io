@@ -64,23 +64,8 @@
         '<span class="industrial-hud__corner industrial-hud__corner--br"></span>',
         '<span class="industrial-hud__axis industrial-hud__axis--x"></span>',
         '<span class="industrial-hud__axis industrial-hud__axis--y"></span>',
-        '<p class="industrial-hud__status"><span>IMASEPAN_OS</span><span>PORTFOLIO NODE / ONLINE</span><time></time></p>',
-        '<p class="industrial-hud__readout"><span>MEM 24</span><span>LAT 37.56</span><span>LON 126.97</span></p>'
       ].join('');
       document.body.appendChild(hud);
-
-      var clock = hud.querySelector('time');
-      var updateClock = function () {
-        if (!clock) return;
-        clock.textContent = new Date().toLocaleTimeString('en-GB', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        });
-      };
-      updateClock();
-      window.setInterval(updateClock, 1000);
     }
 
     var projectList = document.querySelector('#project-list');
