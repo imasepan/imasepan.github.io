@@ -1,4 +1,3 @@
-const menuButton = document.querySelector('.menu-button');
 const wordmark = document.querySelector('.wordmark');
 const nav = document.querySelector('.site-nav');
 const siteHeader = document.querySelector('.site-header');
@@ -87,33 +86,6 @@ const startAnalogParallax = () => {
     if (!animationFrame) animationFrame = window.requestAnimationFrame(updateAnalogPosition);
   }, { passive: true });
 };
-
-const startHeaderScrollState = () => {
-  if (!siteHeader) return;
-
-  let animationFrame = null;
-  let previousScrollY = window.scrollY;
-  const updateHeaderState = () => {
-    const currentScrollY = window.scrollY;
-    const reachedTop = currentScrollY <= 1;
-
-    siteHeader.classList.toggle('is-scrolled', currentScrollY > 48);
-    if (reachedTop) {
-      siteHeader.classList.remove('is-returning', 'is-scrolled');
-    } else {
-      siteHeader.classList.remove('is-returning');
-    }
-    previousScrollY = currentScrollY;
-    animationFrame = null;
-  };
-
-  updateHeaderState();
-  window.addEventListener('scroll', () => {
-    if (!animationFrame) animationFrame = window.requestAnimationFrame(updateHeaderState);
-  }, { passive: true });
-};
-
-startHeaderScrollState();
 
 const startAnalogRipple = () => {
   const field = document.querySelector('.analog-field');
@@ -490,62 +462,9 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
   }
 };
 
-const setMenuState = (isOpen, returnFocus = false) => {
-  if (!menuButton || !nav || !siteHeader) return;
-
-  stopInertialScroll();
-  siteHeader.classList.remove('is-returning');
-  nav.classList.toggle('is-open', isOpen);
-  siteHeader.classList.toggle('is-open', isOpen);
-  document.body.classList.toggle('menu-open', isOpen);
-  if (!isOpen) {
-    siteHeader.classList.remove('controls-open');
-    wordmark?.setAttribute('aria-expanded', 'false');
-  }
-  menuButton.setAttribute('aria-expanded', String(isOpen));
-  menuButton.textContent = isOpen ? (isKorean ? '닫기' : 'Close') : (isKorean ? '메뉴' : 'Menu');
-  nav.setAttribute('aria-hidden', String(!isOpen));
-
-  if (isOpen) window.requestAnimationFrame(() => nav.querySelector('a')?.focus());
-  if (!isOpen && returnFocus) wordmark?.focus();
-};
-
-if (menuButton && nav && siteHeader) {
-  setMenuState(false);
-
-  menuButton.addEventListener('click', () => {
-    setMenuState(!siteHeader.classList.contains('is-open'));
-  });
-
-  siteHeader.addEventListener('click', (event) => {
-    if (event.target === siteHeader && siteHeader.classList.contains('is-open')) setMenuState(false, true);
-  });
-
-  document.addEventListener('click', (event) => {
-    if ((siteHeader.classList.contains('is-open') || siteHeader.classList.contains('controls-open')) && !siteHeader.contains(event.target)) {
-      setMenuState(false);
-    }
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && siteHeader.classList.contains('is-open')) setMenuState(false, true);
-  });
-
-  nav.addEventListener('click', (event) => {
-    if (event.target.closest('a[href]')) setMenuState(false);
-  });
-}
-
 if (wordmark && siteHeader) {
   wordmark.addEventListener('click', () => {
-    const shouldOpen = !siteHeader.classList.contains('controls-open');
-    if (!shouldOpen) {
-      setMenuState(false);
-      return;
-    }
-
-    siteHeader.classList.add('controls-open');
-    wordmark.setAttribute('aria-expanded', 'true');
+    wordmark.setAttribute('aria-expanded', 'false');
   });
 
   wordmark.addEventListener('dblclick', () => {
@@ -641,7 +560,6 @@ document.addEventListener('click', (event) => {
     const currentTarget = document.getElementById(homeSection);
     if (currentTarget && isHomePath(window.location.pathname)) {
       event.preventDefault();
-      setMenuState(false, true);
       stopInertialScroll();
       currentTarget.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
       window.history.pushState({}, '', `/#${homeSection}`);

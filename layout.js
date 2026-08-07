@@ -30,7 +30,6 @@
   function closeMenu() {
     var header = document.querySelector('.site-header');
     var nav = document.querySelector('.site-nav');
-    var menuButton = document.querySelector('.menu-button');
     var wordmark = document.querySelector('.wordmark');
     if (header) header.classList.remove('is-open', 'controls-open');
     document.body.classList.remove('menu-open');
@@ -39,10 +38,6 @@
       nav.setAttribute('aria-hidden', 'true');
     }
     if (wordmark) wordmark.setAttribute('aria-expanded', 'false');
-    if (menuButton) {
-      menuButton.setAttribute('aria-expanded', 'false');
-      menuButton.textContent = document.documentElement.lang === 'ko' ? '메뉴' : 'Menu';
-    }
   }
 
   function setLayout(layout, persist) {
