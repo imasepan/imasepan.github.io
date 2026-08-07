@@ -87,6 +87,23 @@ const startAnalogParallax = () => {
   }, { passive: true });
 };
 
+const startHeaderScrollState = () => {
+  if (!siteHeader) return;
+
+  let animationFrame = null;
+  const updateHeaderState = () => {
+    siteHeader.classList.toggle('is-scrolled', window.scrollY > 48);
+    animationFrame = null;
+  };
+
+  updateHeaderState();
+  window.addEventListener('scroll', () => {
+    if (!animationFrame) animationFrame = window.requestAnimationFrame(updateHeaderState);
+  }, { passive: true });
+};
+
+startHeaderScrollState();
+
 const startAnalogRipple = () => {
   const field = document.querySelector('.analog-field');
   const canvas = field?.querySelector('.analog-ripple');

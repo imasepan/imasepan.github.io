@@ -332,6 +332,117 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   padding-right: 10px;
 }
 
+/* On longer pages, keep the navigation out of the way until it is needed. */
+.site-header.is-scrolled {
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  gap: 0;
+  transition: width .35s cubic-bezier(.22, 1, .36, 1), height .35s cubic-bezier(.22, 1, .36, 1);
+}
+
+.site-header.is-scrolled:hover,
+.site-header.is-scrolled:focus-within {
+  width: 394px;
+  height: 124px;
+}
+
+.site-header.is-scrolled .brand-controls,
+.site-header.is-scrolled .header-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width .35s cubic-bezier(.22, 1, .36, 1), opacity .2s ease;
+}
+
+.site-header.is-scrolled .brand-controls {
+  width: 54px;
+  overflow: hidden;
+}
+
+.site-header.is-scrolled .brand-controls .theme-toggle {
+  display: none;
+}
+
+.site-header.is-scrolled .brand-controls .wordmark {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+
+.site-header.is-scrolled .header-controls {
+  width: 54px;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.site-header.is-scrolled .language-switch {
+  display: none;
+}
+
+.site-header.is-scrolled .menu-button {
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border-color: color-mix(in srgb, var(--ink) 48%, transparent);
+  background: color-mix(in srgb, var(--paper) 58%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--ink) 42%, transparent);
+  font-size: 0;
+}
+
+.site-header.is-scrolled .menu-button::after {
+  content: '☰';
+  font-size: 16px;
+}
+
+.site-header.is-scrolled:hover .brand-controls,
+.site-header.is-scrolled:focus-within .brand-controls {
+  width: 190px;
+}
+
+.site-header.is-scrolled:hover .header-controls,
+.site-header.is-scrolled:focus-within .header-controls {
+  left: 200px;
+  width: 190px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.site-header.is-scrolled:hover .brand-controls .wordmark,
+.site-header.is-scrolled:focus-within .brand-controls .wordmark,
+.site-header.is-scrolled:hover .language-switch,
+.site-header.is-scrolled:focus-within .language-switch {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.site-header.is-scrolled:hover .language-switch,
+.site-header.is-scrolled:focus-within .language-switch {
+  display: inline-flex;
+}
+
+.site-header.is-scrolled:hover .menu-button,
+.site-header.is-scrolled:focus-within .menu-button {
+  width: 100%;
+  height: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 13px;
+}
+
+.site-header.is-scrolled:hover .menu-button::after,
+.site-header.is-scrolled:focus-within .menu-button::after { display: none; }
+
+@media (max-width: 720px) {
+  .site-header.is-scrolled:hover,
+  .site-header.is-scrolled:focus-within { width: calc(100vw - 32px); height: 116px; }
+  .site-header.is-scrolled:hover .header-controls,
+  .site-header.is-scrolled:focus-within .header-controls { left: 0; top: 62px; width: 100%; }
+  .site-header.is-scrolled:hover .brand-controls,
+  .site-header.is-scrolled:focus-within .brand-controls { width: 100%; }
+}
+
 
 /* Reference-inspired portrait caption */
 .about-photo figcaption {
