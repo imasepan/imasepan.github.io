@@ -314,6 +314,15 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
 .post-card .text-link { color: inherit; }
 .post-card.has-image { overflow: hidden; isolation: isolate; background: var(--ink); color: #EDE8D0; }
 .post-card.has-image::after { content: ''; position: absolute; inset: 0; z-index: 0; background: linear-gradient(180deg, rgba(10, 10, 10, .08) 8%, rgba(10, 10, 10, .84) 90%); pointer-events: none; }
+.post-card.has-image .post-card-content {
+  width: min(100%, 780px);
+  min-height: 0;
+  padding: clamp(20px, 2.5vw, 34px);
+  background: rgba(20, 20, 18, .72);
+  border: 1px solid rgba(237, 232, 208, .28);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
 .post-card.has-image .post-meta, .post-card.has-image .post-card-excerpt, .post-card.has-image .text-link { color: inherit; }
 .post-card.has-image:hover .post-card-image, .post-card.has-image:focus-within .post-card-image { transform: scale(1.045); filter: saturate(1.06); }
 .post-card:hover, .post-card:focus-within {
