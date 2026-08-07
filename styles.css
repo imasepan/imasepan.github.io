@@ -27,6 +27,12 @@ a { color: inherit; }
 .menu-button { display: none; border: 0; background: none; font: 500 14px var(--mono); color: var(--ink); }
 .music-banner { overflow: hidden; background: var(--ink); color: var(--paper); }.music-banner-inner { max-width: 1200px; margin: 0 auto; padding: 10px 32px; display: grid; grid-template-columns: minmax(210px, .75fr) minmax(0, 1.25fr); align-items: center; gap: 28px; }.music-banner p { margin: 0; color: var(--line); font-size: 14px; }.music-banner p span { display: block; margin-bottom: 5px; color: var(--lime); font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .06em; }.spotify-player { display: block; overflow: hidden; border: 0; border-radius: 10px; }
 .hero { min-height: 620px; display: flex; flex-direction: column; justify-content: center; padding: 80px 0; }.eyebrow { font: 500 12px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 20px; }
+.hero h1[data-typewriter] { white-space: pre-wrap; }
+.hero h1[data-typewriter].has-caret::after { content: ''; display: inline-block; width: .08em; height: .82em; margin-left: .08em; background: currentColor; vertical-align: -.06em; animation: typewriter-caret .8s steps(1, end) infinite; }
+@keyframes typewriter-caret { 50% { opacity: 0; } }
+.hero-photo-panel, .latest-post-card { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1); }
+.hero-tiles-ready .hero-photo-panel, .hero-tiles-ready .latest-post-card { opacity: 1; transform: translateY(0); }
+.hero-tiles-ready .latest-post-card { transition-delay: .12s; }
 h1, h2 { letter-spacing: -.055em; line-height: .98; margin: 0; }h1 { font-size: clamp(48px, 7.2vw, 96px); max-width: 900px; }h2 { font-size: clamp(32px, 4.2vw, 54px); }.hero-copy { max-width: 535px; margin: 30px 0 0; color: var(--muted); font-size: 19px; }.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
 .hero-photo-panel { min-height: 430px; margin-top: 28px; padding: 24px; background-image: linear-gradient(180deg, rgba(0, 0, 0, .18), rgba(0, 0, 0, 0) 42%), url('/assets/hero-hands.jpg'); background-size: cover; background-position: center 62%; color: #EDE8D0; display: flex; flex-direction: column; align-items: flex-start; }
 .hero-photo-panel .hero-copy { margin-top: 0; color: #EDE8D0; text-shadow: 0 1px 18px rgba(0, 0, 0, .75); }

@@ -402,7 +402,11 @@ if (arrivingPage) {
 
 const runTypewriter = () => {
   const typewriterText = document.querySelector('[data-typewriter]');
-  if (!typewriterText || typewriterText.dataset.animated || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const hero = document.querySelector('.hero');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (hero && reducedMotion) hero.classList.add('hero-tiles-ready');
+  if (!typewriterText || typewriterText.dataset.animated) return;
 
   typewriterText.dataset.animated = 'true';
   const fullText = typewriterText.textContent.trim();
@@ -411,6 +415,12 @@ const runTypewriter = () => {
 
   typewriterText.setAttribute('aria-label', fullText);
   typewriterText.style.minHeight = `${fullHeight}px`;
+
+  if (reducedMotion) {
+    typewriterText.textContent = fullText;
+    return;
+  }
+
   typewriterText.textContent = '';
   typewriterText.classList.add('has-caret');
 
@@ -421,6 +431,7 @@ const runTypewriter = () => {
     if (characterIndex < fullText.length) {
       window.setTimeout(typeNextCharacter, fullText[characterIndex - 1] === ' ' ? 120 : 70);
     } else {
+      if (hero) hero.classList.add('hero-tiles-ready');
       window.setTimeout(() => typewriterText.classList.remove('has-caret'), 2000);
     }
   };
