@@ -514,21 +514,53 @@ const loadProjects = () => {
     });
 };
 
-const navigateWithLoader = (destination, destinationLabel) => {
+const navigateWithLoader = async (destination, destinationLabel) => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   stopInertialScroll();
   pageLoader.querySelector('.page-loader-label').textContent = `Loading ${destinationLabel}`;
   pageLoader.setAttribute('aria-hidden', 'false');
   pageLoader.className = 'page-loader is-active';
 
-  try {
-    window.sessionStorage.setItem('page-loader-label', destinationLabel);
-  } catch {
-    // Navigation and animation still work when session storage is unavailable.
-  }
+  const finishNavigation = () => {
+    pageLoader.className = 'page-loader';
+    pageLoader.setAttribute('aria-hidden', 'true');
+  };
 
-  window.setTimeout(() => window.location.assign(destination.href), reducedMotion ? 0 : 650);
+  try {
+    const response = await fetch(destination.href, { headers: { 'X-Requested-With': 'soft-navigation' } });
+    if (!response.ok) throw new Error(`Navigation failed: ${response.status}`);
+
+    const nextDocument = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const currentMain = document.querySelector('main');
+    const nextMain = nextDocument.querySelector('main');
+
+    // Keep the document (and therefore the Spotify iframe) mounted. If a page
+    // does not share this shell, fall back to a normal browser navigation.
+    if (!currentMain || !nextMain || !nextDocument.querySelector('.spotify-player')) {
+      window.location.assign(destination.href);
+      return;
+    }
+
+    currentMain.replaceWith(nextMain);
+    document.title = nextDocument.title;
+    window.history.pushState({}, '', destination.href);
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    enhancePostSpotifyLinks();
+    loadProjects();
+    runTypewriter();
+    handleScrollTarget();
+
+    window.setTimeout(finishNavigation, reducedMotion ? 0 : 250);
+  } catch {
+    window.location.assign(destination.href);
+  }
 };
+
+window.addEventListener('popstate', () => {
+  if (document.querySelector('.spotify-player')) {
+    navigateWithLoader(new URL(window.location.href), 'Page');
+  }
+});
 
 document.addEventListener('click', (event) => {
   const link = event.target.closest('a[href]');
