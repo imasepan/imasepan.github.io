@@ -290,6 +290,32 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   text-decoration: none;
   transition: background-color .3s ease, color .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s cubic-bezier(.2, .8, .2, 1);
 }
+.post-card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: transform .7s cubic-bezier(.2, .8, .2, 1), filter .35s ease;
+}
+.post-card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  min-height: inherit;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.post-card-title { display: block; max-width: 900px; margin-bottom: 18px; font-size: clamp(38px, 5.2vw, 76px); line-height: 1.05; font-weight: 600; }
+.post-card-excerpt { display: block; max-width: 680px; font-size: clamp(17px, 1.4vw, 22px); }
+.post-card:not(.has-image) .post-card-excerpt { color: var(--muted); }
+.post-card .text-link { color: inherit; }
+.post-card.has-image { overflow: hidden; isolation: isolate; background: var(--ink); color: #EDE8D0; }
+.post-card.has-image::after { content: ''; position: absolute; inset: 0; z-index: 0; background: linear-gradient(180deg, rgba(10, 10, 10, .08) 8%, rgba(10, 10, 10, .84) 90%); pointer-events: none; }
+.post-card.has-image .post-meta, .post-card.has-image .post-card-excerpt, .post-card.has-image .text-link { color: inherit; }
+.post-card.has-image:hover .post-card-image, .post-card.has-image:focus-within .post-card-image { transform: scale(1.045); filter: saturate(1.06); }
 .post-card:hover, .post-card:focus-within {
   background: var(--orange);
   border-color: var(--ink);
@@ -297,9 +323,7 @@ main:not(.page-main) > .future-section { width: 100%; max-width: none; margin: 0
   box-shadow: 7px 7px 0 var(--ink);
   transform: translate(-4px, -4px);
 }
-.post-card:hover p:not(.post-meta), .post-card:focus-within p:not(.post-meta), .post-card:hover .post-meta, .post-card:focus-within .post-meta { color: #4F4D46; }
-.post-card h2 { max-width: 900px; margin-bottom: 18px; font-size: clamp(38px, 5.2vw, 76px); }
-.post-card > p:not(.post-meta) { max-width: 680px; font-size: clamp(17px, 1.4vw, 22px); }
+.post-card:hover .post-card-excerpt, .post-card:focus-within .post-card-excerpt, .post-card:hover .post-meta, .post-card:focus-within .post-meta, .post-card:hover .text-link, .post-card:focus-within .text-link { color: inherit; }
 .post-card .text-link { margin-top: auto; }
 
 @media (max-width: 720px) {
