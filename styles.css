@@ -2003,6 +2003,51 @@ main:not(.page-main) > .future-section {
   display: inline-flex !important;
   cursor: default;
 }
+
+/* Keep every header button visible in every header state. */
+.site-header .brand-controls,
+.site-header .header-controls,
+.site-header .language-switch,
+.site-header .menu-button,
+.site-header.is-scrolled .brand-controls,
+.site-header.is-scrolled .header-controls,
+.site-header.is-scrolled .language-switch,
+.site-header.is-scrolled .menu-button {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.site-header .brand-controls,
+.site-header .header-controls {
+  transform: none;
+}
+
+.site-header.is-scrolled .brand-controls,
+.site-header.is-scrolled .header-controls {
+  position: static;
+  width: auto;
+}
+
+.site-header.is-scrolled .brand-controls .wordmark,
+.site-header.is-scrolled .brand-controls .theme-toggle,
+.site-header.is-scrolled .language-switch,
+.site-header.is-scrolled .menu-button {
+  display: inline-flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.site-header.is-scrolled .menu-button {
+  width: auto;
+  height: auto;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.site-header.is-scrolled .menu-button::after {
+  display: none;
+}
 .site-header .language-switch {
   position: static;
   display: inline-flex;
