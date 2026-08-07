@@ -2003,6 +2003,19 @@ main:not(.page-main) > .future-section {
   display: inline-flex !important;
   cursor: default;
 }
+.site-header .language-switch {
+  position: static;
+  display: inline-flex;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+.site-header .header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .site-header .site-nav,
 .site-header.is-open .site-nav {
   position: static;
