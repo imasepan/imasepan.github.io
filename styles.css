@@ -1063,34 +1063,20 @@ body.menu-open { overflow: auto; }
 .site-header.is-open { pointer-events: auto; }
 .site-header.is-open .menu-button { pointer-events: auto; }
 
-/* Keep the scrolled control minimized until it is pressed. */
-.site-header.is-scrolled:not(.is-open):hover,
-.site-header.is-scrolled:not(.is-open):focus-within {
+/* Keep the imasepan wordmark visible while scrolling. */
+.site-header.is-scrolled .brand-controls,
+.site-header.is-scrolled:hover .brand-controls,
+.site-header.is-scrolled:focus-within .brand-controls {
   width: 190px;
-  height: 124px;
 }
-.site-header.is-scrolled:not(.is-open):hover .brand-controls,
-.site-header.is-scrolled:not(.is-open):focus-within .brand-controls { width: 54px; }
-.site-header.is-scrolled:not(.is-open):hover .header-controls,
-.site-header.is-scrolled:not(.is-open):focus-within .header-controls {
-  left: 0;
-  top: 0;
-  width: 54px;
-  grid-template-columns: 1fr;
-  gap: 0;
+.site-header.is-scrolled .brand-controls .wordmark,
+.site-header.is-scrolled:hover .brand-controls .wordmark,
+.site-header.is-scrolled:focus-within .brand-controls .wordmark {
+  opacity: 1;
+  pointer-events: auto;
 }
-.site-header.is-scrolled:not(.is-open):hover .brand-controls .wordmark,
-.site-header.is-scrolled:not(.is-open):focus-within .brand-controls .wordmark,
-.site-header.is-scrolled:not(.is-open):hover .language-switch,
-.site-header.is-scrolled:not(.is-open):focus-within .language-switch { opacity: 0; pointer-events: none; }
-.site-header.is-scrolled:not(.is-open):hover .language-switch,
-.site-header.is-scrolled:not(.is-open):focus-within .language-switch { display: none; }
-.site-header.is-scrolled:not(.is-open):hover .menu-button,
-.site-header.is-scrolled:not(.is-open):focus-within .menu-button {
-  width: 54px;
-  height: 54px;
-  padding: 0;
-  font-size: 0;
+.site-header.is-scrolled .brand-controls .theme-toggle,
+.site-header.is-scrolled:hover .brand-controls .theme-toggle,
+.site-header.is-scrolled:focus-within .brand-controls .theme-toggle {
+  display: inline-flex;
 }
-.site-header.is-scrolled:not(.is-open):hover .menu-button::after,
-.site-header.is-scrolled:not(.is-open):focus-within .menu-button::after { display: inline; }
