@@ -599,6 +599,33 @@ loadProjects();
 handleScrollTarget();
 
 
+// Turn `[figcaption: ...]` into a caption for the most recently rendered image.
+// This keeps the syntax compatible with the standard GitHub Pages/Jekyll build.
+const postContent = document.querySelector(".post-content");
+if (postContent) {
+  const captionPattern = /^\[figcaption:\s*([\s\S]*?)\s*\]$/;
+  [...postContent.querySelectorAll("p")].forEach((paragraph) => {
+    const match = paragraph.textContent.trim().match(captionPattern);
+    if (!match) return;
+
+    const image = [...postContent.querySelectorAll("img")]
+      .filter((candidate) => paragraph.compareDocumentPosition(candidate) & Node.DOCUMENT_POSITION_PRECEDING)
+      .at(-1);
+    if (!image) return;
+
+    const figure = document.createElement("figure");
+    figure.className = "post-figure";
+    image.parentElement.replaceWith(figure);
+    figure.append(image);
+
+    const caption = document.createElement("figcaption");
+    caption.textContent = match[1];
+    figure.append(caption);
+    paragraph.remove();
+  });
+}
+
+
 // Keep the portrait caption close to the pointer.
 const portraitHoverTarget = document.querySelector(".about-photo");
 if (portraitHoverTarget) {

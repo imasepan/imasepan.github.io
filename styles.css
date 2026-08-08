@@ -2495,6 +2495,17 @@ main:not(.page-main) > .future-section {
   margin: 34px auto;
   border: 1px solid var(--line);
 }
+.post-page .post-content .post-figure {
+  margin: 34px 0;
+}
+.post-page .post-content .post-figure img {
+  margin: 0 auto;
+}
+.post-page .post-content .post-figure figcaption {
+  margin-top: 14px;
+  color: var(--ink);
+  font: 400 18px/1.15 var(--sans);
+}
 .post-page .post-back {
   width: min(100%, 680px);
   margin: 68px auto 0;
