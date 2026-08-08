@@ -465,9 +465,6 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
 if (wordmark && siteHeader) {
   wordmark.addEventListener('click', () => {
     wordmark.setAttribute('aria-expanded', 'false');
-  });
-
-  wordmark.addEventListener('dblclick', () => {
     window.location.href = isKorean ? '/kr/' : '/';
   });
 }
