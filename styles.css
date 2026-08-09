@@ -898,7 +898,7 @@ h2 {
   --analog-grid-opacity: .18;
   --analog-grain-opacity: .05;
   --sunlit-source: #789dff; --sunlit-source-opacity: .32; --sunlit-haze: #4F4D46; --sunlit-haze-opacity: 0;
-  --sunlit-shadow: #020613; --sunlit-bounce: #1e4d9d; --sunlit-glow-opacity: .48; --sunlit-bounce-opacity: .36;
+  --sunlit-shadow: #020613; --sunlit-bounce: #4F4D46; --sunlit-glow-opacity: .48; --sunlit-bounce-opacity: .36;
   --sunlit-blinds-opacity: .52; --sunlit-shutter-gap: 11px; --sunlit-shutter-height: 88px;
 }
 :root[data-theme='dark'] .sunlit-perspective {
