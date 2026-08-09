@@ -135,6 +135,20 @@ a {
   translate: 0 var(--analog-scroll, 0px);
   animation: analog-grain-shift .18s steps(2, end) infinite;
 }
+/* A full-page film texture: fixed above the UI, but never intercepts input. */
+.film-grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 900;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  opacity: var(--film-grain-opacity, .065);
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E") 0 0 / 180px 180px repeat;
+  mix-blend-mode: soft-light;
+  animation: film-grain-shift .2s steps(2, end) infinite;
+  will-change: transform;
+}
 .analog-mark {
   position: absolute;
   left: var(--analog-x);
@@ -173,6 +187,13 @@ a {
   100% {
     transform: translate3d(-2px, -1px, 0);
   }
+}
+@keyframes film-grain-shift {
+  0% { transform: translate3d(-2%, 1%, 0); }
+  25% { transform: translate3d(1%, -3%, 0); }
+  50% { transform: translate3d(3%, 2%, 0); }
+  75% { transform: translate3d(-1%, 3%, 0); }
+  100% { transform: translate3d(2%, -1%, 0); }
 }
 @keyframes analog-mark-pulse {
   0%, 100% {
@@ -894,6 +915,7 @@ h2 {
     --name-accent: #D0D5ED;
     --analog-grid-opacity: .18;
     --analog-grain-opacity: .09;
+    --film-grain-opacity: .05;
   }
 }
 :root[data-theme='light'] {
@@ -907,6 +929,7 @@ h2 {
   --name-accent: #7A5D11;
   --analog-grid-opacity: .26;
   --analog-grain-opacity: .12;
+  --film-grain-opacity: .065;
   --sunlit-source: #fff2a8; --sunlit-source-opacity: .82; --sunlit-haze: #ed9a36; --sunlit-haze-opacity: .28;
   --sunlit-shadow: #80572c; --sunlit-bounce: #ffc86d; --sunlit-glow-opacity: .38; --sunlit-bounce-opacity: .27;
   --sunlit-blinds-opacity: .16; --sunlit-leaf-opacity: .75; --sunlit-shutter-gap: 64px; --sunlit-shutter-height: 25px;
@@ -922,6 +945,7 @@ h2 {
   --name-accent: #D0D5ED;
   --analog-grid-opacity: .18;
   --analog-grain-opacity: .09;
+  --film-grain-opacity: .05;
   --sunlit-source: #e7792f; --sunlit-source-opacity: .18; --sunlit-haze: #c75d24; --sunlit-haze-opacity: .12;
   --sunlit-shadow: #020613; --sunlit-bounce: #4F4D46; --sunlit-glow-opacity: .48; --sunlit-bounce-opacity: .36;
   --sunlit-blinds-opacity: .52; --sunlit-leaf-opacity: .54; --sunlit-shutter-gap: 11px; --sunlit-shutter-height: 88px;
@@ -1208,12 +1232,12 @@ h2 {
   ::view-transition-new(root) {
     animation: none;
   }
-  .analog-field, .analog-grid, .analog-grain, .analog-mark {
+  .analog-field, .analog-grid, .analog-grain, .analog-mark, .film-grain {
     transform: none;
   }
   .sunlit-field, .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-shutters, .sunlit-shutter, .sunlit-bar { transition: none; }
   .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-leaf-shadow, .sunlit-blur { animation: none; }
-  .analog-grid, .analog-grain, .analog-mark, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after {
+  .analog-grid, .analog-grain, .analog-mark, .film-grain, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after {
     animation: none;
   }
   .analog-ripple {

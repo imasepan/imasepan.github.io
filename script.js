@@ -83,6 +83,15 @@ const createAnalogField = () => {
   document.body.prepend(field);
 };
 
+const createFilmGrain = () => {
+  if (document.querySelector('.film-grain')) return;
+
+  const grain = document.createElement('div');
+  grain.className = 'film-grain';
+  grain.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(grain);
+};
+
 const startAnalogParallax = () => {
   if (reducedMotionQuery.matches) return;
   let animationFrame = null;
@@ -384,6 +393,7 @@ const startInertialScroll = () => {
 
 createSunlitField();
 createAnalogField();
+createFilmGrain();
 startAnalogParallax();
 startAnalogRipple();
 const stopInertialScroll = startInertialScroll();
