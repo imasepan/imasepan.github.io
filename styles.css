@@ -73,11 +73,14 @@ a {
 .sunlit-blur span:nth-child(1) { --sunlit-blur: 10px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
 .sunlit-blur span:nth-child(2) { --sunlit-blur: 32px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
 .sunlit-blur span:nth-child(3) { --sunlit-blur: 80px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
-.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; filter: url('#sunlit-wind'); mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
-.sunlit-leaf-layer { position: absolute; inset: 0; background: var(--sunlit-shadow); filter: blur(var(--sunlit-leaf-blur)); -webkit-mask-image: url('/assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); -webkit-mask-position: center, center; -webkit-mask-size: contain, 100% 100%; -webkit-mask-repeat: no-repeat, no-repeat; -webkit-mask-composite: source-in; mask-image: url('/assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); mask-position: center, center; mask-size: contain, 100% 100%; mask-repeat: no-repeat, no-repeat; mask-composite: intersect; }
-.sunlit-leaf-layer:nth-child(1) { --sunlit-leaf-blur: 10px; --sunlit-leaf-gradient: linear-gradient(252deg, #000, #000 40%, transparent 78%, transparent); }
-.sunlit-leaf-layer:nth-child(2) { --sunlit-leaf-blur: 32px; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 40%, #000 68%, #000 72%, transparent 82%, transparent); }
-.sunlit-leaf-layer:nth-child(3) { --sunlit-leaf-blur: 80px; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 52%, #000 82%, #000); }
+.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
+/* Keep one complete leaf silhouette beneath the graduated blur layers. Some
+   browsers drop multi-mask composites entirely, which made the branch vanish. */
+.sunlit-leaf-shadow::before { position: absolute; inset: 0; content: ''; background: var(--sunlit-shadow); filter: blur(7px); -webkit-mask: url('assets/leaves-branch-shadow.webp') center / contain no-repeat; mask: url('assets/leaves-branch-shadow.webp') center / contain no-repeat; }
+.sunlit-leaf-layer { position: absolute; inset: 0; background: var(--sunlit-shadow); filter: blur(var(--sunlit-leaf-blur)); -webkit-mask-image: url('assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); -webkit-mask-position: center, center; -webkit-mask-size: contain, 100% 100%; -webkit-mask-repeat: no-repeat, no-repeat; -webkit-mask-composite: source-in; mask-image: url('assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); mask-position: center, center; mask-size: contain, 100% 100%; mask-repeat: no-repeat, no-repeat; mask-composite: intersect; }
+.sunlit-leaf-layer:nth-child(1) { --sunlit-leaf-blur: 7px; --sunlit-leaf-gradient: linear-gradient(252deg, #000, #000 40%, transparent 78%, transparent); }
+.sunlit-leaf-layer:nth-child(2) { --sunlit-leaf-blur: 7px; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 40%, #000 68%, #000 72%, transparent 82%, transparent); }
+.sunlit-leaf-layer:nth-child(3) { --sunlit-leaf-blur: 7px; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 52%, #000 82%, #000); }
 @keyframes sunlit-leaf-billow { 0%, 100% { transform: perspective(400px) rotateX(0deg) rotateY(0deg) scale(1); } 25% { transform: perspective(400px) rotateX(1deg) rotateY(2deg) scale(1.02); } 50% { transform: perspective(400px) rotateX(-4deg) rotateY(-2deg) scale(.97); } 75% { transform: perspective(400px) rotateX(1deg) rotateY(-1deg) scale(1.04); } }
 /* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
 .analog-field {
@@ -3001,7 +3004,6 @@ body.menu-open {
 .site-header .menu-button, .site-header.is-scrolled .menu-button { display: inline-flex !important; width: auto; min-width: 76px; min-height: 48px; padding: 0 14px; font-size: 13px; cursor: pointer; }
 @media (max-width: 480px) { .site-header, .site-header.is-scrolled, .site-header.is-scrolled:hover, .site-header.is-scrolled:focus-within { padding: 12px; gap: 6px; } .site-header .brand-controls { gap: 6px; padding: 7px; } .site-header .wordmark { font-size: 13px; } .site-header .theme-toggle { min-width: 44px; padding-inline: 6px; } .site-header .language-switch { display: none; } .site-header .menu-button, .site-header.is-scrolled .menu-button { min-width: 48px; min-height: 40px; padding-inline: 6px; font-size: 12px; } .site-header .site-nav, .site-header.is-open .site-nav { top: 68px; right: 12px; width: calc(100vw - 24px); max-height: calc(100svh - 84px); } }
 
-<<<<<<< Updated upstream
 /* Keep the wordmark as the compact header control. Its hover and keyboard
    focus reveal the language and navigation actions; they remain available
    while the pointer is anywhere over the header so they can be selected. */
@@ -3051,7 +3053,8 @@ body.menu-open {
   .site-header.is-open .site-nav {
     left: calc(100% - 48px);
   }
-=======
+}
+
 /* Keep the portrait caption attached to its figure on every device. */
 .about-photo figcaption,
 .about-photo:hover figcaption,
@@ -3069,5 +3072,4 @@ body.menu-open {
   scale: 1;
   animation: none;
   pointer-events: auto;
->>>>>>> Stashed changes
 }
