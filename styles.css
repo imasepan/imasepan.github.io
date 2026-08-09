@@ -55,7 +55,7 @@ a {
   z-index: 2;
 }
 /* Fixed, CSS-only window light adapted from jackyzha0/sunlit. */
-.sunlit-field { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; transition: background-color .7s ease; }
+.sunlit-field { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; filter: url('#background-pixelate'); transition: background-color .7s ease; }
 .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce { position: absolute; inset: 0; content: ''; transition: opacity .7s ease, background .7s ease; }
 .sunlit-field::before { background: radial-gradient(ellipse 68% 44% at 100% 6%, var(--sunlit-source), transparent 73%); opacity: var(--sunlit-source-opacity); }
 .sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); }
@@ -86,8 +86,6 @@ a {
 .analog-grid {
   position: absolute;
   inset: -6%;
-  background-image: radial-gradient(circle, currentColor 0 1px, transparent 1.35px);
-  background-size: 19px 19px;
   opacity: var(--analog-grid-opacity, .26);
   translate: 0 var(--analog-scroll, 0px);
   -webkit-mask-image: radial-gradient(ellipse 44% 30% at 18% 13%, #000 0 25%, transparent 78%), radial-gradient(ellipse 38% 28% at 82% 38%, #000 0 18%, transparent 78%), radial-gradient(ellipse 52% 34% at 45% 84%, #000 0 16%, transparent 82%);
@@ -95,6 +93,18 @@ a {
   animation: analog-grid-drift 32s steps(16, end) infinite alternate;
   transition: opacity .25s ease;
   will-change: transform;
+}
+.analog-grid::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='19' height='19' viewBox='0 0 19 19'%3E%3Cpath d='M6.5 6.5 12.5 12.5M12.5 6.5 6.5 12.5' stroke='%23000' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: repeat;
+  -webkit-mask-size: 19px 19px;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='19' height='19' viewBox='0 0 19 19'%3E%3Cpath d='M6.5 6.5 12.5 12.5M12.5 6.5 6.5 12.5' stroke='%23000' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E");
+  mask-repeat: repeat;
+  mask-size: 19px 19px;
 }
 .analog-ripple {
   position: fixed;
@@ -178,8 +188,9 @@ a {
 }
 /* Reduce the analog background density and number of marks on small screens. */
 @media (max-width: 720px) {
-  .analog-grid {
-    background-size: 23px 23px;
+  .analog-grid::before {
+    -webkit-mask-size: 23px 23px;
+    mask-size: 23px 23px;
   }
   .analog-mark:nth-of-type(n+11) {
     display: none;
