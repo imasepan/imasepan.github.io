@@ -52,6 +52,15 @@ systemTheme.addEventListener('change', (event) => {
 
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+const createSunlitField = () => {
+  if (document.querySelector('.sunlit-field')) return;
+  const field = document.createElement('div');
+  field.className = 'sunlit-field';
+  field.setAttribute('aria-hidden', 'true');
+  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div><div class="sunlit-blur"><span></span><span></span><span></span></div>`;
+  document.body.prepend(field);
+};
+
 const createAnalogField = () => {
   if (document.querySelector('.analog-field')) return;
 
@@ -371,6 +380,7 @@ const startInertialScroll = () => {
   return stopInertia;
 };
 
+createSunlitField();
 createAnalogField();
 startAnalogParallax();
 startAnalogRipple();

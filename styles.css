@@ -52,13 +52,32 @@ a {
 }
 .site-header, .music-banner, main, .site-footer {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
+/* Fixed, CSS-only window light adapted from jackyzha0/sunlit. */
+.sunlit-field { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; transition: background-color .7s ease; }
+.sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce { position: absolute; inset: 0; content: ''; transition: opacity .7s ease, background .7s ease; }
+.sunlit-field::before { background: radial-gradient(ellipse 68% 44% at 100% 6%, var(--sunlit-source), transparent 73%); opacity: var(--sunlit-source-opacity); }
+.sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); }
+.sunlit-glow { background: linear-gradient(309deg, var(--sunlit-bounce) 0%, transparent 32%); opacity: var(--sunlit-glow-opacity); }
+.sunlit-bounce { background: linear-gradient(355deg, var(--sunlit-bounce) 0%, transparent 27%, transparent 100%); opacity: var(--sunlit-bounce-opacity); }
+.sunlit-perspective { position: absolute; top: -30vh; right: -8vw; width: min(96vw, 1480px); height: 136vh; opacity: var(--sunlit-blinds-opacity); transform-origin: top right; transform-style: preserve-3d; transform: matrix3d(.75, -.0625, 0, .0008, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: transform .9s cubic-bezier(.455, .19, 0, .985), opacity .7s ease; }
+.sunlit-blinds { position: relative; width: 100%; height: 100%; }
+.sunlit-shutters { display: flex; height: 100%; flex-direction: column; align-items: end; gap: var(--sunlit-shutter-gap); transition: gap .9s cubic-bezier(.455, .19, 0, .985); }
+.sunlit-shutter, .sunlit-bar { background: var(--sunlit-shadow); }
+.sunlit-shutter { width: 100%; height: var(--sunlit-shutter-height); flex: 0 0 auto; transition: height .9s cubic-bezier(.455, .19, 0, .985), background .7s ease; }
+.sunlit-bars { position: absolute; inset: 0; display: flex; justify-content: space-around; }
+.sunlit-bar { width: 5px; height: 100%; transition: background .7s ease; }
+.sunlit-blur { position: absolute; inset: 0; }
+.sunlit-blur span { position: absolute; inset: 0; backdrop-filter: blur(var(--sunlit-blur)); -webkit-backdrop-filter: blur(var(--sunlit-blur)); -webkit-mask-image: linear-gradient(252deg, transparent, transparent var(--sunlit-stop-1), #000 var(--sunlit-stop-2), #000); mask-image: linear-gradient(252deg, transparent, transparent var(--sunlit-stop-1), #000 var(--sunlit-stop-2), #000); }
+.sunlit-blur span:nth-child(1) { --sunlit-blur: 4px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
+.sunlit-blur span:nth-child(2) { --sunlit-blur: 14px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
+.sunlit-blur span:nth-child(3) { --sunlit-blur: 42px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
 /* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
 .analog-field {
   position: fixed;
   inset: -72px 0;
-  z-index: 0;
+  z-index: 1;
   overflow: hidden;
   pointer-events: none;
   color: var(--muted);
@@ -863,6 +882,9 @@ h2 {
   --name-accent: #D6D39A;
   --analog-grid-opacity: .26;
   --analog-grain-opacity: .07;
+  --sunlit-source: #fff7c9; --sunlit-source-opacity: .52; --sunlit-haze: #f2b76e; --sunlit-haze-opacity: .16;
+  --sunlit-shadow: #937352; --sunlit-bounce: #f1c98d; --sunlit-glow-opacity: .24; --sunlit-bounce-opacity: .17;
+  --sunlit-blinds-opacity: .13; --sunlit-shutter-gap: 54px; --sunlit-shutter-height: 34px;
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
@@ -875,6 +897,9 @@ h2 {
   --name-accent: #D0D5ED;
   --analog-grid-opacity: .18;
   --analog-grain-opacity: .05;
+  --sunlit-source: #5d7598; --sunlit-source-opacity: .18; --sunlit-haze: #263b65; --sunlit-haze-opacity: .4;
+  --sunlit-shadow: #111827; --sunlit-bounce: #30476e; --sunlit-glow-opacity: .29; --sunlit-bounce-opacity: .24;
+  --sunlit-blinds-opacity: .28; --sunlit-shutter-gap: 18px; --sunlit-shutter-height: 70px;
 }
 /* Desktop navigation rail, editorial hero layout, latest-post card, and related desktop sizing. */
 .brand-controls {
@@ -1149,6 +1174,7 @@ h2 {
   .analog-field, .analog-grid, .analog-grain, .analog-mark {
     transform: none;
   }
+  .sunlit-field, .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-shutters, .sunlit-shutter, .sunlit-bar { transition: none; }
   .analog-grid, .analog-grain, .analog-mark, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after {
     animation: none;
   }
