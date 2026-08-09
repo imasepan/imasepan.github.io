@@ -12,3 +12,6 @@
 - Removed the nonfunctional dynamically injected `SYSTEM`/`CLASSIC` layout button.
 - Added `documentation.md` with site architecture and maintenance notes.
 - Added `CHAT_CONTEXT.md` for continuity in future development chats.
+# 2026-08-10
+
+- Applied the window-divider progressive blur bands to the animated leaf shadow.

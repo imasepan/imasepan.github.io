@@ -23,3 +23,6 @@ The site now shows a bounded entrance screen while critical images and fonts dec
 ## Development notes
 
 The site is static/Jekyll-compatible. Project cards have static fallbacks and are refreshed from GitHub near the viewport by `script.js`; the Spotify player and guestbook are external embeds/links. When editing shared navigation or layout behavior, check both English and Korean pages as well as `_layouts/default.html`.
+# Progressive leaf shadow blur
+
+The animated sunlit leaf shadow uses three directionally masked blur layers (10px, 32px, and 80px), matching the progressive blur used by the window dividers. The shared wind displacement and billowing transform remain on the leaf wrapper.
