@@ -2808,7 +2808,7 @@ body.menu-open {
   gap: 2px;
   overflow-y: auto;
   border: 1px solid var(--ink);
-  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
   box-shadow: 7px 7px 0 var(--ink);
   backdrop-filter: blur(14px);
   transform: translateY(-10px) scale(.98);
