@@ -57,7 +57,7 @@ const createSunlitField = () => {
   const field = document.createElement('div');
   field.className = 'sunlit-field';
   field.setAttribute('aria-hidden', 'true');
-  field.innerHTML = `<svg class="background-pixel-filter" width="0" height="0" aria-hidden="true"><filter id="background-pixelate" x="-2%" y="-2%" width="104%" height="104%"><feFlood x="2" y="2" width="1" height="1"/><feComposite width="10" height="10"/><feTile result="pixel-grid"/><feComposite in="SourceGraphic" in2="pixel-grid" operator="in" result="pixel-samples"/><feMorphology in="pixel-samples" operator="dilate" radius="4"/></filter></svg><div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div><div class="sunlit-blur"><span></span><span></span><span></span></div>`;
+  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div><div class="sunlit-blur"><span></span><span></span><span></span></div>`;
   document.body.prepend(field);
 };
 
@@ -169,18 +169,9 @@ const startAnalogRipple = () => {
         wake = Math.exp(-(ringDistance ** 2) / (2 * wakeBand ** 2)) * wakeStrength;
       }
 
-      const markSize = 2 + (wake * 1.35);
-      const blockSize = Math.max(1, Math.round(markSize / 2));
-      const centerX = Math.round(point.x);
-      const centerY = Math.round(point.y);
+      const dotSize = 2 + (wake * 1.35);
       context.globalAlpha = Math.min(1, point.opacity * (.9 + (wake * .55)));
-      context.fillRect(centerX - (2 * blockSize), centerY - (2 * blockSize), blockSize, blockSize);
-      context.fillRect(centerX + blockSize, centerY - (2 * blockSize), blockSize, blockSize);
-      context.fillRect(centerX - blockSize, centerY - blockSize, blockSize, blockSize);
-      context.fillRect(centerX, centerY, blockSize, blockSize);
-      context.fillRect(centerX - blockSize, centerY + blockSize, blockSize, blockSize);
-      context.fillRect(centerX - (2 * blockSize), centerY + (2 * blockSize), blockSize, blockSize);
-      context.fillRect(centerX + blockSize, centerY + (2 * blockSize), blockSize, blockSize);
+      context.fillRect(point.x - (dotSize / 2), point.y - (dotSize / 2), dotSize, dotSize);
     });
 
     context.globalAlpha = 1;
