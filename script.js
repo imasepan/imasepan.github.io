@@ -750,57 +750,7 @@ if (portraitHoverTarget) {
 }
 
 
-// Animate the portrait caption beneath the pointer.
-const portraitCaption = portraitHoverTarget?.querySelector("figcaption");
 const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-if (portraitHoverTarget && portraitCaption && portraitPointerQuery.matches) {
-  let previousPointerX = null;
-  let targetRotation = 0;
-  let currentRotation = 0;
-  let rotationFrame = null;
-
-  const animatePortraitCaption = () => {
-    currentRotation += (targetRotation - currentRotation) * .18;
-    targetRotation *= .72;
-    portraitCaption.style.rotate = currentRotation.toFixed(2) + "deg";
-
-    if (Math.abs(currentRotation) > .05 || Math.abs(targetRotation) > .05) {
-      rotationFrame = window.requestAnimationFrame(animatePortraitCaption);
-    } else {
-      currentRotation = 0;
-      targetRotation = 0;
-      portraitCaption.style.rotate = "0deg";
-      rotationFrame = null;
-    }
-  };
-
-  const movePortraitCaptionAlongPointer = (event) => {
-    portraitCaption.style.left = (event.clientX + 12) + "px";
-    portraitCaption.style.top = (event.clientY + 16) + "px";
-
-    if (previousPointerX !== null && !reducedMotionQuery.matches) {
-      targetRotation = Math.max(-5, Math.min(5, (event.clientX - previousPointerX) * .6));
-      if (!rotationFrame) rotationFrame = window.requestAnimationFrame(animatePortraitCaption);
-    }
-    previousPointerX = event.clientX;
-  };
-
-  portraitHoverTarget.addEventListener("pointerenter", (event) => {
-    movePortraitCaptionAlongPointer(event);
-    portraitCaption.classList.remove("is-exiting");
-    portraitCaption.classList.add("is-entering");
-  }, { passive: true });
-
-  portraitHoverTarget.addEventListener("pointermove", movePortraitCaptionAlongPointer, { passive: true });
-
-  portraitHoverTarget.addEventListener("pointerleave", () => {
-    portraitCaption.classList.remove("is-entering");
-    portraitCaption.classList.add("is-exiting");
-    previousPointerX = null;
-  }, { passive: true });
-}
-
-
 // Give the portrait a subtle depth shift as the pointer moves across it.
 const portraitImage = portraitHoverTarget?.querySelector("img");
 if (portraitHoverTarget && portraitImage && portraitPointerQuery.matches) {
