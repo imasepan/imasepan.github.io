@@ -55,7 +55,7 @@ a {
   z-index: 2;
 }
 /* Fixed, CSS-only window light adapted from jackyzha0/sunlit. */
-.sunlit-field { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; transition: background-color .7s ease; }
+.sunlit-field { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; transition: background-color .7s ease; }
 .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce { position: absolute; inset: 0; content: ''; transition: opacity .7s ease, background .7s ease; }
 .sunlit-field::before { background: radial-gradient(ellipse 68% 44% at 100% 6%, var(--sunlit-source), transparent 73%); opacity: var(--sunlit-source-opacity); animation: sunlit-source-drift 24s ease-in-out infinite alternate; }
 .sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); animation: sunlit-haze-drift 31s ease-in-out infinite alternate; }
@@ -76,16 +76,18 @@ a {
 .sunlit-shutter { width: 100%; height: var(--sunlit-shutter-height); flex: 0 0 auto; transition: height .9s cubic-bezier(.455, .19, 0, .985), background .7s ease; }
 .sunlit-bars { position: absolute; inset: 0; display: flex; justify-content: space-around; }
 .sunlit-bar { width: 5px; height: 100%; transition: background .7s ease; }
-.sunlit-blur { position: absolute; inset: 0; }
+.sunlit-blur { position: absolute; z-index: 2; inset: -12vh -12vw; }
 .sunlit-blur span { position: absolute; inset: 0; backdrop-filter: blur(var(--sunlit-blur)); -webkit-backdrop-filter: blur(var(--sunlit-blur)); -webkit-mask-image: linear-gradient(252deg, transparent, transparent var(--sunlit-stop-1), #000 var(--sunlit-stop-2), #000); mask-image: linear-gradient(252deg, transparent, transparent var(--sunlit-stop-1), #000 var(--sunlit-stop-2), #000); }
 .sunlit-blur span:nth-child(1) { --sunlit-blur: 4px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
 .sunlit-blur span:nth-child(2) { --sunlit-blur: 14px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
 .sunlit-blur span:nth-child(3) { --sunlit-blur: 42px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
+.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; background: url('/assets/leaves-branch-shadow.png') center / contain no-repeat; filter: url('#sunlit-wind') brightness(0) saturate(100%); mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
+@keyframes sunlit-leaf-billow { 0%, 100% { transform: perspective(400px) rotateX(0deg) rotateY(0deg) scale(1); } 25% { transform: perspective(400px) rotateX(1deg) rotateY(2deg) scale(1.02); } 50% { transform: perspective(400px) rotateX(-4deg) rotateY(-2deg) scale(.97); } 75% { transform: perspective(400px) rotateX(1deg) rotateY(-1deg) scale(1.04); } }
 /* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
 .analog-field {
   position: fixed;
   inset: -72px 0;
-  z-index: 1;
+  z-index: 0;
   overflow: hidden;
   pointer-events: none;
   color: var(--muted);
@@ -123,13 +125,15 @@ a {
 }
 .analog-grain {
   position: absolute;
-  inset: -5%;
+  inset: -8%;
   color: var(--ink);
-  background-image: radial-gradient(circle at 12% 18%, currentColor 0 .55px, transparent .8px), radial-gradient(circle at 76% 44%, currentColor 0 .45px, transparent .75px), radial-gradient(circle at 38% 82%, currentColor 0 .5px, transparent .78px);
-  background-size: 11px 13px, 17px 19px, 23px 29px;
+  background-image: radial-gradient(circle at 12% 18%, currentColor 0 .45px, transparent .7px), radial-gradient(circle at 76% 44%, currentColor 0 .35px, transparent .6px), radial-gradient(circle at 38% 82%, currentColor 0 .5px, transparent .75px), radial-gradient(circle at 63% 11%, currentColor 0 .3px, transparent .55px);
+  background-size: 7px 9px, 13px 17px, 19px 23px, 29px 31px;
   opacity: var(--analog-grain-opacity, .07);
+  mix-blend-mode: soft-light;
+  filter: contrast(145%);
   translate: 0 var(--analog-scroll, 0px);
-  animation: analog-grain-shift 1.1s steps(4, end) infinite;
+  animation: analog-grain-shift .18s steps(2, end) infinite;
 }
 .analog-mark {
   position: absolute;
@@ -898,7 +902,7 @@ h2 {
   --analog-grain-opacity: .07;
   --sunlit-source: #fff2a8; --sunlit-source-opacity: .82; --sunlit-haze: #ed9a36; --sunlit-haze-opacity: .28;
   --sunlit-shadow: #80572c; --sunlit-bounce: #ffc86d; --sunlit-glow-opacity: .38; --sunlit-bounce-opacity: .27;
-  --sunlit-blinds-opacity: .16; --sunlit-shutter-gap: 64px; --sunlit-shutter-height: 25px;
+  --sunlit-blinds-opacity: .16; --sunlit-leaf-opacity: .75; --sunlit-shutter-gap: 64px; --sunlit-shutter-height: 25px;
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
@@ -913,7 +917,7 @@ h2 {
   --analog-grain-opacity: .05;
   --sunlit-source: #789dff; --sunlit-source-opacity: .32; --sunlit-haze: #4F4D46; --sunlit-haze-opacity: 0;
   --sunlit-shadow: #020613; --sunlit-bounce: #4F4D46; --sunlit-glow-opacity: .48; --sunlit-bounce-opacity: .36;
-  --sunlit-blinds-opacity: .52; --sunlit-shutter-gap: 11px; --sunlit-shutter-height: 88px;
+  --sunlit-blinds-opacity: .52; --sunlit-leaf-opacity: .54; --sunlit-shutter-gap: 11px; --sunlit-shutter-height: 88px;
 }
 :root[data-theme='dark'] .sunlit-perspective {
   right: -18vw;
@@ -1195,7 +1199,7 @@ h2 {
     transform: none;
   }
   .sunlit-field, .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-shutters, .sunlit-shutter, .sunlit-bar { transition: none; }
-  .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-blur { animation: none; }
+  .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-leaf-shadow, .sunlit-blur { animation: none; }
   .analog-grid, .analog-grain, .analog-mark, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after {
     animation: none;
   }

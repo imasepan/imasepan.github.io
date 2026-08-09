@@ -57,7 +57,7 @@ const createSunlitField = () => {
   const field = document.createElement('div');
   field.className = 'sunlit-field';
   field.setAttribute('aria-hidden', 'true');
-  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div><div class="sunlit-blur"><span></span><span></span><span></span></div>`;
+  field.innerHTML = `<div class="sunlit-blur"><span></span><span></span><span></span></div><div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-leaf-shadow"><svg width="0" height="0" aria-hidden="true"><defs><filter id="sunlit-wind" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" numOctaves="2" seed="1"><animate attributeName="baseFrequency" dur="16s" keyTimes="0;0.33;0.66;1" values="0.005 0.003;0.01 0.009;0.008 0.004;0.005 0.003" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic"><animate attributeName="scale" dur="20s" keyTimes="0;0.25;0.5;0.75;1" values="18;25;34;25;18" repeatCount="indefinite" /></feDisplacementMap></filter></defs></svg></div><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
   document.body.prepend(field);
 };
 
