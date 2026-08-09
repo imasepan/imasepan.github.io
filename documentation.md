@@ -18,7 +18,7 @@ This repository contains the personal website for imasepan, built as a Jekyll si
 
 ## Recent change
 
-Removed the dynamically injected `SYSTEM`/`CLASSIC` layout button from `layout.js`. The button was not part of the page markup and was not a useful public control. The remaining layout initialization and visual HUD code are unchanged.
+Removed the dynamically injected `SYSTEM`/`CLASSIC` layout button from `layout.js`. The button was not part of the page markup and was not a useful public control. The remaining layout initialization and visual HUD code are unchanged. The desktop music banner also reserves space for the floating language and menu controls so they do not cover the Spotify player.
 
 ## Development notes
 

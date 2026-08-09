@@ -281,6 +281,13 @@ a {
   border: 0;
   border-radius: 10px;
 }
+/* Reserve the upper-right control area so the floating language and menu
+   buttons never sit over the playlist controls. */
+@media (min-width: 721px) {
+  .music-banner-inner {
+    padding-right: 210px;
+  }
+}
 /* Build the hero introduction, typewriter caret, image panel, and entrance animation. */
 .hero {
   min-height: 620px;
