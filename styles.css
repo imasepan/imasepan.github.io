@@ -922,9 +922,15 @@ h2 {
   --name-accent: #D0D5ED;
   --analog-grid-opacity: .18;
   --analog-grain-opacity: .05;
-  --sunlit-source: #789dff; --sunlit-source-opacity: .32; --sunlit-haze: #4F4D46; --sunlit-haze-opacity: 0;
+  --sunlit-source: #e7792f; --sunlit-source-opacity: .18; --sunlit-haze: #c75d24; --sunlit-haze-opacity: .12;
   --sunlit-shadow: #020613; --sunlit-bounce: #4F4D46; --sunlit-glow-opacity: .48; --sunlit-bounce-opacity: .36;
   --sunlit-blinds-opacity: .52; --sunlit-leaf-opacity: .54; --sunlit-shutter-gap: 11px; --sunlit-shutter-height: 88px;
+}
+:root[data-theme='dark'] .sunlit-field::before {
+  background: radial-gradient(ellipse 54% 58% at -10% 44%, var(--sunlit-source) 0%, transparent 72%);
+}
+:root[data-theme='dark'] .sunlit-field::after {
+  background: radial-gradient(ellipse 48% 72% at -8% 58%, var(--sunlit-haze) 0%, transparent 74%);
 }
 :root[data-theme='dark'] .sunlit-perspective {
   right: -18vw;
