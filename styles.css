@@ -129,7 +129,7 @@ a {
   color: var(--ink);
   background-image: radial-gradient(circle at 12% 18%, currentColor 0 .45px, transparent .7px), radial-gradient(circle at 76% 44%, currentColor 0 .35px, transparent .6px), radial-gradient(circle at 38% 82%, currentColor 0 .5px, transparent .75px), radial-gradient(circle at 63% 11%, currentColor 0 .3px, transparent .55px);
   background-size: 7px 9px, 13px 17px, 19px 23px, 29px 31px;
-  opacity: var(--analog-grain-opacity, .07);
+  opacity: var(--analog-grain-opacity, .12);
   mix-blend-mode: soft-light;
   filter: contrast(145%);
   translate: 0 var(--analog-scroll, 0px);
@@ -893,7 +893,7 @@ h2 {
     --orange: #D0D5ED;
     --name-accent: #D0D5ED;
     --analog-grid-opacity: .18;
-    --analog-grain-opacity: .05;
+    --analog-grain-opacity: .09;
   }
 }
 :root[data-theme='light'] {
@@ -906,7 +906,7 @@ h2 {
   --orange: #D0D5ED;
   --name-accent: #7A5D11;
   --analog-grid-opacity: .26;
-  --analog-grain-opacity: .07;
+  --analog-grain-opacity: .12;
   --sunlit-source: #fff2a8; --sunlit-source-opacity: .82; --sunlit-haze: #ed9a36; --sunlit-haze-opacity: .28;
   --sunlit-shadow: #80572c; --sunlit-bounce: #ffc86d; --sunlit-glow-opacity: .38; --sunlit-bounce-opacity: .27;
   --sunlit-blinds-opacity: .16; --sunlit-leaf-opacity: .75; --sunlit-shutter-gap: 64px; --sunlit-shutter-height: 25px;
@@ -921,7 +921,7 @@ h2 {
   --orange: #D0D5ED;
   --name-accent: #D0D5ED;
   --analog-grid-opacity: .18;
-  --analog-grain-opacity: .05;
+  --analog-grain-opacity: .09;
   --sunlit-source: #e7792f; --sunlit-source-opacity: .18; --sunlit-haze: #c75d24; --sunlit-haze-opacity: .12;
   --sunlit-shadow: #020613; --sunlit-bounce: #4F4D46; --sunlit-glow-opacity: .48; --sunlit-bounce-opacity: .36;
   --sunlit-blinds-opacity: .52; --sunlit-leaf-opacity: .54; --sunlit-shutter-gap: 11px; --sunlit-shutter-height: 88px;
