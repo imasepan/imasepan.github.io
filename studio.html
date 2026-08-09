@@ -48,7 +48,7 @@
         let activeIndex = 0;
         let wheelDistance = 0;
         let touchY = null;
-        const wheelStep = 120;
+        const wheelStep = 240;
 
         const updateProjectPosition = () => {
           const activeProject = projects[activeIndex];
@@ -101,7 +101,7 @@
           if (touchY === null) return;
           event.preventDefault();
           const distance = touchY - event.touches[0].clientY;
-          if (Math.abs(distance) > 28) {
+          if (Math.abs(distance) > 48) {
             move(Math.sign(distance));
             touchY = event.touches[0].clientY;
           }
