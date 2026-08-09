@@ -81,7 +81,7 @@ a {
 .sunlit-blur span:nth-child(1) { --sunlit-blur: 4px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
 .sunlit-blur span:nth-child(2) { --sunlit-blur: 14px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
 .sunlit-blur span:nth-child(3) { --sunlit-blur: 42px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
-.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; background: url('/assets/leaves-branch-shadow.png') center / contain no-repeat; filter: url('#sunlit-wind') brightness(0) saturate(100%); mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
+.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; background: var(--sunlit-shadow); -webkit-mask: url('/assets/leaves-branch-shadow.png') center / contain no-repeat; mask: url('/assets/leaves-branch-shadow.png') center / contain no-repeat; filter: url('#sunlit-wind'); mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
 @keyframes sunlit-leaf-billow { 0%, 100% { transform: perspective(400px) rotateX(0deg) rotateY(0deg) scale(1); } 25% { transform: perspective(400px) rotateX(1deg) rotateY(2deg) scale(1.02); } 50% { transform: perspective(400px) rotateX(-4deg) rotateY(-2deg) scale(.97); } 75% { transform: perspective(400px) rotateX(1deg) rotateY(-1deg) scale(1.04); } }
 /* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
 .analog-field {
