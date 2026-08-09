@@ -7,7 +7,7 @@
   --line: #C9C5B1;
   --lime: #C9C5B1;
   --orange: #D0D5ED;
-  --name-accent: #D6D39A;
+  --name-accent: #7A5D11;
   --sans: 'DM Sans', sans-serif;
   --mono: 'DM Mono', monospace;
 }
@@ -879,12 +879,12 @@ h2 {
   --line: #C9C5B1;
   --lime: #C9C5B1;
   --orange: #D0D5ED;
-  --name-accent: #D6D39A;
+  --name-accent: #7A5D11;
   --analog-grid-opacity: .26;
   --analog-grain-opacity: .07;
-  --sunlit-source: #fff7c9; --sunlit-source-opacity: .52; --sunlit-haze: #f2b76e; --sunlit-haze-opacity: .16;
-  --sunlit-shadow: #937352; --sunlit-bounce: #f1c98d; --sunlit-glow-opacity: .24; --sunlit-bounce-opacity: .17;
-  --sunlit-blinds-opacity: .13; --sunlit-shutter-gap: 54px; --sunlit-shutter-height: 34px;
+  --sunlit-source: #fff2a8; --sunlit-source-opacity: .82; --sunlit-haze: #ed9a36; --sunlit-haze-opacity: .28;
+  --sunlit-shadow: #80572c; --sunlit-bounce: #ffc86d; --sunlit-glow-opacity: .38; --sunlit-bounce-opacity: .27;
+  --sunlit-blinds-opacity: .16; --sunlit-shutter-gap: 64px; --sunlit-shutter-height: 25px;
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
@@ -897,9 +897,14 @@ h2 {
   --name-accent: #D0D5ED;
   --analog-grid-opacity: .18;
   --analog-grain-opacity: .05;
-  --sunlit-source: #5d7598; --sunlit-source-opacity: .18; --sunlit-haze: #263b65; --sunlit-haze-opacity: .4;
-  --sunlit-shadow: #111827; --sunlit-bounce: #30476e; --sunlit-glow-opacity: .29; --sunlit-bounce-opacity: .24;
-  --sunlit-blinds-opacity: .28; --sunlit-shutter-gap: 18px; --sunlit-shutter-height: 70px;
+  --sunlit-source: #789dff; --sunlit-source-opacity: .32; --sunlit-haze: #4F4D46; --sunlit-haze-opacity: 0;
+  --sunlit-shadow: #020613; --sunlit-bounce: #1e4d9d; --sunlit-glow-opacity: .48; --sunlit-bounce-opacity: .36;
+  --sunlit-blinds-opacity: .52; --sunlit-shutter-gap: 11px; --sunlit-shutter-height: 88px;
+}
+:root[data-theme='dark'] .sunlit-perspective {
+  right: -18vw;
+  width: min(112vw, 1720px);
+  transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 }
 /* Desktop navigation rail, editorial hero layout, latest-post card, and related desktop sizing. */
 .brand-controls {
