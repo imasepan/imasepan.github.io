@@ -3055,7 +3055,7 @@ body.menu-open {
   }
 }
 
-/* Keep the portrait caption attached to its figure on every device. */
+/* Keep the portrait caption semantic and readable without hover. */
 .about-photo figcaption,
 .about-photo:hover figcaption,
 .about-photo:focus-within figcaption {
@@ -3072,4 +3072,85 @@ body.menu-open {
   scale: 1;
   animation: none;
   pointer-events: auto;
+}
+
+/* The visual pointer tag lives at body level so section containment cannot
+   offset or clip it. The original figcaption remains as the semantic source. */
+.portrait-caption-tooltip {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .about-photo,
+  .about-photo img {
+    cursor: none;
+  }
+
+  .about-photo.has-pointer-caption figcaption,
+  .about-photo.has-pointer-caption:hover figcaption,
+  .about-photo.has-pointer-caption:focus-within figcaption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    opacity: 1;
+    animation: none;
+    pointer-events: none;
+  }
+
+  .portrait-caption-tooltip {
+    position: fixed;
+    display: block;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    margin: 0;
+    padding: .4rem .6rem .45rem;
+    background: color-mix(in srgb, var(--ink) 68%, transparent);
+    color: #EDE8D0;
+    border: 1px solid currentColor;
+    border-radius: 0;
+    backdrop-filter: blur(8px);
+    font: 500 12px/1 var(--mono);
+    letter-spacing: .02em;
+    white-space: nowrap;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    scale: .94;
+    rotate: 0deg;
+    animation: none;
+    pointer-events: none;
+    transform-origin: left top;
+    will-change: left, top, opacity, scale, rotate, clip-path;
+  }
+
+  .portrait-caption-tooltip.is-entering {
+    animation: portrait-tag-reveal .45s cubic-bezier(.2, .8, .2, 1) forwards;
+  }
+
+  .portrait-caption-tooltip.is-exiting {
+    animation: portrait-tag-hide .16s ease forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+  .portrait-caption-tooltip.is-entering {
+    animation: none;
+    clip-path: inset(0);
+    opacity: 1;
+    scale: 1;
+  }
+
+  .portrait-caption-tooltip.is-exiting {
+    animation: none;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    scale: 1;
+  }
 }

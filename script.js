@@ -758,42 +758,97 @@ function enhancePostFigureCaptions() {
 enhancePostFigureCaptions();
 
 
-// Keep the portrait caption close to the pointer.
+const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 const portraitHoverTarget = document.querySelector(".about-photo");
-if (portraitHoverTarget) {
-  const movePortraitBubble = (event) => {
-    const bounds = portraitHoverTarget.getBoundingClientRect();
-    portraitHoverTarget.style.setProperty("--bubble-x", `${event.clientX - bounds.left}px`);
-    portraitHoverTarget.style.setProperty("--bubble-y", `${event.clientY - bounds.top}px`);
+const portraitCaption = portraitHoverTarget?.querySelector("figcaption");
+const portraitImage = portraitHoverTarget?.querySelector("img");
+
+// Turn the semantic caption into a cursor-following tag on precise pointers,
+// while leaving it in the document flow as a regular caption everywhere else.
+if (portraitHoverTarget && portraitCaption && portraitImage) {
+  const portraitTooltip = document.createElement("span");
+  portraitTooltip.className = "portrait-caption-tooltip";
+  portraitTooltip.textContent = portraitCaption.textContent;
+  portraitTooltip.setAttribute("aria-hidden", "true");
+  document.body.append(portraitTooltip);
+
+  let previousPointerX = null;
+  let targetRotation = 0;
+  let currentRotation = 0;
+  let rotationFrame = null;
+
+  const animatePortraitCaption = () => {
+    currentRotation += (targetRotation - currentRotation) * .18;
+    targetRotation *= .72;
+    portraitTooltip.style.rotate = `${currentRotation.toFixed(2)}deg`;
+
+    if (Math.abs(currentRotation) > .05 || Math.abs(targetRotation) > .05) {
+      rotationFrame = window.requestAnimationFrame(animatePortraitCaption);
+      return;
+    }
+
+    currentRotation = 0;
+    targetRotation = 0;
+    portraitTooltip.style.rotate = "0deg";
+    rotationFrame = null;
   };
 
-  portraitHoverTarget.addEventListener("pointerenter", movePortraitBubble, { passive: true });
-  portraitHoverTarget.addEventListener("pointermove", movePortraitBubble, { passive: true });
-}
+  const movePortraitInteraction = (event) => {
+    if (!portraitPointerQuery.matches) return;
 
+    const captionBounds = portraitTooltip.getBoundingClientRect();
+    const inset = 8;
+    const x = Math.min(event.clientX + 14, window.innerWidth - captionBounds.width - inset);
+    const y = Math.min(event.clientY + 18, window.innerHeight - captionBounds.height - inset);
+    portraitTooltip.style.left = `${Math.max(inset, x)}px`;
+    portraitTooltip.style.top = `${Math.max(inset, y)}px`;
 
-const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-// Give the portrait a subtle depth shift as the pointer moves across it.
-const portraitImage = portraitHoverTarget?.querySelector("img");
-if (portraitHoverTarget && portraitImage && portraitPointerQuery.matches) {
-  const movePortraitImage = (event) => {
     const bounds = portraitHoverTarget.getBoundingClientRect();
     const normalizedX = ((event.clientX - bounds.left) / bounds.width) - .5;
     const normalizedY = ((event.clientY - bounds.top) / bounds.height) - .5;
     portraitHoverTarget.style.setProperty("--portrait-shift-x", `${(-normalizedX * 10).toFixed(2)}px`);
     portraitHoverTarget.style.setProperty("--portrait-shift-y", `${(-normalizedY * 8).toFixed(2)}px`);
-    portraitHoverTarget.classList.add("is-hovering");
+
+    if (previousPointerX !== null && !reducedMotionQuery.matches) {
+      targetRotation = Math.max(-5, Math.min(5, (event.clientX - previousPointerX) * .6));
+      if (!rotationFrame) rotationFrame = window.requestAnimationFrame(animatePortraitCaption);
+    }
+    previousPointerX = event.clientX;
   };
 
-  const resetPortraitImage = () => {
+  const enterPortrait = (event) => {
+    if (!portraitPointerQuery.matches) return;
+    movePortraitInteraction(event);
+    portraitHoverTarget.classList.add("is-hovering");
+    portraitTooltip.classList.remove("is-exiting");
+    portraitTooltip.classList.add("is-entering");
+  };
+
+  const leavePortrait = () => {
     portraitHoverTarget.style.setProperty("--portrait-shift-x", "0px");
     portraitHoverTarget.style.setProperty("--portrait-shift-y", "0px");
     portraitHoverTarget.classList.remove("is-hovering");
+    portraitTooltip.classList.remove("is-entering");
+    portraitTooltip.classList.add("is-exiting");
+    previousPointerX = null;
+    targetRotation = 0;
   };
 
-  portraitHoverTarget.addEventListener("pointerenter", movePortraitImage, { passive: true });
-  portraitHoverTarget.addEventListener("pointermove", movePortraitImage, { passive: true });
-  portraitHoverTarget.addEventListener("pointerleave", resetPortraitImage, { passive: true });
+  const configurePortraitCaption = () => {
+    portraitHoverTarget.classList.toggle("has-pointer-caption", portraitPointerQuery.matches);
+    if (portraitPointerQuery.matches) return;
+
+    portraitHoverTarget.classList.remove("is-hovering");
+    portraitTooltip.classList.remove("is-entering", "is-exiting");
+    portraitTooltip.removeAttribute("style");
+  };
+
+  portraitHoverTarget.addEventListener("pointerenter", enterPortrait, { passive: true });
+  portraitHoverTarget.addEventListener("pointermove", movePortraitInteraction, { passive: true });
+  portraitHoverTarget.addEventListener("pointerleave", leavePortrait, { passive: true });
+  portraitHoverTarget.addEventListener("pointercancel", leavePortrait, { passive: true });
+  portraitPointerQuery.addEventListener("change", configurePortraitCaption);
+  configurePortraitCaption();
 }
 
 // Turn Spotify links placed inside a post into a compact embedded player.
