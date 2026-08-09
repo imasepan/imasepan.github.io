@@ -61,7 +61,7 @@ a {
 .sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); animation: sunlit-haze-drift 31s ease-in-out infinite alternate; }
 .sunlit-glow { background: linear-gradient(309deg, var(--sunlit-bounce) 0%, transparent 32%); opacity: var(--sunlit-glow-opacity); animation: sunlit-glow-sway 27s ease-in-out infinite alternate; }
 .sunlit-bounce { background: linear-gradient(355deg, var(--sunlit-bounce) 0%, transparent 27%, transparent 100%); opacity: var(--sunlit-bounce-opacity); animation: sunlit-bounce-sway 35s ease-in-out infinite alternate; }
-.sunlit-perspective { position: absolute; top: -30vh; right: -8vw; width: min(96vw, 1480px); height: 136vh; opacity: var(--sunlit-blinds-opacity); transform-origin: top right; transform-style: preserve-3d; transform: matrix3d(.75, -.0625, 0, .0008, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: transform .9s cubic-bezier(.455, .19, 0, .985), opacity .7s ease; animation: sunlit-blinds-sway-light 29s ease-in-out infinite alternate; }
+.sunlit-perspective { position: absolute; top: -30vh; right: -18vw; width: min(112vw, 1720px); height: 136vh; opacity: var(--sunlit-blinds-opacity); transform-origin: top right; transform-style: preserve-3d; transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: transform .9s cubic-bezier(.455, .19, 0, .985), opacity .7s ease; animation: sunlit-blinds-sway-dark 29s ease-in-out infinite alternate; }
 .sunlit-blur { animation: sunlit-blur-drift 33s ease-in-out infinite alternate; }
 @keyframes sunlit-source-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-2.5vw, 1.5vh, 0) scale(1.06); } }
 @keyframes sunlit-haze-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(1.8vw, -1.2vh, 0) scale(1.04); } }
@@ -72,15 +72,15 @@ a {
 @keyframes sunlit-blinds-sway-dark { from { transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) translate3d(-.7vw, .6vh, 0) rotate(-.4deg); } to { transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) translate3d(.9vw, -.8vh, 0) rotate(.5deg); } }
 .sunlit-blinds { position: relative; width: 100%; height: 100%; }
 .sunlit-shutters { display: flex; height: 100%; flex-direction: column; align-items: end; gap: var(--sunlit-shutter-gap); transition: gap .9s cubic-bezier(.455, .19, 0, .985); }
-.sunlit-shutter, .sunlit-bar { background: var(--sunlit-shadow); }
+.sunlit-shutter, .sunlit-bar { background: var(--sunlit-shadow); filter: blur(7px); }
 .sunlit-shutter { width: 100%; height: var(--sunlit-shutter-height); flex: 0 0 auto; transition: height .9s cubic-bezier(.455, .19, 0, .985), background .7s ease; }
 .sunlit-bars { position: absolute; inset: 0; display: flex; justify-content: space-around; }
 .sunlit-bar { width: 5px; height: 100%; transition: background .7s ease; }
 .sunlit-blur { position: absolute; z-index: 2; inset: -12vh -12vw; }
 .sunlit-blur span { position: absolute; inset: 0; backdrop-filter: blur(var(--sunlit-blur)); -webkit-backdrop-filter: blur(var(--sunlit-blur)); -webkit-mask-image: linear-gradient(252deg, transparent, transparent var(--sunlit-stop-1), #000 var(--sunlit-stop-2), #000); mask-image: linear-gradient(252deg, transparent, transparent var(--sunlit-stop-1), #000 var(--sunlit-stop-2), #000); }
-.sunlit-blur span:nth-child(1) { --sunlit-blur: 4px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
-.sunlit-blur span:nth-child(2) { --sunlit-blur: 14px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
-.sunlit-blur span:nth-child(3) { --sunlit-blur: 42px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
+.sunlit-blur span:nth-child(1) { --sunlit-blur: 10px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
+.sunlit-blur span:nth-child(2) { --sunlit-blur: 32px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
+.sunlit-blur span:nth-child(3) { --sunlit-blur: 80px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
 .sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; background: var(--sunlit-shadow); -webkit-mask: url('/assets/leaves-branch-shadow.png') center / contain no-repeat; mask: url('/assets/leaves-branch-shadow.png') center / contain no-repeat; filter: url('#sunlit-wind'); mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
 @keyframes sunlit-leaf-billow { 0%, 100% { transform: perspective(400px) rotateX(0deg) rotateY(0deg) scale(1); } 25% { transform: perspective(400px) rotateX(1deg) rotateY(2deg) scale(1.02); } 50% { transform: perspective(400px) rotateX(-4deg) rotateY(-2deg) scale(.97); } 75% { transform: perspective(400px) rotateX(1deg) rotateY(-1deg) scale(1.04); } }
 /* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
@@ -955,12 +955,6 @@ h2 {
 }
 :root[data-theme='dark'] .sunlit-field::after {
   background: radial-gradient(ellipse 48% 72% at -8% 58%, var(--sunlit-haze) 0%, transparent 74%);
-}
-:root[data-theme='dark'] .sunlit-perspective {
-  right: -18vw;
-  width: min(112vw, 1720px);
-  transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-  animation-name: sunlit-blinds-sway-dark;
 }
 /* Desktop navigation rail, editorial hero layout, latest-post card, and related desktop sizing. */
 .brand-controls {
