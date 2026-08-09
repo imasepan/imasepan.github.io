@@ -29,16 +29,36 @@ const applyTheme = (theme) => {
 
 applyTheme(readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
 
+let activeThemeTransition = null;
+
+const transitionTheme = (theme) => {
+  if (theme === document.documentElement.dataset.theme || activeThemeTransition) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    applyTheme(theme);
+    return;
+  }
+
+  document.documentElement.classList.add('theme-is-transitioning');
+  if (themeToggle) themeToggle.disabled = true;
+
+  // Flush the transition rules before changing the palette so the colors
+  // interpolate directly, without a bright overlay covering the page.
+  void document.body.offsetWidth;
+  applyTheme(theme);
+
+  activeThemeTransition = window.setTimeout(() => {
+    document.documentElement.classList.remove('theme-is-transitioning');
+    if (themeToggle) themeToggle.disabled = false;
+    activeThemeTransition = null;
+  }, 750);
+};
+
 if (themeToggle) {
   themeToggle.addEventListener('click', () => {
     const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!prefersReducedMotion && document.startViewTransition) {
-      document.startViewTransition(() => applyTheme(nextTheme));
-    } else {
-      applyTheme(nextTheme);
-    }
+    transitionTheme(nextTheme);
 
     try {
       window.localStorage.setItem('theme', nextTheme);
@@ -49,7 +69,7 @@ if (themeToggle) {
 }
 
 systemTheme.addEventListener('change', (event) => {
-  if (!readSavedTheme()) applyTheme(event.matches ? 'dark' : 'light');
+  if (!readSavedTheme()) transitionTheme(event.matches ? 'dark' : 'light');
 });
 
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');

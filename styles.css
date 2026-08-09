@@ -22,20 +22,12 @@ html {
 html.inertia-enabled {
   scroll-behavior: auto;
 }
-/* Disable the outgoing view animation and wipe the incoming page during theme changes. */
-::view-transition-old(root) {
-  animation: none;
-}
-::view-transition-new(root) {
-  animation: theme-wipe .7s cubic-bezier(.65, 0, .35, 1);
-}
-@keyframes theme-wipe {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0);
-  }
+/* Crossfade the existing palette directly during theme changes. */
+:root.theme-is-transitioning body,
+:root.theme-is-transitioning body *:not(.sunlit-field):not(.sunlit-field *) {
+  transition-property: color, background-color, border-color, box-shadow, text-decoration-color;
+  transition-duration: .48s;
+  transition-timing-function: cubic-bezier(.455, .19, 0, .985);
 }
 /* Establish the page's base typography, colors, spacing, and stacking context. */
 body {
@@ -1227,9 +1219,6 @@ h2 {
 }
 /* Respect reduced-motion preferences by removing nonessential transitions and animations. */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-new(root) {
-    animation: none;
-  }
   .analog-field, .analog-grid, .analog-grain, .analog-mark, .film-grain {
     transform: none;
   }
