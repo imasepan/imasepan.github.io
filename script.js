@@ -558,6 +558,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     document.title = nextDocument.title;
     window.history.pushState({}, '', destination.href);
     window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    enhancePostFigureCaptions();
     enhancePostSpotifyLinks();
     loadProjects();
     runTypewriter();
@@ -610,9 +611,12 @@ handleScrollTarget();
 
 
 // Turn `[figcaption: ...]` into a caption for the most recently rendered image.
-// This keeps the syntax compatible with the standard GitHub Pages/Jekyll build.
-const postContent = document.querySelector(".post-content");
-if (postContent) {
+// This keeps the syntax compatible with the standard GitHub Pages/Jekyll build,
+// including pages inserted by soft navigation.
+function enhancePostFigureCaptions() {
+  const postContent = document.querySelector(".post-content");
+  if (!postContent) return;
+
   const captionPattern = /^\[figcaption:\s*([\s\S]*?)\s*\]$/;
   [...postContent.querySelectorAll("p")].forEach((paragraph) => {
     const match = paragraph.textContent.trim().match(captionPattern);
@@ -623,10 +627,17 @@ if (postContent) {
       .at(-1);
     if (!image) return;
 
+    const imageParagraph = image.closest("p");
+    if (!imageParagraph || imageParagraph.parentElement !== postContent) return;
+
+    // Keep an optional link around the image, while replacing the Markdown
+    // paragraph so the figure remains valid, compact markup.
+    const imageContent = image.closest("a") || image;
+
     const figure = document.createElement("figure");
     figure.className = "post-figure";
-    image.parentElement.replaceWith(figure);
-    figure.append(image);
+    imageParagraph.replaceWith(figure);
+    figure.append(imageContent);
 
     const caption = document.createElement("figcaption");
     caption.textContent = match[1];
@@ -634,6 +645,8 @@ if (postContent) {
     paragraph.remove();
   });
 }
+
+enhancePostFigureCaptions();
 
 
 // Keep the portrait caption close to the pointer.
