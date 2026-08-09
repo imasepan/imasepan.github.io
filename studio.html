@@ -54,9 +54,15 @@
           const activeProject = projects[activeIndex];
           if (!activeProject) return;
           const activeCenter = activeProject.offsetTop + (activeProject.offsetHeight / 2);
-          // Bias the selected tile upward so there is room to preview both neighbours.
           const viewportCenter = viewport.clientHeight * (window.innerWidth <= 800 ? .5 : .44);
-          const offset = activeCenter - viewportCenter;
+          // Keep every preceding project visible above a selected later project.
+          // The first project remains centered, since it has no predecessors.
+          const activeTop = activeProject.offsetTop;
+          const preferredTop = viewportCenter - (activeProject.offsetHeight / 2);
+          const targetTop = window.innerWidth > 800 && activeIndex > 0
+            ? Math.min(activeTop, viewport.clientHeight * .44)
+            : preferredTop;
+          const offset = activeCenter - (targetTop + (activeProject.offsetHeight / 2));
           track.style.transform = `translate3d(0, ${-offset}px, 0)`;
         };
 
