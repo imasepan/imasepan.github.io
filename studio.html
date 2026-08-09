@@ -7,15 +7,15 @@
     <title>imasepan — Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="studio.css" />
   </head>
   <body>
     <header class="studio-header">
       <a class="studio-name" href="index.html">JIN HYUN KIM</a>
       <nav aria-label="Main navigation">
-        <a href="/index.html" aria-current="page">[ PERSONAL ]</a>
-        <a href="index.html#about">[ ABOUT ]</a>
+        <a href="/index.html">[ PERSONAL ]</a>
+        <a href="about.html">[ ABOUT ]</a>
         <a href="mailto:jinhyuncharliekim@gmail.com">[ CONTACT ]</a>
       </nav>
     </header>
@@ -46,9 +46,33 @@
         const progress = document.querySelector('.studio-scroll i');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let activeIndex = 0;
+        let currentOffset = 0;
+        let targetOffset = 0;
+        let animationFrame = null;
+        let previousFrame = 0;
         let wheelDistance = 0;
-        let touchY = null;
-        const wheelStep = 240;
+        let wheelMoved = false;
+        let wheelResetTimer = null;
+        let touchStartY = null;
+        const wheelStep = 54;
+
+        const animateProjectPosition = (time) => {
+          const elapsed = Math.min(previousFrame ? time - previousFrame : 16, 32);
+          previousFrame = time;
+          const easing = 1 - Math.exp(-elapsed / 150);
+          currentOffset += (targetOffset - currentOffset) * easing;
+          track.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
+
+          if (Math.abs(targetOffset - currentOffset) < .35) {
+            currentOffset = targetOffset;
+            track.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
+            animationFrame = null;
+            previousFrame = 0;
+            return;
+          }
+
+          animationFrame = window.requestAnimationFrame(animateProjectPosition);
+        };
 
         const updateProjectPosition = () => {
           const activeProject = projects[activeIndex];
@@ -56,8 +80,15 @@
           const activeCenter = activeProject.offsetTop + (activeProject.offsetHeight / 2);
           // Bias the selected tile upward so there is room to preview both neighbours.
           const viewportCenter = viewport.clientHeight * (window.innerWidth <= 800 ? .5 : .44);
-          const offset = activeCenter - viewportCenter;
-          track.style.transform = `translate3d(0, ${-offset}px, 0)`;
+          targetOffset = activeCenter - viewportCenter;
+
+          if (reducedMotion.matches) {
+            currentOffset = targetOffset;
+            track.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
+            return;
+          }
+
+          if (!animationFrame) animationFrame = window.requestAnimationFrame(animateProjectPosition);
         };
 
         const selectProject = (nextIndex) => {
@@ -76,14 +107,37 @@
           updateProjectPosition();
         };
 
-        const move = (direction) => selectProject(activeIndex + direction);
+        const move = (direction) => {
+          const nextIndex = Math.max(0, Math.min(projects.length - 1, activeIndex + direction));
+          if (nextIndex !== activeIndex) selectProject(nextIndex);
+        };
+
+        const normalizeWheelDelta = (event) => {
+          if (event.deltaMode === 1) return event.deltaY * 16;
+          if (event.deltaMode === 2) return event.deltaY * viewport.clientHeight;
+          return event.deltaY;
+        };
+
         const consumeWheel = (event) => {
           if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
           event.preventDefault();
-          wheelDistance += event.deltaY;
-          if (Math.abs(wheelDistance) < wheelStep) return;
+          const delta = normalizeWheelDelta(event);
+
+          if (wheelDistance && Math.sign(delta) !== Math.sign(wheelDistance)) {
+            wheelDistance = 0;
+            wheelMoved = false;
+          }
+
+          wheelDistance += delta;
+          window.clearTimeout(wheelResetTimer);
+          wheelResetTimer = window.setTimeout(() => {
+            wheelDistance = 0;
+            wheelMoved = false;
+          }, 150);
+
+          if (wheelMoved || Math.abs(wheelDistance) < wheelStep) return;
           move(Math.sign(wheelDistance));
-          wheelDistance = 0;
+          wheelMoved = true;
         };
 
         window.addEventListener('wheel', consumeWheel, { passive: false });
@@ -93,32 +147,27 @@
           event.preventDefault();
           if (event.key === 'Home') selectProject(0);
           else if (event.key === 'End') selectProject(projects.length - 1);
-          else move(event.key === 'ArrowUp' || event.key === 'PageUp' ? -1 : 1);
+          else move(event.key === 'ArrowUp' || event.key === 'PageUp' || (event.key === ' ' && event.shiftKey) ? -1 : 1);
         });
 
-        viewport.addEventListener('touchstart', (event) => { touchY = event.touches[0].clientY; }, { passive: true });
+        viewport.addEventListener('touchstart', (event) => { touchStartY = event.touches[0].clientY; }, { passive: true });
         viewport.addEventListener('touchmove', (event) => {
-          if (touchY === null) return;
+          if (touchStartY === null) return;
           event.preventDefault();
-          const distance = touchY - event.touches[0].clientY;
-          if (Math.abs(distance) > 48) {
-            move(Math.sign(distance));
-            touchY = event.touches[0].clientY;
-          }
         }, { passive: false });
-        viewport.addEventListener('touchend', () => { touchY = null; }, { passive: true });
+        viewport.addEventListener('touchend', (event) => {
+          if (touchStartY === null) return;
+          const endY = event.changedTouches[0]?.clientY ?? touchStartY;
+          const distance = touchStartY - endY;
+          if (Math.abs(distance) > 44) move(Math.sign(distance));
+          touchStartY = null;
+        }, { passive: true });
+        viewport.addEventListener('touchcancel', () => { touchStartY = null; }, { passive: true });
         track.addEventListener('focusin', (event) => {
           const project = event.target.closest('.project-feature, .project-row');
           const index = projects.indexOf(project);
           if (index >= 0) selectProject(index);
         });
-        track.addEventListener('pointermove', (event) => {
-          if (event.pointerType === 'touch') return;
-          const project = event.target.closest('.project-feature, .project-row');
-          const index = projects.indexOf(project);
-          if (index >= 0) selectProject(index);
-        });
-
         new ResizeObserver(updateProjectPosition).observe(viewport);
         new ResizeObserver(updateProjectPosition).observe(track);
         reducedMotion.addEventListener('change', updateProjectPosition);
