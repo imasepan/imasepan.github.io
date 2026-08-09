@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-10
+
+- Restyled the entrance screen around the homepage's paper palette, analog dot texture, soft light, and lilac accent.
+- Removed visible loading copy while preserving non-visible status labels for assistive technology.
+- Matched the between-page loading transition to the same visual system.
+- Applied the window-divider progressive blur bands to the animated leaf shadow.
+
 ## 2026-08-09
 
 - Moved the homepage Spotify player left on desktop so it clears the floating language and menu controls.
@@ -12,6 +19,3 @@
 - Removed the nonfunctional dynamically injected `SYSTEM`/`CLASSIC` layout button.
 - Added `documentation.md` with site architecture and maintenance notes.
 - Added `CHAT_CONTEXT.md` for continuity in future development chats.
-# 2026-08-10
-
-- Applied the window-divider progressive blur bands to the animated leaf shadow.

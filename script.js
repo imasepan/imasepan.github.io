@@ -430,8 +430,10 @@ if ('requestIdleCallback' in window) {
 
 const pageLoader = document.createElement('div');
 pageLoader.className = 'page-loader';
+pageLoader.setAttribute('role', 'status');
+pageLoader.setAttribute('aria-label', 'Loading');
 pageLoader.setAttribute('aria-hidden', 'true');
-pageLoader.innerHTML = '<span class="page-loader-label">Loading</span>';
+pageLoader.innerHTML = '<span class="page-loader-indicator" aria-hidden="true"></span>';
 document.body.appendChild(pageLoader);
 
 let arrivingPage = null;
@@ -443,7 +445,7 @@ try {
 }
 
 if (arrivingPage) {
-  pageLoader.querySelector('.page-loader-label').textContent = `Loading ${arrivingPage}`;
+  pageLoader.setAttribute('aria-label', `Loading ${arrivingPage}`);
   pageLoader.classList.add('is-arrival');
   pageLoader.setAttribute('aria-hidden', 'false');
 
@@ -632,7 +634,7 @@ const queueProjectLoad = () => {
 const navigateWithLoader = async (destination, destinationLabel) => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   stopInertialScroll();
-  pageLoader.querySelector('.page-loader-label').textContent = `Loading ${destinationLabel}`;
+  pageLoader.setAttribute('aria-label', `Loading ${destinationLabel}`);
   pageLoader.setAttribute('aria-hidden', 'false');
   pageLoader.className = 'page-loader is-active';
 

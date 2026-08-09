@@ -18,7 +18,7 @@ This repository contains the personal website for imasepan, built as a Jekyll si
 
 ## Recent change
 
-The site now shows a bounded entrance screen while critical images and fonts decode. Large visual assets use WebP versions, expensive visual effects start during idle time, and project cards render immediately before a near-viewport GitHub refresh. The unused industrial-layout resources are no longer requested by pages.
+The text-free entrance screen and between-page loading transition now mirror the homepage's warm paper palette, analog dot texture, soft window light, and muted lilac accent while critical images and fonts decode. Non-visible status labels preserve loading announcements for assistive technology. Large visual assets use WebP versions, expensive visual effects start during idle time, and project cards render immediately before a near-viewport GitHub refresh. The unused industrial-layout resources are no longer requested by pages.
 
 ## Development notes
 
