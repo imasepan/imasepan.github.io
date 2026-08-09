@@ -9,9 +9,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="about.css" />
+    <link rel="stylesheet" href="/entry-loader.css?v=20260809-1" />
+    <link rel="stylesheet" href="about.css?v=20260809-1" />
+    <script src="/entry-loader.js?v=20260809-1" defer></script>
   </head>
   <body>
+    <div class="entry-loader" data-entry-loader data-assets="/assets/portrait.webp" role="status" aria-live="polite">
+      <div class="entry-loader-inner"><p class="entry-loader-label"><span>imasepan</span><span>loading profile</span></p><div class="entry-loader-track" aria-hidden="true"></div></div>
+    </div>
     <header class="about-header">
       <a class="about-name" href="index.html">JIN HYUN KIM</a>
       <nav aria-label="Main navigation">
@@ -30,7 +35,7 @@
           <p class="intro">I’m a computer engineering student and full-stack developer interested in useful software, thoughtful interfaces, and the stories people keep returning to.</p>
         </div>
         <figure class="portrait">
-          <img src="/assets/portrait.jpg" alt="Jin Hyun and a friend standing by the sea in front of Mount Fuji at sunset" />
+          <img src="/assets/portrait.webp" alt="Jin Hyun and a friend standing by the sea in front of Mount Fuji at sunset" width="900" height="1218" decoding="async" />
           <figcaption><span>SEEN AT</span> MOUNT FUJI, JAPAN<br /><small>I’M ON THE LEFT.</small></figcaption>
         </figure>
         <div class="hero-stamp" aria-hidden="true">SEOUL<br />↔ USA</div>

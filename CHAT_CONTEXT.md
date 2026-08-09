@@ -6,8 +6,8 @@ Use this file as a quick briefing when starting a new task on this repository.
 - Local path: `/Users/charlie/Documents/Codex/Website`
 - Site type: static/Jekyll-compatible personal portfolio and blog.
 - Languages: English (`index.html`) and Korean (`kr.html`).
-- Main styling: `styles.css` and `industrial.css`.
-- Main behavior: `script.js`; layout initialization/HUD: `layout.js`.
+- Main styling: `styles.css`, with standalone styles for About and Studio.
+- Main behavior: `script.js`; entry asset warmup: `entry-loader.js`.
 - Blog content: `_posts/`; templates: `_layouts/`.
 - External integrations: GitHub repository API for project cards, Spotify playlist, GitHub Discussions guestbook.
 - Deployment target: GitHub Pages from the `main` branch.

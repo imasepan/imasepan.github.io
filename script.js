@@ -395,8 +395,18 @@ createSunlitField();
 createAnalogField();
 createFilmGrain();
 startAnalogParallax();
-startAnalogRipple();
-const stopInertialScroll = startInertialScroll();
+let stopInertialScroll = () => {};
+
+const startDeferredEnhancements = () => {
+  startAnalogRipple();
+  stopInertialScroll = startInertialScroll();
+};
+
+if ('requestIdleCallback' in window) {
+  window.requestIdleCallback(startDeferredEnhancements, { timeout: 1200 });
+} else {
+  window.setTimeout(startDeferredEnhancements, 250);
+}
 
 const pageLoader = document.createElement('div');
 pageLoader.className = 'page-loader';
@@ -537,6 +547,26 @@ const loadProjects = () => {
   if (!projectList || projectList.dataset.loaded) return;
   projectList.dataset.loaded = 'true';
 
+  const cacheKey = 'imasepan-projects-v1';
+  const renderProjects = (repos) => {
+    projectList.innerHTML = repos.map((repo) => `
+      <a class="project-card${repo.name.toLowerCase() === 'playermarket' ? ' player-market' : ''}" href="${repo.html_url}" target="_blank" rel="noreferrer">
+        <h3>${repo.name}</h3>
+        <p>${repo.description || (isKorean ? 'imasepan의 프로젝트입니다.' : 'A project by imasepan.')}</p>
+        <span class="project-meta">${repo.language || 'Code'} · ${isKorean ? 'GitHub에서 보기 ↗' : 'View on GitHub ↗'}</span>
+      </a>`).join('');
+  };
+
+  try {
+    const cachedProjects = JSON.parse(window.sessionStorage.getItem(cacheKey));
+    if (Array.isArray(cachedProjects) && cachedProjects.length) {
+      renderProjects(cachedProjects);
+      return;
+    }
+  } catch {
+    // Continue with the static cards and refresh from GitHub when storage is unavailable.
+  }
+
   fetch('https://api.github.com/users/imasepan/repos?sort=updated&per_page=100')
     .then((response) => {
       if (!response.ok) throw new Error('Could not load repositories');
@@ -547,16 +577,36 @@ const loadProjects = () => {
         .filter((repo) => repo.name !== 'imasepan.github.io')
         .slice(0, 3);
       if (!visibleRepos.length) throw new Error('No public repositories found');
-      projectList.innerHTML = visibleRepos.map((repo) => `
-        <a class="project-card${repo.name.toLowerCase() === 'playermarket' ? ' player-market' : ''}" href="${repo.html_url}" target="_blank" rel="noreferrer">
-          <h3>${repo.name}</h3>
-          <p>${repo.description || (isKorean ? 'imasepan의 프로젝트입니다.' : 'A project by imasepan.')}</p>
-          <span class="project-meta">${repo.language || 'Code'} · ${isKorean ? 'GitHub에서 보기 ↗' : 'View on GitHub ↗'}</span>
-        </a>`).join('');
+      renderProjects(visibleRepos);
+      try {
+        window.sessionStorage.setItem(cacheKey, JSON.stringify(visibleRepos));
+      } catch {
+        // The refreshed cards still render when storage is unavailable.
+      }
     })
     .catch(() => {
-      projectList.innerHTML = '<p class="loading">Projects will appear here as public repositories are added. <a href="https://github.com/imasepan?tab=repositories" target="_blank" rel="noreferrer">Browse GitHub ↗</a></p>';
+      if (!projectList.querySelector('.project-card')) {
+        projectList.innerHTML = '<p class="loading">Projects will appear here as public repositories are added. <a href="https://github.com/imasepan?tab=repositories" target="_blank" rel="noreferrer">Browse GitHub ↗</a></p>';
+      }
     });
+};
+
+const queueProjectLoad = () => {
+  const projectList = document.querySelector('#project-list');
+  if (!projectList || projectList.dataset.observed || projectList.dataset.loaded) return;
+  projectList.dataset.observed = 'true';
+
+  if (!('IntersectionObserver' in window)) {
+    loadProjects();
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    observer.disconnect();
+    loadProjects();
+  }, { rootMargin: '500px 0px' });
+  observer.observe(projectList);
 };
 
 const navigateWithLoader = async (destination, destinationLabel) => {
@@ -592,7 +642,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
     enhancePostFigureCaptions();
     enhancePostSpotifyLinks();
-    loadProjects();
+    queueProjectLoad();
     runTypewriter();
     handleScrollTarget();
 
@@ -638,7 +688,7 @@ document.addEventListener('click', (event) => {
 });
 
 runTypewriter();
-loadProjects();
+queueProjectLoad();
 handleScrollTarget();
 
 
@@ -648,6 +698,11 @@ handleScrollTarget();
 function enhancePostFigureCaptions() {
   const postContent = document.querySelector(".post-content");
   if (!postContent) return;
+
+  postContent.querySelectorAll("img").forEach((image) => {
+    image.loading = "lazy";
+    image.decoding = "async";
+  });
 
   const captionPattern = /^\[figcaption:\s*([\s\S]*?)\s*\]$/;
   [...postContent.querySelectorAll("p")].forEach((paragraph) => {
