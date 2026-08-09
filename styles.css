@@ -57,11 +57,19 @@ a {
 /* Fixed, CSS-only window light adapted from jackyzha0/sunlit. */
 .sunlit-field { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; transition: background-color .7s ease; }
 .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce { position: absolute; inset: 0; content: ''; transition: opacity .7s ease, background .7s ease; }
-.sunlit-field::before { background: radial-gradient(ellipse 68% 44% at 100% 6%, var(--sunlit-source), transparent 73%); opacity: var(--sunlit-source-opacity); }
-.sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); }
-.sunlit-glow { background: linear-gradient(309deg, var(--sunlit-bounce) 0%, transparent 32%); opacity: var(--sunlit-glow-opacity); }
-.sunlit-bounce { background: linear-gradient(355deg, var(--sunlit-bounce) 0%, transparent 27%, transparent 100%); opacity: var(--sunlit-bounce-opacity); }
-.sunlit-perspective { position: absolute; top: -30vh; right: -8vw; width: min(96vw, 1480px); height: 136vh; opacity: var(--sunlit-blinds-opacity); transform-origin: top right; transform-style: preserve-3d; transform: matrix3d(.75, -.0625, 0, .0008, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: transform .9s cubic-bezier(.455, .19, 0, .985), opacity .7s ease; }
+.sunlit-field::before { background: radial-gradient(ellipse 68% 44% at 100% 6%, var(--sunlit-source), transparent 73%); opacity: var(--sunlit-source-opacity); animation: sunlit-source-drift 24s ease-in-out infinite alternate; }
+.sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); animation: sunlit-haze-drift 31s ease-in-out infinite alternate; }
+.sunlit-glow { background: linear-gradient(309deg, var(--sunlit-bounce) 0%, transparent 32%); opacity: var(--sunlit-glow-opacity); animation: sunlit-glow-sway 27s ease-in-out infinite alternate; }
+.sunlit-bounce { background: linear-gradient(355deg, var(--sunlit-bounce) 0%, transparent 27%, transparent 100%); opacity: var(--sunlit-bounce-opacity); animation: sunlit-bounce-sway 35s ease-in-out infinite alternate; }
+.sunlit-perspective { position: absolute; top: -30vh; right: -8vw; width: min(96vw, 1480px); height: 136vh; opacity: var(--sunlit-blinds-opacity); transform-origin: top right; transform-style: preserve-3d; transform: matrix3d(.75, -.0625, 0, .0008, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: transform .9s cubic-bezier(.455, .19, 0, .985), opacity .7s ease; animation: sunlit-blinds-sway-light 29s ease-in-out infinite alternate; }
+.sunlit-blur { animation: sunlit-blur-drift 33s ease-in-out infinite alternate; }
+@keyframes sunlit-source-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-2.5vw, 1.5vh, 0) scale(1.06); } }
+@keyframes sunlit-haze-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(1.8vw, -1.2vh, 0) scale(1.04); } }
+@keyframes sunlit-glow-sway { from { transform: translate3d(-1vw, .8vh, 0) rotate(-.35deg) scale(1.02); } to { transform: translate3d(1.4vw, -1vh, 0) rotate(.45deg) scale(1.06); } }
+@keyframes sunlit-bounce-sway { from { transform: translate3d(1vw, 1vh, 0) rotate(.25deg) scale(1.02); } to { transform: translate3d(-1.5vw, -.8vh, 0) rotate(-.3deg) scale(1.05); } }
+@keyframes sunlit-blur-drift { from { transform: translate3d(-.6vw, .4vh, 0) scale(1.01); } to { transform: translate3d(.8vw, -.6vh, 0) scale(1.03); } }
+@keyframes sunlit-blinds-sway-light { from { transform: matrix3d(.75, -.0625, 0, .0008, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) translate3d(-.7vw, .6vh, 0) rotate(-.4deg); } to { transform: matrix3d(.75, -.0625, 0, .0008, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) translate3d(.9vw, -.8vh, 0) rotate(.5deg); } }
+@keyframes sunlit-blinds-sway-dark { from { transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) translate3d(-.7vw, .6vh, 0) rotate(-.4deg); } to { transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) translate3d(.9vw, -.8vh, 0) rotate(.5deg); } }
 .sunlit-blinds { position: relative; width: 100%; height: 100%; }
 .sunlit-shutters { display: flex; height: 100%; flex-direction: column; align-items: end; gap: var(--sunlit-shutter-gap); transition: gap .9s cubic-bezier(.455, .19, 0, .985); }
 .sunlit-shutter, .sunlit-bar { background: var(--sunlit-shadow); }
@@ -263,6 +271,8 @@ a {
 }
 .spotify-player {
   display: block;
+  width: min(100%, 620px);
+  justify-self: end;
   overflow: hidden;
   border: 0;
   border-radius: 10px;
@@ -723,6 +733,10 @@ h2 {
     grid-template-columns: 1fr;
     gap: 8px;
   }
+  .spotify-player {
+    width: 100%;
+    justify-self: stretch;
+  }
   .site-header {
     min-height: 72px;
     position: relative;
@@ -905,6 +919,7 @@ h2 {
   right: -18vw;
   width: min(112vw, 1720px);
   transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+  animation-name: sunlit-blinds-sway-dark;
 }
 /* Desktop navigation rail, editorial hero layout, latest-post card, and related desktop sizing. */
 .brand-controls {
@@ -1180,6 +1195,7 @@ h2 {
     transform: none;
   }
   .sunlit-field, .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-shutters, .sunlit-shutter, .sunlit-bar { transition: none; }
+  .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-blur { animation: none; }
   .analog-grid, .analog-grain, .analog-mark, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-label::after {
     animation: none;
   }
