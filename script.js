@@ -1,6 +1,8 @@
 const wordmark = document.querySelector('.wordmark');
 const nav = document.querySelector('.site-nav');
 const siteHeader = document.querySelector('.site-header');
+const brandControls = document.querySelector('.brand-controls');
+const headerControls = document.querySelector('.header-controls');
 const isKorean = document.documentElement.lang === 'ko';
 const themeToggle = document.querySelector('.theme-toggle');
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -473,6 +475,25 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
 };
 
 if (wordmark && siteHeader) {
+  let controlsCloseTimer;
+
+  const revealHeaderControls = () => {
+    window.clearTimeout(controlsCloseTimer);
+    siteHeader.classList.add('controls-open');
+  };
+  const concealHeaderControls = () => {
+    window.clearTimeout(controlsCloseTimer);
+    controlsCloseTimer = window.setTimeout(() => {
+      if (!siteHeader.classList.contains('is-open')) {
+        siteHeader.classList.remove('controls-open');
+      }
+    }, 180);
+  };
+
+  brandControls?.addEventListener('pointerenter', revealHeaderControls);
+  brandControls?.addEventListener('pointerleave', concealHeaderControls);
+  headerControls?.addEventListener('pointerenter', revealHeaderControls);
+  headerControls?.addEventListener('pointerleave', concealHeaderControls);
   wordmark.addEventListener('click', () => {
     wordmark.setAttribute('aria-expanded', 'false');
     window.location.href = isKorean ? '/kr/' : '/';
@@ -484,6 +505,7 @@ const menuButton = document.querySelector('.menu-button');
 if (menuButton && siteHeader && nav) {
   const setMenuOpen = (open) => {
     siteHeader.classList.toggle('is-open', open);
+    siteHeader.classList.toggle('controls-open', open);
     document.body.classList.toggle('menu-open', open);
     menuButton.setAttribute('aria-expanded', String(open));
     menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');

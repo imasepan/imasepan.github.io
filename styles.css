@@ -2971,3 +2971,54 @@ body.menu-open {
 .site-header .site-nav a { display: block; width: 100%; box-sizing: border-box; padding: 10px; color: var(--ink); font-size: clamp(22px, 4vw, 32px); line-height: 1.1; }
 .site-header .menu-button, .site-header.is-scrolled .menu-button { display: inline-flex !important; width: auto; min-width: 76px; min-height: 48px; padding: 0 14px; font-size: 13px; cursor: pointer; }
 @media (max-width: 480px) { .site-header, .site-header.is-scrolled, .site-header.is-scrolled:hover, .site-header.is-scrolled:focus-within { padding: 12px; gap: 6px; } .site-header .brand-controls { gap: 6px; padding: 7px; } .site-header .wordmark { font-size: 13px; } .site-header .theme-toggle { min-width: 44px; padding-inline: 6px; } .site-header .language-switch { display: none; } .site-header .menu-button, .site-header.is-scrolled .menu-button { min-width: 48px; min-height: 40px; padding-inline: 6px; font-size: 12px; } .site-header .site-nav, .site-header.is-open .site-nav { top: 68px; right: 12px; width: calc(100vw - 24px); max-height: calc(100svh - 84px); } }
+
+/* Keep the wordmark as the compact header control. Its hover and keyboard
+   focus reveal the language and navigation actions; they remain available
+   while the pointer is anywhere over the header so they can be selected. */
+.site-header .header-controls {
+  position: absolute;
+  top: 76px;
+  left: 24px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(8px);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+.site-header.controls-open .header-controls,
+.site-header:focus-within .header-controls,
+.site-header.is-open .header-controls {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  /* A transformed ancestor turns the fixed navigation panel into a
+     header-controls-relative panel, placing its page links off-screen. */
+  transform: none;
+  transition-delay: 0s;
+}
+@media (max-width: 480px) {
+  .site-header .header-controls {
+    top: 60px;
+    left: 12px;
+  }
+  .site-header .language-switch {
+    display: inline-flex;
+  }
+}
+
+/* The navigation panel belongs to the Menu button: align its right edge to
+   that button and open it immediately below the Korean/Menu control row. */
+.site-header .site-nav,
+.site-header.is-open .site-nav {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: auto;
+  left: calc(100% - 76px);
+  width: min(260px, calc(100vw - 96px));
+}
+@media (max-width: 480px) {
+  .site-header .site-nav,
+  .site-header.is-open .site-nav {
+    left: calc(100% - 48px);
+  }
+}
