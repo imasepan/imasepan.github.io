@@ -105,23 +105,6 @@ a {
   transition: opacity .25s ease;
   will-change: transform;
 }
-.analog-ripple {
-  position: fixed;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .25s ease;
-}
-.analog-field.has-ripple .analog-grid {
-  opacity: 0;
-  animation: none;
-}
-.analog-field.has-ripple .analog-ripple {
-  opacity: var(--analog-grid-opacity, .26);
-}
 .analog-grain {
   position: absolute;
   inset: -8%;
@@ -137,10 +120,10 @@ a {
 /* A full-page film texture: fixed above the UI, but never intercepts input. */
 .film-grain {
   position: fixed;
-  inset: -50%;
+  inset: 0;
   z-index: 900;
-  width: 200%;
-  height: 200%;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   opacity: var(--film-grain-opacity, .065);
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E") 0 0 / 180px 180px repeat;
@@ -188,11 +171,11 @@ a {
   }
 }
 @keyframes film-grain-shift {
-  0% { transform: translate3d(-2%, 1%, 0); }
-  25% { transform: translate3d(1%, -3%, 0); }
-  50% { transform: translate3d(3%, 2%, 0); }
-  75% { transform: translate3d(-1%, 3%, 0); }
-  100% { transform: translate3d(2%, -1%, 0); }
+  0% { transform: translate3d(-2px, 1px, 0) scale(1.02); }
+  25% { transform: translate3d(1px, -2px, 0) scale(1.02); }
+  50% { transform: translate3d(2px, 2px, 0) scale(1.02); }
+  75% { transform: translate3d(-1px, 2px, 0) scale(1.02); }
+  100% { transform: translate3d(2px, -1px, 0) scale(1.02); }
 }
 @keyframes analog-mark-pulse {
   0%, 100% {
@@ -308,7 +291,7 @@ a {
     padding-right: 210px;
   }
 }
-/* Build the hero introduction, typewriter caret, image panel, and entrance animation. */
+/* Build the hero introduction, headline entrance, image panel, and tile animation. */
 .hero {
   min-height: 620px;
   display: flex;
@@ -323,23 +306,17 @@ a {
   color: var(--muted);
   margin: 0 0 20px;
 }
-.hero h1[data-typewriter] {
+.hero h1[data-reveal-heading] {
   white-space: pre-wrap;
 }
-.hero h1[data-typewriter].has-caret::after {
-  content: '';
-  display: inline-block;
-  width: .08em;
-  height: .82em;
-  margin-left: .08em;
-  background: currentColor;
-  vertical-align: -.06em;
-  animation: typewriter-caret .8s steps(1, end) infinite;
+[data-reveal-heading].is-materialising {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .65s ease, transform .65s cubic-bezier(.2, .8, .2, 1);
 }
-@keyframes typewriter-caret {
-  50% {
-    opacity: 0;
-  }
+[data-reveal-heading].is-materialising.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 .hero-photo-panel, .latest-post-card {
   opacity: 0;
@@ -887,24 +864,6 @@ h2 {
     font-size: 12px;
   }
 }
-.typewriter-text.has-caret::after {
-  content: '';
-  display: inline-block;
-  width: .08em;
-  height: .85em;
-  margin-left: .08em;
-  background: var(--orange);
-  vertical-align: -.06em;
-  animation: typewriter-caret .75s steps(1, end) infinite;
-}
-@keyframes typewriter-caret {
-  0%, 49% {
-    opacity: 1;
-  }
-  50%, 100% {
-    opacity: 0;
-  }
-}
 /* Supply automatic and explicit light/dark theme variable palettes. */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -1245,14 +1204,8 @@ h2 {
   }
   .sunlit-field, .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-shutters, .sunlit-shutter, .sunlit-bar { transition: none; }
   .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-leaf-shadow, .sunlit-blur { animation: none; }
-  .analog-grid, .analog-grain, .analog-mark, .film-grain, .typewriter-text.has-caret::after, .page-loader::before, .page-loader-indicator::after {
+  .analog-grid, .analog-grain, .analog-mark, .film-grain, .page-loader::before, .page-loader-indicator::after {
     animation: none;
-  }
-  .analog-ripple {
-    display: none;
-  }
-  .analog-field.has-ripple .analog-grid {
-    opacity: var(--analog-grid-opacity, .26);
   }
   .analog-grid, .analog-grain, .analog-mark {
     translate: none;
@@ -1263,6 +1216,11 @@ h2 {
   }
   .button:hover, .text-link:hover, .about-contact a:hover, .project-card:hover, .feature-link:hover, .site-footer > a:last-child:hover {
     transform: none;
+  }
+  [data-reveal-heading].is-materialising {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 /* Floating navigation panel and full-screen editorial sections */

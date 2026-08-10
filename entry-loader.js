@@ -52,6 +52,7 @@
     window.setTimeout(() => {
       loader.classList.add('is-ready');
       loader.setAttribute('aria-hidden', 'true');
+      window.dispatchEvent(new Event('entry-loader-ready'));
       window.setTimeout(() => loader.remove(), 550);
     }, remaining);
   });

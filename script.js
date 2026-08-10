@@ -79,7 +79,7 @@ const createSunlitField = () => {
   const field = document.createElement('div');
   field.className = 'sunlit-field';
   field.setAttribute('aria-hidden', 'true');
-  field.innerHTML = `<div class="sunlit-blur"><span></span><span></span><span></span></div><div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-leaf-shadow"><span class="sunlit-leaf-layer"></span><span class="sunlit-leaf-layer"></span><span class="sunlit-leaf-layer"></span><svg width="0" height="0" aria-hidden="true"><defs><filter id="sunlit-wind" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" numOctaves="2" seed="1"><animate attributeName="baseFrequency" dur="16s" keyTimes="0;0.33;0.66;1" values="0.005 0.003;0.01 0.009;0.008 0.004;0.005 0.003" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic"><animate attributeName="scale" dur="20s" keyTimes="0;0.25;0.5;0.75;1" values="18;25;34;25;18" repeatCount="indefinite" /></feDisplacementMap></filter></defs></svg></div><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
+  field.innerHTML = `<div class="sunlit-blur"><span></span><span></span><span></span></div><div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-leaf-shadow"><span class="sunlit-leaf-layer"></span><span class="sunlit-leaf-layer"></span><span class="sunlit-leaf-layer"></span></div><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
   document.body.prepend(field);
 };
 
@@ -99,7 +99,7 @@ const createAnalogField = () => {
     return `<span class="analog-mark" style="--analog-x:${x}%;--analog-y:${y}%;--analog-delay:${delay}s;--analog-duration:${duration}s">${glyph}</span>`;
   }).join('');
 
-  field.innerHTML = `<div class="analog-grid"></div><canvas class="analog-ripple" aria-hidden="true"></canvas><div class="analog-grain"></div>${marks}`;
+  field.innerHTML = `<div class="analog-grid"></div><div class="analog-grain"></div>${marks}`;
   document.body.prepend(field);
 };
 
@@ -125,187 +125,6 @@ const startAnalogParallax = () => {
   window.addEventListener('scroll', () => {
     if (!animationFrame) animationFrame = window.requestAnimationFrame(updateAnalogPosition);
   }, { passive: true });
-};
-
-const startAnalogRipple = () => {
-  const field = document.querySelector('.analog-field');
-  const canvas = field?.querySelector('.analog-ripple');
-  const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
-  const context = canvas?.getContext('2d', { alpha: true });
-  if (!field || !canvas || !context) return;
-
-  const root = document.documentElement;
-  const clusters = [
-    { x: .18, y: .13, radiusX: .44, radiusY: .30, core: .25, edge: .78 },
-    { x: .82, y: .38, radiusX: .38, radiusY: .28, core: .18, edge: .78 },
-    { x: .45, y: .84, radiusX: .52, radiusY: .34, core: .16, edge: .82 }
-  ];
-  const wakeRadius = 82;
-  const wakeBand = 26;
-  const wakeStrength = 1.05;
-  let width = 0;
-  let height = 0;
-  let points = [];
-  let animationFrame = null;
-  let resizeFrame = null;
-  let lastDraw = 0;
-  let lastFrame = 0;
-  let pointerX = -10000;
-  let pointerY = -10000;
-  let targetX = -10000;
-  let targetY = -10000;
-  let dotColor = '#787569';
-  let isActive = false;
-  let hasPointer = false;
-
-  const readDotColor = () => {
-    dotColor = window.getComputedStyle(root).getPropertyValue('--muted').trim() || '#787569';
-  };
-
-  const maskOpacityAt = (x, y) => clusters.reduce((opacity, cluster) => {
-    const normalizedX = (x - (cluster.x * width)) / Math.max(cluster.radiusX * width, 1);
-    const normalizedY = (y - (cluster.y * height)) / Math.max(cluster.radiusY * height, 1);
-    const distance = Math.hypot(normalizedX, normalizedY);
-    if (distance <= cluster.core) return 1;
-    if (distance >= cluster.edge) return opacity;
-    const fade = 1 - ((distance - cluster.core) / (cluster.edge - cluster.core));
-    return Math.max(opacity, fade);
-  }, 0);
-
-  const buildLattice = () => {
-    const baseSpacing = width <= 720 ? 23 : 19;
-    const spacing = Math.max(baseSpacing, Math.sqrt((width * height) / 8000));
-    const nextPoints = [];
-
-    for (let y = 0; y <= height; y += spacing) {
-      for (let x = 0; x <= width; x += spacing) {
-        const opacity = maskOpacityAt(x, y);
-        if (opacity > .025) nextPoints.push({ x, y, opacity });
-      }
-    }
-
-    points = nextPoints;
-  };
-
-  const drawLattice = () => {
-    context.clearRect(0, 0, width, height);
-    context.fillStyle = dotColor;
-
-    points.forEach((point) => {
-      let wake = 0;
-
-      if (hasPointer) {
-        const distance = Math.hypot(point.x - pointerX, point.y - pointerY);
-        const ringDistance = distance - wakeRadius;
-        wake = Math.exp(-(ringDistance ** 2) / (2 * wakeBand ** 2)) * wakeStrength;
-      }
-
-      const dotSize = 2 + (wake * 1.35);
-      context.globalAlpha = Math.min(1, point.opacity * (.9 + (wake * .55)));
-      context.fillRect(point.x - (dotSize / 2), point.y - (dotSize / 2), dotSize, dotSize);
-    });
-
-    context.globalAlpha = 1;
-  };
-
-  const animateWake = (timestamp) => {
-    if (timestamp - lastDraw < 24) {
-      animationFrame = window.requestAnimationFrame(animateWake);
-      return;
-    }
-
-    const elapsed = Math.min(lastFrame ? timestamp - lastFrame : 16, 32);
-    const easing = 1 - Math.exp(-elapsed / 120);
-    pointerX += (targetX - pointerX) * easing;
-    pointerY += (targetY - pointerY) * easing;
-    lastFrame = timestamp;
-    lastDraw = timestamp;
-    drawLattice();
-
-    if (hasPointer && Math.hypot(targetX - pointerX, targetY - pointerY) > .25) {
-      animationFrame = window.requestAnimationFrame(animateWake);
-    } else {
-      animationFrame = null;
-      lastDraw = 0;
-      lastFrame = 0;
-    }
-  };
-
-  const queueWake = () => {
-    if (!animationFrame) animationFrame = window.requestAnimationFrame(animateWake);
-  };
-
-  const resizeCanvas = () => {
-    width = Math.max(window.innerWidth, 1);
-    height = Math.max(window.innerHeight, 1);
-    const areaScale = Math.sqrt(8000000 / (width * height));
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5, areaScale);
-    canvas.width = Math.round(width * pixelRatio);
-    canvas.height = Math.round(height * pixelRatio);
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
-    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    context.imageSmoothingEnabled = false;
-    readDotColor();
-    buildLattice();
-    drawLattice();
-  };
-
-  const stopWake = () => {
-    if (animationFrame) window.cancelAnimationFrame(animationFrame);
-    if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
-    animationFrame = null;
-    resizeFrame = null;
-    lastDraw = 0;
-    lastFrame = 0;
-    hasPointer = false;
-    pointerX = targetX = -10000;
-    pointerY = targetY = -10000;
-    context.clearRect(0, 0, width, height);
-  };
-
-  const configureRipple = () => {
-    const nextActive = finePointerQuery.matches && !reducedMotionQuery.matches;
-    if (nextActive === isActive) return;
-    stopWake();
-    isActive = nextActive;
-    field.classList.toggle('has-ripple', isActive);
-    if (isActive) resizeCanvas();
-  };
-
-  window.addEventListener('pointermove', (event) => {
-    if (!isActive || event.pointerType === 'touch') return;
-
-    targetX = event.clientX;
-    targetY = event.clientY;
-    if (!hasPointer) {
-      pointerX = targetX;
-      pointerY = targetY;
-      hasPointer = true;
-      drawLattice();
-      return;
-    }
-
-    queueWake();
-  }, { passive: true });
-  window.addEventListener('resize', () => {
-    if (!isActive || resizeFrame) return;
-    resizeFrame = window.requestAnimationFrame(() => {
-      resizeFrame = null;
-      resizeCanvas();
-    });
-  }, { passive: true });
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopWake();
-    else if (isActive) resizeCanvas();
-  });
-  finePointerQuery.addEventListener('change', configureRipple);
-  reducedMotionQuery.addEventListener('change', configureRipple);
-  new MutationObserver(() => {
-    readDotColor();
-    if (isActive) drawLattice();
-  }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-  configureRipple();
 };
 
 const startInertialScroll = () => {
@@ -418,7 +237,6 @@ startAnalogParallax();
 let stopInertialScroll = () => {};
 
 const startDeferredEnhancements = () => {
-  if (window.matchMedia('(min-width: 901px)').matches) startAnalogRipple();
   stopInertialScroll = startInertialScroll();
 };
 
@@ -454,43 +272,24 @@ if (arrivingPage) {
   });
 }
 
-const runTypewriter = () => {
-  const typewriterText = document.querySelector('[data-typewriter]');
+const runHeadlineMaterialise = () => {
+  const headline = document.querySelector('[data-reveal-heading]');
   const hero = document.querySelector('.hero');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Supporting content should never be hidden behind the headline animation.
   if (hero) hero.classList.add('hero-tiles-ready');
-  if (!typewriterText || typewriterText.dataset.animated) return;
+  if (!headline || headline.dataset.revealed) return;
 
-  typewriterText.dataset.animated = 'true';
-  const fullText = typewriterText.textContent.trim();
-  const fullHeight = typewriterText.getBoundingClientRect().height;
-  let characterIndex = 0;
+  headline.dataset.revealed = 'true';
+  if (reducedMotion) return;
+  headline.classList.add('is-materialising');
 
-  typewriterText.setAttribute('aria-label', fullText);
-  typewriterText.style.minHeight = `${fullHeight}px`;
-
-  if (reducedMotion) {
-    typewriterText.textContent = fullText;
-    return;
+  const reveal = () => window.requestAnimationFrame(() => headline.classList.add('is-visible'));
+  if (document.querySelector('[data-entry-loader]')) {
+    window.addEventListener('entry-loader-ready', reveal, { once: true });
+  } else {
+    reveal();
   }
-
-  typewriterText.textContent = '';
-  typewriterText.classList.add('has-caret');
-
-  const typeNextCharacter = () => {
-    typewriterText.textContent += fullText[characterIndex];
-    characterIndex += 1;
-
-    if (characterIndex < fullText.length) {
-      window.setTimeout(typeNextCharacter, fullText[characterIndex - 1] === ' ' ? 120 : 70);
-    } else {
-      window.setTimeout(() => typewriterText.classList.remove('has-caret'), 2000);
-    }
-  };
-
-  window.setTimeout(typeNextCharacter, 250);
 };
 
 const handleScrollTarget = (url = new URL(window.location.href)) => {
@@ -666,7 +465,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     enhancePostFigureCaptions();
     enhancePostSpotifyLinks();
     queueProjectLoad();
-    runTypewriter();
+    runHeadlineMaterialise();
     handleScrollTarget();
 
     window.setTimeout(finishNavigation, reducedMotion ? 0 : 250);
@@ -710,7 +509,7 @@ document.addEventListener('click', (event) => {
   navigateWithLoader(destination, destinationLabel);
 });
 
-runTypewriter();
+runHeadlineMaterialise();
 queueProjectLoad();
 handleScrollTarget();
 
