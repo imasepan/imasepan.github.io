@@ -54,7 +54,7 @@ a {
 .sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); animation: sunlit-haze-drift 31s ease-in-out infinite alternate; }
 .sunlit-glow { background: linear-gradient(309deg, var(--sunlit-bounce) 0%, transparent 32%); opacity: var(--sunlit-glow-opacity); animation: sunlit-glow-sway 27s ease-in-out infinite alternate; }
 .sunlit-bounce { background: linear-gradient(355deg, var(--sunlit-bounce) 0%, transparent 27%, transparent 100%); opacity: var(--sunlit-bounce-opacity); animation: sunlit-bounce-sway 35s ease-in-out infinite alternate; }
-.sunlit-perspective { position: absolute; top: -30vh; right: -18vw; width: min(112vw, 1720px); height: 136vh; opacity: var(--sunlit-blinds-opacity); transform-origin: top right; transform-style: preserve-3d; transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: transform .9s cubic-bezier(.455, .19, 0, .985), opacity .7s ease; animation: sunlit-blinds-sway-dark 29s ease-in-out infinite alternate; }
+.sunlit-perspective { position: absolute; top: -30vh; right: max(-18vw, -310px); width: min(112vw, 1720px); height: 136vh; opacity: var(--sunlit-blinds-opacity); transform-origin: top right; transform-style: preserve-3d; transform: matrix3d(.8333, .0833, 0, .0003, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: transform .9s cubic-bezier(.455, .19, 0, .985), opacity .7s ease; animation: sunlit-blinds-sway-dark 29s ease-in-out infinite alternate; }
 .sunlit-blur { animation: sunlit-blur-drift 33s ease-in-out infinite alternate; }
 @keyframes sunlit-source-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-2.5vw, 1.5vh, 0) scale(1.06); } }
 @keyframes sunlit-haze-drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(1.8vw, -1.2vh, 0) scale(1.04); } }
@@ -74,7 +74,7 @@ a {
 .sunlit-blur span:nth-child(1) { --sunlit-blur: 10px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
 .sunlit-blur span:nth-child(2) { --sunlit-blur: 32px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
 .sunlit-blur span:nth-child(3) { --sunlit-blur: 80px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
-.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; filter: url('#sunlit-leaf-wind'); animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
+.sunlit-leaf-shadow { position: absolute; right: max(-48vw, -760px); bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; filter: url('#sunlit-leaf-wind'); animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
 /* Keep one complete leaf silhouette beneath the graduated blur layers. Some
    browsers drop multi-mask composites entirely, which made the branch vanish. */
 .sunlit-leaf-shadow::before { position: absolute; inset: 0; content: ''; background: var(--sunlit-shadow); filter: blur(7px); -webkit-mask: url('assets/leaves-branch-shadow.webp') center / contain no-repeat; mask: url('assets/leaves-branch-shadow.webp') center / contain no-repeat; }

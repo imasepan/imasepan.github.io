@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-08-11
+
+- Kept the animated leaf shadow visible on wide and full-screen desktop viewports by capping its off-screen offsets.
+
 ## 2026-08-10
 
 - Restyled the entrance screen around the homepage's paper palette, analog dot texture, soft light, and lilac accent.
