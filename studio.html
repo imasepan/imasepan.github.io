@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/entry-loader.css?v=20260810-2" />
-    <link rel="stylesheet" href="studio.css?v=20260809-1" />
+    <link rel="stylesheet" href="studio.css?v=20260810-2" />
     <script src="/entry-loader.js?v=20260809-1" defer></script>
   </head>
   <body>
@@ -39,6 +39,7 @@
         </div>
       </section>
     </main>
+    <p class="studio-mobile-hint" aria-hidden="true">SWIPE TO EXPLORE ↓</p>
     <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b><i></i></b><small>▼</small></aside>
     <footer>© 2026 <span>BASED IN SEOUL, KOREA</span></footer>
     <script>
@@ -49,6 +50,7 @@
 
         const projects = [...track.querySelectorAll('.project-feature, .project-row')];
         const progress = document.querySelector('.studio-scroll i');
+        const mobileHint = document.querySelector('.studio-mobile-hint');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let activeIndex = 0;
         let currentOffset = 0;
@@ -155,7 +157,10 @@
           else move(event.key === 'ArrowUp' || event.key === 'PageUp' || (event.key === ' ' && event.shiftKey) ? -1 : 1);
         });
 
-        viewport.addEventListener('touchstart', (event) => { touchStartY = event.touches[0].clientY; }, { passive: true });
+        viewport.addEventListener('touchstart', (event) => {
+          touchStartY = event.touches[0].clientY;
+          mobileHint?.classList.add('is-hidden');
+        }, { passive: true });
         viewport.addEventListener('touchmove', (event) => {
           if (touchStartY === null) return;
           event.preventDefault();

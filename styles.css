@@ -3154,3 +3154,142 @@ body.menu-open {
     scale: 1;
   }
 }
+
+/* Mobile controls are always available: touchscreens must not depend on a
+   hover state before theme, language, or navigation actions can be tapped. */
+@media (max-width: 900px) {
+  .site-header,
+  .site-header.is-scrolled,
+  .site-header.is-scrolled:hover,
+  .site-header.is-scrolled:focus-within {
+    min-height: 68px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .site-header .brand-controls,
+  .site-header.is-scrolled .brand-controls {
+    min-width: 0;
+    min-height: 48px;
+    padding: 2px 5px;
+    gap: 4px;
+  }
+
+  .site-header .header-controls,
+  .site-header.is-scrolled .header-controls {
+    position: static;
+    inset: auto;
+    display: flex;
+    width: auto;
+    padding: 0;
+    gap: 6px;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition: none;
+  }
+
+  .site-header .wordmark,
+  .site-header .theme-toggle,
+  .site-header .language-switch,
+  .site-header .menu-button,
+  .site-header.is-scrolled .wordmark,
+  .site-header.is-scrolled .theme-toggle,
+  .site-header.is-scrolled .language-switch,
+  .site-header.is-scrolled .menu-button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .site-header .wordmark {
+    padding: 0 4px;
+  }
+
+  .site-header .theme-toggle {
+    min-width: 48px;
+    padding-inline: 6px;
+  }
+
+  .site-header .language-switch {
+    min-width: 52px;
+    padding-inline: 6px;
+  }
+
+  .site-header .menu-button,
+  .site-header.is-scrolled .menu-button {
+    min-width: 54px;
+    min-height: 44px;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+
+  .site-header .site-nav,
+  .site-header.is-open .site-nav {
+    position: fixed;
+    top: 76px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-height: calc(100svh - 92px);
+  }
+
+  .music-banner-inner {
+    padding-top: 88px;
+  }
+
+  .analog-grain,
+  .film-grain {
+    animation-duration: .6s;
+  }
+}
+
+@media (max-width: 360px) {
+  .site-header,
+  .site-header.is-scrolled,
+  .site-header.is-scrolled:hover,
+  .site-header.is-scrolled:focus-within {
+    padding-inline: 8px;
+    gap: 4px;
+  }
+
+  .site-header .brand-controls {
+    padding-inline: 4px;
+    gap: 2px;
+  }
+
+  .site-header .header-controls {
+    gap: 4px;
+  }
+
+  .site-header .language-switch,
+  .site-header .menu-button,
+  .site-header.is-scrolled .menu-button {
+    min-width: 48px;
+    padding-inline: 5px;
+  }
+
+  .site-header .site-nav,
+  .site-header.is-open .site-nav {
+    right: 8px;
+    left: 8px;
+    width: auto;
+  }
+
+  .music-banner-inner {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .spotify-player {
+    width: calc(100% + 24px);
+    max-width: none;
+    margin-left: -12px;
+    border-radius: 0;
+  }
+}

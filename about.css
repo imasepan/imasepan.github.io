@@ -73,6 +73,14 @@ footer { display: flex; justify-content: space-between; gap: 24px; padding: 32px
 footer a { color: #f4f2ec; text-decoration: none; }
 footer a:hover { color: var(--acid); }
 
+@media (max-width: 900px) {
+  .about-header { gap: 12px; }
+  .about-name, .about-header nav a { display: inline-flex; min-height: 44px; align-items: center; }
+  .about-name { padding: 6px 0; }
+  .about-header nav { gap: 6px; }
+  .about-header nav a { padding: 8px 4px; }
+}
+
 @media (max-width: 960px) {
   .about-hero { grid-template-columns: 40px 1fr; }
   .portrait { grid-column: 2; min-height: 500px; }
@@ -82,8 +90,8 @@ footer a:hover { color: var(--acid); }
 }
 
 @media (max-width: 640px) {
-  .about-header { min-height: 100px; padding: 26px 20px; gap: 20px; }
-  .about-header nav { justify-content: flex-end; gap: 7px; flex-wrap: wrap; }
+  .about-header { min-height: 100px; padding: 26px 20px; }
+  .about-header nav { justify-content: flex-end; flex-wrap: wrap; }
   main { padding: 0 20px; }
   .about-hero { min-height: auto; grid-template-columns: 1fr; padding: 46px 0; }
   .hero-index { display: none; }

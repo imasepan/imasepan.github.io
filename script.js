@@ -418,7 +418,7 @@ startAnalogParallax();
 let stopInertialScroll = () => {};
 
 const startDeferredEnhancements = () => {
-  startAnalogRipple();
+  if (window.matchMedia('(min-width: 901px)').matches) startAnalogRipple();
   stopInertialScroll = startInertialScroll();
 };
 
@@ -459,7 +459,8 @@ const runTypewriter = () => {
   const hero = document.querySelector('.hero');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (hero && reducedMotion) hero.classList.add('hero-tiles-ready');
+  // Supporting content should never be hidden behind the headline animation.
+  if (hero) hero.classList.add('hero-tiles-ready');
   if (!typewriterText || typewriterText.dataset.animated) return;
 
   typewriterText.dataset.animated = 'true';
@@ -485,9 +486,6 @@ const runTypewriter = () => {
     if (characterIndex < fullText.length) {
       window.setTimeout(typeNextCharacter, fullText[characterIndex - 1] === ' ' ? 120 : 70);
     } else {
-      window.setTimeout(() => {
-        if (hero) hero.classList.add('hero-tiles-ready');
-      }, 500);
       window.setTimeout(() => typewriterText.classList.remove('has-caret'), 2000);
     }
   };
@@ -518,12 +516,15 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
 
 if (wordmark && siteHeader) {
   let controlsCloseTimer;
+  const hoverHeaderQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
 
   const revealHeaderControls = () => {
+    if (!hoverHeaderQuery.matches) return;
     window.clearTimeout(controlsCloseTimer);
     siteHeader.classList.add('controls-open');
   };
   const concealHeaderControls = () => {
+    if (!hoverHeaderQuery.matches) return;
     window.clearTimeout(controlsCloseTimer);
     controlsCloseTimer = window.setTimeout(() => {
       if (!siteHeader.classList.contains('is-open')) {
