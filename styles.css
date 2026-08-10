@@ -48,6 +48,7 @@ a {
 }
 /* Fixed, CSS-only window light adapted from jackyzha0/sunlit. */
 .sunlit-field { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; transition: background-color .7s ease; }
+.sunlit-filter-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
 .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce { position: absolute; inset: 0; content: ''; transition: opacity .7s ease, background .7s ease; }
 .sunlit-field::before { background: radial-gradient(ellipse 68% 44% at 100% 6%, var(--sunlit-source), transparent 73%); opacity: var(--sunlit-source-opacity); animation: sunlit-source-drift 24s ease-in-out infinite alternate; }
 .sunlit-field::after { background: linear-gradient(150deg, transparent 35%, var(--sunlit-haze) 100%); opacity: var(--sunlit-haze-opacity); animation: sunlit-haze-drift 31s ease-in-out infinite alternate; }
@@ -73,15 +74,16 @@ a {
 .sunlit-blur span:nth-child(1) { --sunlit-blur: 10px; --sunlit-stop-1: 0%; --sunlit-stop-2: 0%; }
 .sunlit-blur span:nth-child(2) { --sunlit-blur: 32px; --sunlit-stop-1: 40%; --sunlit-stop-2: 78%; }
 .sunlit-blur span:nth-child(3) { --sunlit-blur: 80px; --sunlit-stop-1: 52%; --sunlit-stop-2: 82%; }
-.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
+.sunlit-leaf-shadow { position: absolute; right: -48vw; bottom: -20vh; width: min(112vw, 1600px); aspect-ratio: 1; mix-blend-mode: multiply; opacity: var(--sunlit-leaf-opacity); transform-origin: 71% 72%; filter: url('#sunlit-leaf-wind'); animation: sunlit-leaf-billow 8s ease-in-out infinite; will-change: transform; }
 /* Keep one complete leaf silhouette beneath the graduated blur layers. Some
    browsers drop multi-mask composites entirely, which made the branch vanish. */
 .sunlit-leaf-shadow::before { position: absolute; inset: 0; content: ''; background: var(--sunlit-shadow); filter: blur(7px); -webkit-mask: url('assets/leaves-branch-shadow.webp') center / contain no-repeat; mask: url('assets/leaves-branch-shadow.webp') center / contain no-repeat; }
-.sunlit-leaf-layer { position: absolute; inset: 0; background: var(--sunlit-shadow); filter: blur(var(--sunlit-leaf-blur)); -webkit-mask-image: url('assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); -webkit-mask-position: center, center; -webkit-mask-size: contain, 100% 100%; -webkit-mask-repeat: no-repeat, no-repeat; -webkit-mask-composite: source-in; mask-image: url('assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); mask-position: center, center; mask-size: contain, 100% 100%; mask-repeat: no-repeat, no-repeat; mask-composite: intersect; }
-.sunlit-leaf-layer:nth-child(1) { --sunlit-leaf-blur: 7px; --sunlit-leaf-gradient: linear-gradient(252deg, #000, #000 40%, transparent 78%, transparent); }
-.sunlit-leaf-layer:nth-child(2) { --sunlit-leaf-blur: 7px; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 40%, #000 68%, #000 72%, transparent 82%, transparent); }
-.sunlit-leaf-layer:nth-child(3) { --sunlit-leaf-blur: 7px; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 52%, #000 82%, #000); }
+.sunlit-leaf-layer { position: absolute; inset: 0; background: var(--sunlit-shadow); filter: blur(var(--sunlit-leaf-blur)); transform-origin: 71% 72%; animation: sunlit-leaf-layer-sway var(--sunlit-leaf-sway-duration) ease-in-out var(--sunlit-leaf-sway-delay) infinite alternate; -webkit-mask-image: url('assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); -webkit-mask-position: center, center; -webkit-mask-size: contain, 100% 100%; -webkit-mask-repeat: no-repeat, no-repeat; -webkit-mask-composite: source-in; mask-image: url('assets/leaves-branch-shadow.webp'), var(--sunlit-leaf-gradient); mask-position: center, center; mask-size: contain, 100% 100%; mask-repeat: no-repeat, no-repeat; mask-composite: intersect; }
+.sunlit-leaf-layer:nth-child(1) { --sunlit-leaf-blur: 10px; --sunlit-leaf-sway-duration: 9s; --sunlit-leaf-sway-delay: -2s; --sunlit-leaf-shift-x: -.35%; --sunlit-leaf-shift-y: .2%; --sunlit-leaf-skew: -.18deg; --sunlit-leaf-gradient: linear-gradient(252deg, #000, #000 40%, transparent 78%, transparent); }
+.sunlit-leaf-layer:nth-child(2) { --sunlit-leaf-blur: 32px; --sunlit-leaf-sway-duration: 11s; --sunlit-leaf-sway-delay: -7s; --sunlit-leaf-shift-x: .55%; --sunlit-leaf-shift-y: -.3%; --sunlit-leaf-skew: .28deg; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 40%, #000 68%, #000 72%, transparent 82%, transparent); }
+.sunlit-leaf-layer:nth-child(3) { --sunlit-leaf-blur: 80px; --sunlit-leaf-sway-duration: 13s; --sunlit-leaf-sway-delay: -4s; --sunlit-leaf-shift-x: .8%; --sunlit-leaf-shift-y: -.45%; --sunlit-leaf-skew: .4deg; --sunlit-leaf-gradient: linear-gradient(252deg, transparent, transparent 52%, #000 82%, #000); }
 @keyframes sunlit-leaf-billow { 0%, 100% { transform: perspective(400px) rotateX(0deg) rotateY(0deg) scale(1); } 25% { transform: perspective(400px) rotateX(1deg) rotateY(2deg) scale(1.02); } 50% { transform: perspective(400px) rotateX(-4deg) rotateY(-2deg) scale(.97); } 75% { transform: perspective(400px) rotateX(1deg) rotateY(-1deg) scale(1.04); } }
+@keyframes sunlit-leaf-layer-sway { from { transform: translate3d(0, 0, 0) skew(0deg) scale(1); } to { transform: translate3d(var(--sunlit-leaf-shift-x), var(--sunlit-leaf-shift-y), 0) skew(var(--sunlit-leaf-skew)) scale(1.006); } }
 /* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
 .analog-field {
   position: fixed;
@@ -1203,7 +1205,8 @@ h2 {
     transform: none;
   }
   .sunlit-field, .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-shutters, .sunlit-shutter, .sunlit-bar { transition: none; }
-  .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-leaf-shadow, .sunlit-blur { animation: none; }
+  .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-leaf-shadow, .sunlit-leaf-layer, .sunlit-blur { animation: none; }
+  .sunlit-leaf-shadow { filter: none; }
   .analog-grid, .analog-grain, .analog-mark, .film-grain, .page-loader::before, .page-loader-indicator::after {
     animation: none;
   }
