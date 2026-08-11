@@ -8,15 +8,20 @@ spotify: https://open.spotify.com/track/6i7olOxVWLxv9khPk8tvBO?si=7db87f920b4c4f
 # SPOILERS AHEAD
 
 
-![First Trailer for Christopher Nolan's The Odyssey Puts Human Drama First |  Den of Geek](https://www.denofgeek.com/wp-content/uploads/2025/12/Benny-Safdie-and-Matt-Damon-in-The-Odyssey.png?fit=1303%2C720)
+![[Auramemnon.webp]]
 
 [figcaption: Agamemnon AKA Auramemnon]
 
->  *Eurylochus: What was the song of the sirens like?
->  Odysseus: All the things you wanted to be and then all the things you wished you never wished for. It was a delicious itch you want to scratch but you find it under the skin and can't reach it. 
->  So the delicious itch becomes unbearable. 
->  It told you what you most want is what you most can't have and that the most you can't have is what you already had and lost. It was a song of all the promises I failed to keep. And it told me I don't really want to go home.*
-
+>  *Eurylochus: What was the song of the sirens like?  
+>  
+>  Odysseus: All the things you wanted to be and then all the things you wished you never wished for. It was a delicious itch you want to scratch but you find it under the skin and can't reach it.   
+>  
+>  So the delicious itch becomes unbearable.   
+>  
+>  It told you what you most want is what you most can't have and that the most you can't have is what you already had and lost. It was a song of all the promises I failed to keep. 
+>  
+>  And it told me I don't really want to go home.*  
+ 
 Homer's epic poem, The Odyssey, tells a simple story: Odysseus tries to get home.
 
 Along the way, he goes through various trials and tribulations and is influenced by the gods.
@@ -59,9 +64,13 @@ To me, it reads as what separates modern civilisation and the magical barbariani
 And yet...
 
 > *What if the Odysseus you knew lost his way? What if... one night, in a strange city, he saw things that made him think the home he knew couldn't possibly be there anymore. 
+> 
 > What if... when he left the belly of the horse, and opened the gates of Troy, he saw ten years of rage pour into that city in one night? 
+> 
 > We left them a gift, an offering of peace, that they took into their home. We violated all that's ever sacred between people. It turned a fight into a hunt. To burn the walls of Troy was to burn the world-entire. Including his home. 
+> 
 > What if he knew, that very night, as he walked through fires, anarchy, and pain-and in a daze of sweaty celebrations that follow...
+> 
 > What if he knew exactly what he'd done?*
 
 When Odysseus tricked Troy into accepting a gift and using that gift to destroy and burn the city, he violated xenia. What he saw that day was the consequence of breaking, what he himself described as, "all that's ever sacred between people". Forever.
@@ -78,6 +87,8 @@ The hunt turns into a fight.
 
 
 # My thoughts
+
+
 
 I personally felt like the Odyssey was an 8 out of 10. I really liked the music (as you can see by me attaching Sirens to this post), and I thought it was an interesting depiction of such an old piece of literature.
 
