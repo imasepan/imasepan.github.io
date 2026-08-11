@@ -2819,7 +2819,7 @@ body.menu-open {
 /* Final portrait and menu interaction fixes. */
 .about-photo {
   margin: 0;
-  width: min(100%, 570px);
+  width: min(100%, 440px);
 }
 .about-photo img {
   display: block;
@@ -2883,7 +2883,7 @@ body.menu-open {
 }
 @media (max-width: 720px) {
   .about-photo {
-    width: min(72vw, 260px);
+    width: min(68vw, 230px);
   }
 }
 
