@@ -3,8 +3,8 @@ layout: post
 title: The Odyssey - my thoughts
 date: 2026-08-08
 image: /assets/Auramemnon.webp
-spotify: https://open.spotify.com/track/6i7olOxVWLxv9khPk8tvBO?si=7db87f920b4c4f88
 description: Eurylochus: What was the song of the sirens like? 
+spotify: https://open.spotify.com/track/6i7olOxVWLxv9khPk8tvBO?si=7db87f920b4c4f88
 ---
 # SPOILERS AHEAD
 
