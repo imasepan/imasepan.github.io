@@ -2526,6 +2526,67 @@ main:not(.page-main) > .future-section {
   color: var(--ink);
   font: 400 18px/1.15 var(--sans);
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .post-page .post-content .post-figure {
+    cursor: none;
+  }
+  .post-page .post-content .post-figure.has-pointer-caption figcaption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .post-caption-tooltip {
+    position: fixed;
+    display: block;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    margin: 0;
+    padding: .4rem .6rem .45rem;
+    background: color-mix(in srgb, var(--ink) 68%, transparent);
+    color: #EDE8D0;
+    border: 1px solid currentColor;
+    backdrop-filter: blur(8px);
+    font: 500 12px/1 var(--mono);
+    letter-spacing: .02em;
+    white-space: nowrap;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    scale: .94;
+    pointer-events: none;
+    transform-origin: left top;
+    will-change: left, top, opacity, scale, clip-path;
+  }
+  .post-caption-tooltip.is-entering {
+    animation: portrait-tag-reveal .45s cubic-bezier(.2, .8, .2, 1) forwards;
+  }
+  .post-caption-tooltip.is-exiting {
+    animation: portrait-tag-hide .16s ease forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+  .post-caption-tooltip.is-entering {
+    animation: none;
+    clip-path: inset(0);
+    opacity: 1;
+    scale: 1;
+  }
+  .post-caption-tooltip.is-exiting {
+    animation: none;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    scale: 1;
+  }
+}
 .post-page .post-back {
   width: min(100%, 680px);
   margin: 68px auto 0;

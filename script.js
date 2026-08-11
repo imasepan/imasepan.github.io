@@ -465,6 +465,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     initialisePortraitCaption();
     enhanceObsidianImageEmbeds();
     enhancePostFigureCaptions();
+    initialisePostFigureCaptions();
     enhancePostSpotifyLinks();
     queueProjectLoad();
     runHeadlineMaterialise();
@@ -617,6 +618,79 @@ function enhancePostFigureCaptions() {
 
 enhanceObsidianImageEmbeds();
 enhancePostFigureCaptions();
+
+// Give blog-image captions the same cursor-following treatment as the about
+// portrait on precise pointers. The figcaption remains in the document for
+// semantics and as the readable fallback on touch devices.
+let disposePostFigureCaptions = () => {};
+
+function initialisePostFigureCaptions() {
+  disposePostFigureCaptions();
+
+  const figures = [...document.querySelectorAll(".post-figure")];
+  if (!figures.length) return;
+
+  const tooltips = [];
+  figures.forEach((figure) => {
+    const caption = figure.querySelector("figcaption");
+    if (!caption) return;
+
+    const tooltip = document.createElement("span");
+    tooltip.className = "post-caption-tooltip";
+    tooltip.textContent = caption.textContent;
+    tooltip.setAttribute("aria-hidden", "true");
+    document.body.append(tooltip);
+    const positionTooltip = (event) => {
+      if (!portraitPointerQuery.matches) return;
+
+      const bounds = tooltip.getBoundingClientRect();
+      const inset = 8;
+      const x = Math.min(event.clientX + 14, window.innerWidth - bounds.width - inset);
+      const y = Math.min(event.clientY + 18, window.innerHeight - bounds.height - inset);
+      tooltip.style.left = `${Math.max(inset, x)}px`;
+      tooltip.style.top = `${Math.max(inset, y)}px`;
+    };
+
+    const enter = (event) => {
+      if (!portraitPointerQuery.matches) return;
+      positionTooltip(event);
+      figure.classList.add("has-pointer-caption");
+      tooltip.classList.add("is-entering");
+    };
+    const leave = () => {
+      figure.classList.remove("has-pointer-caption");
+      tooltip.classList.remove("is-entering");
+      tooltip.classList.add("is-exiting");
+    };
+    const pointerModeChanged = () => {
+      if (portraitPointerQuery.matches) return;
+      figure.classList.remove("has-pointer-caption");
+      tooltip.classList.remove("is-entering", "is-exiting");
+      tooltip.removeAttribute("style");
+    };
+
+    figure.addEventListener("pointerenter", enter, { passive: true });
+    figure.addEventListener("pointermove", positionTooltip, { passive: true });
+    figure.addEventListener("pointerleave", leave, { passive: true });
+    figure.addEventListener("pointercancel", leave, { passive: true });
+    portraitPointerQuery.addEventListener("change", pointerModeChanged);
+    tooltips.push({ figure, tooltip, enter, leave, positionTooltip, pointerModeChanged });
+  });
+
+  disposePostFigureCaptions = () => {
+    tooltips.forEach(({ figure, tooltip, enter, leave, positionTooltip, pointerModeChanged }) => {
+      figure.removeEventListener("pointerenter", enter);
+      figure.removeEventListener("pointermove", positionTooltip);
+      figure.removeEventListener("pointerleave", leave);
+      figure.removeEventListener("pointercancel", leave);
+      portraitPointerQuery.removeEventListener("change", pointerModeChanged);
+      tooltip.remove();
+    });
+    disposePostFigureCaptions = () => {};
+  };
+}
+
+initialisePostFigureCaptions();
 
 
 const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
