@@ -89,7 +89,7 @@ The hunt turns into a fight.
 
 # My thoughts
 
-
+-
 
 I personally felt like the Odyssey was an 8 out of 10. I really liked the music (as you can see by me attaching Sirens to this post), and I thought it was an interesting depiction of such an old piece of literature.
 
