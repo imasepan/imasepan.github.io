@@ -10,6 +10,21 @@ YYYY-MM-DD-your-post-title.md
 
 For example: 2026-08-03-my-first-post.md
 
+## Images
+
+Place attachments in `/assets`, then embed them in a post with Obsidian syntax:
+
+```md
+![[my-photo.webp]]
+```
+
+Optional width and alt text are supported:
+
+```md
+![[my-photo.webp|480]]
+![[my-photo.webp|A description of the photo]]
+```
+
 ---
 layout: post
 title: Your post title

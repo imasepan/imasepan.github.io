@@ -463,6 +463,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     window.history.pushState({}, '', destination.href);
     window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
     initialisePortraitCaption();
+    enhanceObsidianImageEmbeds();
     enhancePostFigureCaptions();
     enhancePostSpotifyLinks();
     queueProjectLoad();
@@ -515,6 +516,52 @@ queueProjectLoad();
 handleScrollTarget();
 
 
+// Render standalone Obsidian image embeds from the site's assets directory.
+// Jekyll leaves `![[photo.webp]]` as text, so this keeps post source
+// compatible with Obsidian without requiring a custom GitHub Pages plugin.
+function enhanceObsidianImageEmbeds() {
+  const postContent = document.querySelector('.post-content');
+  if (!postContent) return;
+
+  const embedPattern = /^!\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]$/;
+  [...postContent.querySelectorAll('p')].forEach((paragraph) => {
+    if (paragraph.dataset.obsidianEmbed === 'true') return;
+
+    const match = paragraph.textContent.trim().match(embedPattern);
+    if (!match) return;
+
+    const source = match[1].trim();
+    // Attachments are intentionally scoped to /assets. Nested asset folders
+    // are allowed, but paths cannot traverse outside that directory.
+    if (!source || source.startsWith('/') || source.split('/').some((part) => part === '..')) return;
+
+    let filename;
+    try {
+      filename = decodeURIComponent(source);
+    } catch {
+      return;
+    }
+
+    const image = document.createElement('img');
+    image.className = 'obsidian-image-embed';
+    image.src = `/assets/${filename.split('/').map((part) => encodeURIComponent(part)).join('/')}`;
+    image.alt = filename.split('/').at(-1).replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ');
+    image.loading = 'lazy';
+    image.decoding = 'async';
+
+    const option = match[2]?.trim();
+    if (option && /^\d+$/.test(option)) {
+      image.width = Number(option);
+    } else if (option) {
+      image.alt = option;
+    }
+
+    paragraph.textContent = '';
+    paragraph.dataset.obsidianEmbed = 'true';
+    paragraph.append(image);
+  });
+}
+
 // Turn `[figcaption: ...]` into a caption for the most recently rendered image.
 // This keeps the syntax compatible with the standard GitHub Pages/Jekyll build,
 // including pages inserted by soft navigation.
@@ -556,6 +603,7 @@ function enhancePostFigureCaptions() {
   });
 }
 
+enhanceObsidianImageEmbeds();
 enhancePostFigureCaptions();
 
 
