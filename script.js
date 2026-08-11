@@ -462,6 +462,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     document.title = nextDocument.title;
     window.history.pushState({}, '', destination.href);
     window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    initialisePortraitCaption();
     enhancePostFigureCaptions();
     enhancePostSpotifyLinks();
     queueProjectLoad();
@@ -559,13 +560,20 @@ enhancePostFigureCaptions();
 
 
 const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-const portraitHoverTarget = document.querySelector(".about-photo");
-const portraitCaption = portraitHoverTarget?.querySelector("figcaption");
-const portraitImage = portraitHoverTarget?.querySelector("img");
+let disposePortraitCaption = () => {};
 
 // Turn the semantic caption into a cursor-following tag on precise pointers,
 // while leaving it in the document flow as a regular caption everywhere else.
-if (portraitHoverTarget && portraitCaption && portraitImage) {
+// The home page can be replaced by soft navigation, so this must be safe to
+// run again for the newly inserted portrait.
+function initialisePortraitCaption() {
+  disposePortraitCaption();
+
+  const portraitHoverTarget = document.querySelector(".about-photo");
+  const portraitCaption = portraitHoverTarget?.querySelector("figcaption");
+  const portraitImage = portraitHoverTarget?.querySelector("img");
+  if (!portraitHoverTarget || !portraitCaption || !portraitImage) return;
+
   const portraitTooltip = document.createElement("span");
   portraitTooltip.className = "portrait-caption-tooltip";
   portraitTooltip.textContent = portraitCaption.textContent;
@@ -649,7 +657,20 @@ if (portraitHoverTarget && portraitCaption && portraitImage) {
   portraitHoverTarget.addEventListener("pointercancel", leavePortrait, { passive: true });
   portraitPointerQuery.addEventListener("change", configurePortraitCaption);
   configurePortraitCaption();
+
+  disposePortraitCaption = () => {
+    portraitHoverTarget.removeEventListener("pointerenter", enterPortrait);
+    portraitHoverTarget.removeEventListener("pointermove", movePortraitInteraction);
+    portraitHoverTarget.removeEventListener("pointerleave", leavePortrait);
+    portraitHoverTarget.removeEventListener("pointercancel", leavePortrait);
+    portraitPointerQuery.removeEventListener("change", configurePortraitCaption);
+    if (rotationFrame) window.cancelAnimationFrame(rotationFrame);
+    portraitTooltip.remove();
+    disposePortraitCaption = () => {};
+  };
 }
+
+initialisePortraitCaption();
 
 // Turn Spotify links placed inside a post into a compact embedded player.
 const enhancePostSpotifyLinks = () => {

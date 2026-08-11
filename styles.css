@@ -2780,6 +2780,13 @@ main:not(.page-main) > .future-section {
   }
 }
 
+/* The current menu is a compact dropdown. Disable the obsolete full-height
+   backdrop and right-side drawer left behind by the earlier header design. */
+.site-header::before,
+.site-header::after {
+  display: none;
+}
+
 /* Keep the portrait caption semantic and readable without hover. */
 .about-photo figcaption,
 .about-photo:hover figcaption,
