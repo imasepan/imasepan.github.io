@@ -575,17 +575,28 @@ function enhancePostFigureCaptions() {
   });
 
   const captionPattern = /^\[figcaption:\s*([\s\S]*?)\s*\]$/;
-  [...postContent.querySelectorAll("p")].forEach((paragraph) => {
+  let latestImageParagraph = null;
+
+  // Walk the post in source order so a caption is always paired with the
+  // image paragraph immediately before it. This also works after Obsidian
+  // embeds have been converted into images.
+  [...postContent.children].forEach((element) => {
+    if (element.matches("p") && element.querySelector("img")) {
+      latestImageParagraph = element;
+      return;
+    }
+
+    if (!element.matches("p")) return;
+
+    const paragraph = element;
     const match = paragraph.textContent.trim().match(captionPattern);
     if (!match) return;
 
-    const image = [...postContent.querySelectorAll("img")]
-      .filter((candidate) => paragraph.compareDocumentPosition(candidate) & Node.DOCUMENT_POSITION_PRECEDING)
-      .at(-1);
-    if (!image) return;
-
-    const imageParagraph = image.closest("p");
+    const imageParagraph = latestImageParagraph;
     if (!imageParagraph || imageParagraph.parentElement !== postContent) return;
+
+    const image = imageParagraph.querySelector("img");
+    if (!image) return;
 
     // Keep an optional link around the image, while replacing the Markdown
     // paragraph so the figure remains valid, compact markup.
@@ -600,6 +611,7 @@ function enhancePostFigureCaptions() {
     caption.textContent = match[1];
     figure.append(caption);
     paragraph.remove();
+    latestImageParagraph = null;
   });
 }
 
