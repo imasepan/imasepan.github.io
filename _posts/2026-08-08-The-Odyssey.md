@@ -1,8 +1,9 @@
 ---
 layout: post
 title: The Odyssey - my thoughts
-date: 2026-08-07
+date: 2026-08-08
 image: /assets/Auramemnon.webp
+description: What was the song of the sirens like? 
 spotify: https://open.spotify.com/track/6i7olOxVWLxv9khPk8tvBO?si=7db87f920b4c4f88
 ---
 # SPOILERS AHEAD
@@ -55,7 +56,7 @@ To be fair though, they were aware of the consequences. Better to go out on thei
 
 When you think about it, while Odysseus's crew definitely were on the receiving end of bad hospitality, they themselves weren't exactly honest and upstanding people. Odysseus himself seems to realise this, as he later confesses to Penelope that they were the Sea Peoples rumoured about throughout the movie. Once they broke xenia and lost their civility, they turned into the barbaric Sea Peoples on their way home.
 
-While Odysseus's crew suffered the consequences of their actions, Odysseus was busy being held captive by Calypso. I guess no one cares about Zeus's Law anymore. These are some of the worst hosts in history. Odysseus spends 10 years with Calypso.
+While Odysseus's crew suffered the consequences of their actions, Odysseus was busy being held captive by Calypso. I guess no one cares about Zeus's Law anymore. These are some of the worst hosts in history. 
 
 But, guess what. When Odysseus finally atones for his sins and returns home to Ithaca, finally, we get an example of proper guest-friendship. And it's from his own loyal servants and family, who is unaware they are being so generous and respectful to their king. 
 
