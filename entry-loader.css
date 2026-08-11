@@ -19,7 +19,7 @@
   animation: entry-loader-timeout .01s 4s forwards;
 }
 
-/* Echo the homepage's analog dot field and soft window light. */
+/* Echo the homepage's soft window light. */
 .entry-loader::before,
 .entry-loader::after {
   position: absolute;
@@ -29,15 +29,7 @@
   content: '';
 }
 
-.entry-loader::before {
-  inset: -6%;
-  background-image: radial-gradient(circle, var(--loader-muted) 0 1px, transparent 1.35px);
-  background-size: 19px 19px;
-  opacity: .2;
-  -webkit-mask-image: radial-gradient(ellipse 56% 42% at 15% 18%, #000 0 22%, transparent 76%), radial-gradient(ellipse 42% 34% at 88% 82%, #000 0 18%, transparent 78%);
-  mask-image: radial-gradient(ellipse 56% 42% at 15% 18%, #000 0 22%, transparent 76%), radial-gradient(ellipse 42% 34% at 88% 82%, #000 0 18%, transparent 78%);
-  animation: entry-loader-drift 9s steps(7, end) infinite alternate;
-}
+.entry-loader::before { opacity: 0; }
 
 .entry-loader::after {
   inset: -18%;

@@ -94,19 +94,6 @@ a {
   color: var(--muted);
   transition: color .7s ease;
 }
-.analog-grid {
-  position: absolute;
-  inset: -6%;
-  background-image: radial-gradient(circle, currentColor 0 1px, transparent 1.35px);
-  background-size: 19px 19px;
-  opacity: var(--analog-grid-opacity, .26);
-  translate: 0 var(--analog-scroll, 0px);
-  -webkit-mask-image: radial-gradient(ellipse 44% 30% at 18% 13%, #000 0 25%, transparent 78%), radial-gradient(ellipse 38% 28% at 82% 38%, #000 0 18%, transparent 78%), radial-gradient(ellipse 52% 34% at 45% 84%, #000 0 16%, transparent 82%);
-  mask-image: radial-gradient(ellipse 44% 30% at 18% 13%, #000 0 25%, transparent 78%), radial-gradient(ellipse 38% 28% at 82% 38%, #000 0 18%, transparent 78%), radial-gradient(ellipse 52% 34% at 45% 84%, #000 0 16%, transparent 82%);
-  animation: analog-grid-drift 32s steps(16, end) infinite alternate;
-  transition: opacity .25s ease;
-  will-change: transform;
-}
 .analog-grain {
   position: absolute;
   inset: -8%;
@@ -150,14 +137,6 @@ a {
   color: var(--orange);
   opacity: .09;
 }
-@keyframes analog-grid-drift {
-  from {
-    transform: translate3d(-18px, -10px, 0) scale(1);
-  }
-  to {
-    transform: translate3d(34px, 26px, 0) scale(1.025);
-  }
-}
 @keyframes analog-grain-shift {
   0% {
     transform: translate3d(-3px, 1px, 0);
@@ -195,9 +174,6 @@ a {
 }
 /* Reduce the analog background density and number of marks on small screens. */
 @media (max-width: 720px) {
-  .analog-grid {
-    background-size: 23px 23px;
-  }
   .analog-mark:nth-of-type(n+11) {
     display: none;
   }
@@ -877,7 +853,6 @@ h2 {
     --lime: #787569;
     --orange: #D0D5ED;
     --name-accent: #D0D5ED;
-    --analog-grid-opacity: .18;
     --analog-grain-opacity: .09;
     --film-grain-opacity: .05;
   }
@@ -891,7 +866,6 @@ h2 {
   --lime: #C9C5B1;
   --orange: #D0D5ED;
   --name-accent: #7A5D11;
-  --analog-grid-opacity: .26;
   --analog-grain-opacity: .12;
   --film-grain-opacity: .065;
   --sunlit-source: #fff2a8; --sunlit-source-opacity: .82; --sunlit-haze: #ed9a36; --sunlit-haze-opacity: .28;
@@ -907,7 +881,6 @@ h2 {
   --lime: #787569;
   --orange: #D0D5ED;
   --name-accent: #D0D5ED;
-  --analog-grid-opacity: .18;
   --analog-grain-opacity: .09;
   --film-grain-opacity: .05;
   --sunlit-source: #e7792f; --sunlit-source-opacity: .18; --sunlit-haze: #c75d24; --sunlit-haze-opacity: .12;
@@ -1201,16 +1174,16 @@ h2 {
 }
 /* Respect reduced-motion preferences by removing nonessential transitions and animations. */
 @media (prefers-reduced-motion: reduce) {
-  .analog-field, .analog-grid, .analog-grain, .analog-mark, .film-grain {
+  .analog-field, .analog-grain, .analog-mark, .film-grain {
     transform: none;
   }
   .sunlit-field, .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-shutters, .sunlit-shutter, .sunlit-bar { transition: none; }
   .sunlit-field::before, .sunlit-field::after, .sunlit-glow, .sunlit-bounce, .sunlit-perspective, .sunlit-leaf-shadow, .sunlit-leaf-layer, .sunlit-blur { animation: none; }
   .sunlit-leaf-shadow { filter: none; }
-  .analog-grid, .analog-grain, .analog-mark, .film-grain, .page-loader::before, .page-loader-indicator::after {
+  .analog-grain, .analog-mark, .film-grain, .page-loader::before, .page-loader-indicator::after {
     animation: none;
   }
-  .analog-grid, .analog-grain, .analog-mark {
+  .analog-grain, .analog-mark {
     translate: none;
     transition: none;
   }

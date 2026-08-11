@@ -99,7 +99,7 @@ const createAnalogField = () => {
     return `<span class="analog-mark" style="--analog-x:${x}%;--analog-y:${y}%;--analog-delay:${delay}s;--analog-duration:${duration}s">${glyph}</span>`;
   }).join('');
 
-  field.innerHTML = `<div class="analog-grid"></div><div class="analog-grain"></div>${marks}`;
+  field.innerHTML = `<div class="analog-grain"></div>${marks}`;
   document.body.prepend(field);
 };
 
