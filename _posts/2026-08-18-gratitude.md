@@ -1,4 +1,11 @@
-
+---
+layout: post
+title: Gratitude
+date: 2026-08-18
+image: /assets/setoda3.jpg
+spotify: https://open.spotify.com/track/1gUp71RjPyqAGUs90l6qWX?si=3496294666264e7a
+excerpt: Thank you.
+---
 Thank you for listening to my problems.
 
 Thank you for helping me when I was in need.
