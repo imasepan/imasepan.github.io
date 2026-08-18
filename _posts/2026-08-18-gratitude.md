@@ -59,6 +59,7 @@ Anyway, back to gratitude.
 My friends and I wrote our own little messages on some post-it notes to attach on that wall you see in the picture. Turns out it was something of a custom that people who stop by would leave little thank you notes. Mine was kind of awkward but you get the message. I really appreciated the staff there working in such a small town. It was such a homely feeling cafe and I'd love to go back there again. 
 
 ![[setoda1.jpg]]
+
 ![[setoda2.jpg]]
 
 Doing stuff like that leaves special memories in my heart. Being able to be more thankful is something I'm thankful for. Showing appreciation can also make yourself feel good, it feels like.
