@@ -2433,22 +2433,51 @@ main:not(.page-main) > .future-section {
 .latest-post-card.has-image h2 {
   text-shadow: 0 2px 24px rgba(0, 0, 0, .55);
 }
-/* An opaque heading panel keeps the label and title clear of the photograph. */
-.latest-post-card.has-image .latest-post-heading {
-  align-self: flex-start;
-  max-width: 100%;
-  padding: clamp(16px, 2vw, 24px);
-  background: var(--paper);
-  color: var(--ink);
+/* Reserve space for the whole panel so revealing it never shifts the text. */
+.latest-post-card.has-image .latest-post-panel {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  padding: clamp(24px, 3vw, 40px);
+  color: #EDE8D0;
 }
-.latest-post-card.has-image .latest-post-heading .eyebrow,
-.latest-post-card.has-image .latest-post-heading h2 {
+.latest-post-card.has-image .latest-post-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--paper);
+  opacity: 0;
+  transition: opacity .2s ease;
+  pointer-events: none;
+}
+.latest-post-card.has-image .latest-post-panel .eyebrow,
+.latest-post-card.has-image .latest-post-panel h2,
+.latest-post-card.has-image .latest-post-panel .text-link {
   color: inherit;
   text-shadow: none;
 }
-.latest-post-heading h2 {
+.latest-post-panel h2 {
   margin: 0;
   overflow-wrap: anywhere;
+}
+.latest-post-panel > p:not(.eyebrow) {
+  margin: 20px 0 24px;
+}
+.latest-post-card.has-image:hover .latest-post-panel,
+.latest-post-card.has-image:focus-visible .latest-post-panel {
+  color: var(--ink);
+}
+.latest-post-card.has-image:hover .latest-post-panel::before,
+.latest-post-card.has-image:focus-visible .latest-post-panel::before {
+  opacity: 1;
+}
+@media (hover: none) {
+  .latest-post-card.has-image .latest-post-panel { color: var(--ink); }
+  .latest-post-card.has-image .latest-post-panel::before { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .latest-post-card.has-image .latest-post-panel::before { transition: none; }
 }
 .latest-post-card.has-image:hover {
   background: var(--ink);

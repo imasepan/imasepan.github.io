@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/entry-loader.css?v=20260810-2" />
-    <link rel="stylesheet" href="styles.css?v=20260912-2" />
+    <link rel="stylesheet" href="styles.css?v=20260912-3" />
     <script src="/entry-loader.js?v=20260809-1" defer></script>
   </head>
   <body>
@@ -74,10 +74,10 @@ and my favourite things</h1>
             <img class="latest-post-image" src="{{ latest_post.image | relative_url }}" alt="" decoding="async" />
           {% endif %}
           <div class="latest-post-content">
-            <div class="latest-post-heading">
+            <div class="latest-post-panel">
               <p class="eyebrow">Latest writing</p>
               <h2>{% if latest_post %}{{ latest_post.title }}{% else %}Notes worth keeping.{% endif %}</h2>
-            </div>
+
             {% if latest_post %}
               <p>{{ latest_post.excerpt | strip_html | strip_newlines | truncatewords: 24 }}</p>
               <span class="text-link">Read entry →</span>
@@ -85,6 +85,7 @@ and my favourite things</h1>
               <p>The first entry is coming soon.</p>
               <span class="text-link">Visit writing →</span>
             {% endif %}
+            </div>
           </div>
         </a>
       </section>
