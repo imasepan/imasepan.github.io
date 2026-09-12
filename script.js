@@ -73,13 +73,14 @@ systemTheme.addEventListener('change', (event) => {
 });
 
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 
 const createSunlitField = () => {
   if (document.querySelector('.sunlit-field')) return;
   const field = document.createElement('div');
   field.className = 'sunlit-field';
   field.setAttribute('aria-hidden', 'true');
-  field.innerHTML = `<div class="sunlit-blur"><span></span><span></span><span></span></div><div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
+  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
   document.body.prepend(field);
 };
 
@@ -127,124 +128,10 @@ const startAnalogParallax = () => {
   }, { passive: true });
 };
 
-const startInertialScroll = () => {
-  const desktopPointerQuery = window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
-  const root = document.documentElement;
-  const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
-  const navigationKeys = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Tab']);
-  let currentY = window.scrollY;
-  let targetY = window.scrollY;
-  let animationFrame = null;
-  let lastFrameTime = 0;
-  let isEnabled = false;
-
-  const stopInertia = () => {
-    if (animationFrame) window.cancelAnimationFrame(animationFrame);
-    animationFrame = null;
-    lastFrameTime = 0;
-    root.classList.remove('inertia-enabled');
-    currentY = window.scrollY;
-    targetY = window.scrollY;
-  };
-
-  const normalizeWheelDelta = (event) => {
-    let delta = event.deltaY;
-    if (event.deltaMode === 1) delta *= 16;
-    if (event.deltaMode === 2) delta *= window.innerHeight * .85;
-    return clamp(delta, -240, 240);
-  };
-
-  const nestedScrollerCanMove = (path, delta) => path.some((node) => {
-    if (!(node instanceof Element) || node === document.body || node === root) return false;
-    if (node.matches('iframe, .spotify-player, [data-native-scroll], textarea, select, input, [contenteditable="true"]')) return true;
-    const overflowY = window.getComputedStyle(node).overflowY;
-    if (!/(auto|scroll|overlay)/.test(overflowY) || node.scrollHeight <= node.clientHeight + 1) return false;
-    const bottom = node.scrollHeight - node.clientHeight;
-    return (delta < 0 && node.scrollTop > 1) || (delta > 0 && node.scrollTop < bottom - 1);
-  });
-
-  const stepInertia = (timestamp) => {
-    const elapsed = clamp(lastFrameTime ? timestamp - lastFrameTime : 16, 8, 32);
-    lastFrameTime = timestamp;
-    const easing = 1 - Math.exp(-elapsed / 260);
-    currentY += (targetY - currentY) * easing;
-    window.scrollTo(0, currentY);
-
-    if (Math.abs(targetY - currentY) < .45) {
-      window.scrollTo(0, targetY);
-      animationFrame = null;
-      lastFrameTime = 0;
-      root.classList.remove('inertia-enabled');
-      return;
-    }
-
-    animationFrame = window.requestAnimationFrame(stepInertia);
-  };
-
-  const onWheel = (event) => {
-    if (!isEnabled || event.defaultPrevented || event.ctrlKey || event.metaKey || document.body.classList.contains('menu-open') || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-    const delta = normalizeWheelDelta(event);
-    if (!delta || nestedScrollerCanMove(event.composedPath(), delta)) return;
-    event.preventDefault();
-
-    const queuedDirection = Math.sign(targetY - currentY);
-    if (animationFrame && queuedDirection && Math.sign(delta) !== queuedDirection) stopInertia();
-
-    if (!animationFrame) currentY = targetY = window.scrollY;
-    const maximumScroll = Math.max(0, root.scrollHeight - window.innerHeight);
-    const maximumQueue = window.innerHeight * 1.25;
-    targetY = clamp(targetY + (delta * .92), Math.max(0, currentY - maximumQueue), Math.min(maximumScroll, currentY + maximumQueue));
-    if (!animationFrame) {
-      root.classList.add('inertia-enabled');
-      animationFrame = window.requestAnimationFrame(stepInertia);
-    }
-  };
-
-  const configureInertia = () => {
-    const nextEnabled = desktopPointerQuery.matches && !reducedMotionQuery.matches;
-    if (nextEnabled === isEnabled) return;
-    if (isEnabled) window.removeEventListener('wheel', onWheel);
-    stopInertia();
-    isEnabled = nextEnabled;
-    if (isEnabled) window.addEventListener('wheel', onWheel, { passive: false });
-  };
-
-  window.addEventListener('scroll', () => {
-    if (!animationFrame) currentY = targetY = window.scrollY;
-  }, { passive: true });
-  window.addEventListener('pointerdown', stopInertia, { passive: true });
-  window.addEventListener('resize', stopInertia, { passive: true });
-  window.addEventListener('blur', stopInertia);
-  window.addEventListener('hashchange', stopInertia);
-  window.addEventListener('popstate', stopInertia);
-  document.addEventListener('focusin', stopInertia);
-  document.addEventListener('keydown', (event) => {
-    if (navigationKeys.has(event.key)) stopInertia();
-  }, true);
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopInertia();
-  });
-  desktopPointerQuery.addEventListener('change', configureInertia);
-  reducedMotionQuery.addEventListener('change', configureInertia);
-  configureInertia();
-  return stopInertia;
-};
-
 createSunlitField();
 createAnalogField();
 createFilmGrain();
 startAnalogParallax();
-let stopInertialScroll = () => {};
-
-const startDeferredEnhancements = () => {
-  stopInertialScroll = startInertialScroll();
-};
-
-if ('requestIdleCallback' in window) {
-  window.requestIdleCallback(startDeferredEnhancements, { timeout: 1200 });
-} else {
-  window.setTimeout(startDeferredEnhancements, 250);
-}
 
 const pageLoader = document.createElement('div');
 pageLoader.className = 'page-loader';
@@ -298,7 +185,6 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
   const target = document.getElementById(scrollTarget);
 
   if (target) {
-    stopInertialScroll();
     const initialScrollBehavior = document.documentElement.style.scrollBehavior;
     document.documentElement.style.scrollBehavior = 'auto';
     window.scrollTo(0, 0);
@@ -433,7 +319,6 @@ const queueProjectLoad = () => {
 
 const navigateWithLoader = async (destination, destinationLabel) => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  stopInertialScroll();
   pageLoader.setAttribute('aria-label', `Loading ${destinationLabel}`);
   pageLoader.setAttribute('aria-hidden', 'false');
   pageLoader.className = 'page-loader is-active';
@@ -496,7 +381,6 @@ document.addEventListener('click', (event) => {
     const currentTarget = document.getElementById(homeSection);
     if (currentTarget && isHomePath(window.location.pathname)) {
       event.preventDefault();
-      stopInertialScroll();
       currentTarget.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
       window.history.pushState({}, '', `/#${homeSection}`);
       return;
@@ -640,31 +524,42 @@ function initialisePostFigureCaptions() {
     tooltip.textContent = caption.textContent;
     tooltip.setAttribute("aria-hidden", "true");
     document.body.append(tooltip);
+    let pointerFrame = null;
+    let pointerX = 0;
+    let pointerY = 0;
     const positionTooltip = (event) => {
       if (!portraitPointerQuery.matches) return;
-
-      const bounds = tooltip.getBoundingClientRect();
-      const inset = 8;
-      const x = Math.min(event.clientX + 14, window.innerWidth - bounds.width - inset);
-      const y = Math.min(event.clientY + 18, window.innerHeight - bounds.height - inset);
-      tooltip.style.left = `${Math.max(inset, x)}px`;
-      tooltip.style.top = `${Math.max(inset, y)}px`;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (pointerFrame !== null) return;
+      pointerFrame = window.requestAnimationFrame(() => {
+        pointerFrame = null;
+        const inset = 8;
+        const x = Math.min(pointerX + 14, window.innerWidth - tooltip.offsetWidth - inset);
+        const y = Math.min(pointerY + 18, window.innerHeight - tooltip.offsetHeight - inset);
+        tooltip.style.translate = `${Math.max(inset, x)}px ${Math.max(inset, y)}px`;
+      });
+    };
+    const cancelPosition = () => {
+      if (pointerFrame !== null) window.cancelAnimationFrame(pointerFrame);
+      pointerFrame = null;
     };
 
     const enter = (event) => {
       if (!portraitPointerQuery.matches) return;
       positionTooltip(event);
-      figure.classList.add("has-pointer-caption");
+      tooltip.classList.remove("is-exiting");
       tooltip.classList.add("is-entering");
     };
     const leave = () => {
-      figure.classList.remove("has-pointer-caption");
+      cancelPosition();
       tooltip.classList.remove("is-entering");
       tooltip.classList.add("is-exiting");
     };
     const pointerModeChanged = () => {
+      figure.classList.toggle("has-pointer-caption", portraitPointerQuery.matches);
       if (portraitPointerQuery.matches) return;
-      figure.classList.remove("has-pointer-caption");
+      cancelPosition();
       tooltip.classList.remove("is-entering", "is-exiting");
       tooltip.removeAttribute("style");
     };
@@ -674,11 +569,14 @@ function initialisePostFigureCaptions() {
     figure.addEventListener("pointerleave", leave, { passive: true });
     figure.addEventListener("pointercancel", leave, { passive: true });
     portraitPointerQuery.addEventListener("change", pointerModeChanged);
-    tooltips.push({ figure, tooltip, enter, leave, positionTooltip, pointerModeChanged });
+    pointerModeChanged();
+    tooltips.push({ figure, tooltip, enter, leave, positionTooltip, pointerModeChanged, cancelPosition });
   });
 
   disposePostFigureCaptions = () => {
-    tooltips.forEach(({ figure, tooltip, enter, leave, positionTooltip, pointerModeChanged }) => {
+    tooltips.forEach(({ figure, tooltip, enter, leave, positionTooltip, pointerModeChanged, cancelPosition }) => {
+      cancelPosition();
+      figure.classList.remove("has-pointer-caption");
       figure.removeEventListener("pointerenter", enter);
       figure.removeEventListener("pointermove", positionTooltip);
       figure.removeEventListener("pointerleave", leave);
@@ -693,7 +591,7 @@ function initialisePostFigureCaptions() {
 initialisePostFigureCaptions();
 
 
-const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+
 let disposePortraitCaption = () => {};
 
 // Turn the semantic caption into a cursor-following tag on precise pointers,
