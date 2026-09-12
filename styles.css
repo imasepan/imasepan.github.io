@@ -2433,6 +2433,23 @@ main:not(.page-main) > .future-section {
 .latest-post-card.has-image h2 {
   text-shadow: 0 2px 24px rgba(0, 0, 0, .55);
 }
+/* An opaque heading panel keeps the label and title clear of the photograph. */
+.latest-post-card.has-image .latest-post-heading {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: clamp(16px, 2vw, 24px);
+  background: var(--paper);
+  color: var(--ink);
+}
+.latest-post-card.has-image .latest-post-heading .eyebrow,
+.latest-post-card.has-image .latest-post-heading h2 {
+  color: inherit;
+  text-shadow: none;
+}
+.latest-post-heading h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
 .latest-post-card.has-image:hover {
   background: var(--ink);
 }
