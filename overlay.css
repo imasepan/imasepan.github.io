@@ -10,7 +10,8 @@ html:has(.overlay-site), .overlay-site { width: 100%; height: 100%; overflow: hi
 .overlay-site {
   --page-inset: clamp(20px, 5vw, 80px);
   --sans: 'DM Sans', sans-serif;
-  --display: 'Belyga', sans-serif;
+  --display: var(--mono);
+  --orange: var(--ink);
   --mono: 'DM Mono', monospace;
   font-family: var(--sans);
 }
@@ -153,16 +154,15 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 .overlay-content .about-contact { margin: 32px 0; font-size: 14px; }
 
 /* Use the dark-mode palette for text selection and the email highlight. */
-.overlay-site ::selection { background: #4F4D46; color: #EDE8D0; }
+.overlay-site ::selection { background: var(--ink); color: var(--paper); }
 .overlay-content .about-contact a { text-decoration-color: currentColor; }
 .overlay-content .about-contact a:hover,
 .overlay-content .about-contact a:focus-visible {
-  background: #4F4D46;
-  color: #EDE8D0;
+  background: var(--ink);
+  color: var(--paper);
 }
 
 /* Display lettering for titles; original fonts for reading and controls. */
-.home-links a,
 .overlay-content h1,
 .overlay-content h2,
 .overlay-content h3,
@@ -200,8 +200,8 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 }
 .overlay-content #projects .section-heading > .text-link:hover,
 .overlay-content #projects .section-heading > .text-link:focus-visible {
-  background: #4F4D46;
-  color: #EDE8D0;
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .overlay-content .post-card:not(.has-image) { grid-template-columns: minmax(0, 1fr); }
@@ -218,3 +218,18 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   animation: none;
 }
 :root[data-theme='dark'] .overlay-site .sunlit-field::after { opacity: 0; }
+
+/* Tile highlights invert the active palette, including keyboard focus. */
+.overlay-site .overlay-content :is(.text-link, .page-back, .button, .project-card, .about-contact a):is(:hover, :focus-visible) {
+  background: var(--ink);
+  color: var(--paper);
+}
+.overlay-site .overlay-content .project-card:is(:hover, :focus-visible) :is(h3, p, .project-meta) {
+  color: var(--paper);
+}
+.overlay-site :is(.portrait-caption-tooltip, .post-caption-tooltip) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.home-links a { font-family: Belyga, sans-serif; font-weight: 400; }
