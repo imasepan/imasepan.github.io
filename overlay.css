@@ -48,8 +48,6 @@ html:has(.overlay-site), .overlay-site { width: 100%; height: 100%; overflow: hi
 .home-links { display: grid; gap: 9px; }
 .home-links a { display: flex; align-items: center; gap: 22px; width: fit-content; min-height: 58px; text-decoration: none; font-size: clamp(36px, 4.5vw, 64px); line-height: 1.2; letter-spacing: 0; font-weight: 400; transition: translate .25s; }
 .home-links a:hover { translate: 8px 0; }
-.link-arrow { font-size: .45em; margin-left: 14px; opacity: 0; transition: opacity .2s; }
-.home-links a:hover .link-arrow, .home-links a:focus-visible .link-arrow { opacity: 1; }
 .music-dock { position: fixed; left: 24px; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 5; width: 320px; max-width: calc(100vw - 48px); }
 .music-dock .spotify-player { display: block; width: 100%; max-width: 100%; height: 80px; margin: 0; border: 0; border-radius: 12px; }
 body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
@@ -178,14 +176,13 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   position: absolute;
   inset: 0;
   pointer-events: none;
-  /* A bottom-right ellipse cuts a concave edge between the top-right
-     and bottom-left corners, feathered into the warm wall. */
-  background: radial-gradient(ellipse 100% 100% at 100% 100%,
-    transparent 85%,
-    rgba(177, 216, 245, .04) 92%,
-    rgba(171, 212, 244, .22) 102%,
-    rgba(165, 208, 242, .42) 116%,
-    rgba(175, 217, 248, .5) 142%);
+  /* A broad, faint sky wash that gently recedes toward the bottom-right. */
+  background: linear-gradient(135deg,
+    rgba(173, 214, 246, .23) 0%,
+    rgba(173, 214, 246, .19) 30%,
+    rgba(173, 214, 246, .13) 60%,
+    rgba(173, 214, 246, .07) 82%,
+    rgba(173, 214, 246, .015) 100%);
   opacity: 0;
   transition: opacity .7s ease;
 }
@@ -208,3 +205,16 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 }
 
 .overlay-content .post-card:not(.has-image) { grid-template-columns: minmax(0, 1fr); }
+
+/* Spread warm reflected light from bottom-left to top-right in dark mode. */
+:root[data-theme='dark'] .overlay-site .sunlit-field::before {
+  background: linear-gradient(45deg,
+    rgba(231, 121, 47, .23) 0%,
+    rgba(231, 121, 47, .19) 30%,
+    rgba(231, 121, 47, .13) 60%,
+    rgba(231, 121, 47, .07) 82%,
+    rgba(231, 121, 47, .015) 100%);
+  opacity: 1;
+  animation: none;
+}
+:root[data-theme='dark'] .overlay-site .sunlit-field::after { opacity: 0; }
