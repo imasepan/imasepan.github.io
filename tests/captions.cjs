@@ -58,7 +58,8 @@ const html = shell.replace('{{ content }}', post).replace(/<script src="\/entry-
       await page.evaluate(() => initialisePostFigureCaptions());
       assert.equal(await page.locator('.post-caption-tooltip').count(), 2);
     }
-    await page.evaluate(() => navigateWithLoader(new URL('/2026/08/09/next/', location.href), 'Writing'));
+    await page.evaluate(() => { history.pushState({}, '', '/blog/2026/08/09/next/'); window.dispatchEvent(new PopStateEvent('popstate')); });
+    await page.locator('.post-figure').first().waitFor();
     assert.equal(await page.locator('.post-caption-tooltip').count(), 2);
     await page.locator('.post-figure').first().hover();
     assert.equal(await page.locator('.post-caption-tooltip').first().evaluate(node => getComputedStyle(node).opacity), '1');

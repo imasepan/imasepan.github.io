@@ -3,7 +3,6 @@ layout: default
 title: writing
 description: Writing by imasepan.
 ---
-<a class="page-back" href="/">← Back to home</a>
 <section class="page-intro">
   <div class="blog-intro-copy">
     <p class="eyebrow">Writing</p>
@@ -18,7 +17,7 @@ description: Writing by imasepan.
     <span class="post-card-content">
       <span class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</span>
       <span class="post-card-title">{{ post.title }}</span>
-      <span class="post-card-excerpt">{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncatewords: 24 }}</span>
+      <span class="post-card-excerpt">{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncatewords: 24 | escape_once }}</span>
       <span class="text-link">Read post →</span>
     </span>
   </a>

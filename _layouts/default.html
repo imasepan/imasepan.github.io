@@ -1,51 +1,43 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="{{ page.description | default: site.description }}" />
-    <title>imasepan — {{ page.title | default: "writing" }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/entry-loader.css?v=20260810-2" />
-    <link rel="stylesheet" href="/styles.css?v=20260912-2" />
-    <script src="/entry-loader.js?v=20260809-1" defer></script>
-  </head>
-  <body>
-    <div class="entry-loader" data-entry-loader role="status" aria-label="Loading page" aria-live="polite">
-      <div class="entry-loader-inner" aria-hidden="true"><div class="entry-loader-track"></div></div>
-    </div>
-    <header class="site-header">
-      <div class="brand-controls">
-        <button class="wordmark" type="button" aria-expanded="false" aria-controls="header-controls">imasepan<span>_</span></button>
-        <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
-      </div>
-      <div class="header-controls" id="header-controls">
-        <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-          <a href="/about.html">About</a>
-          <a href="/#projects">Projects</a>
-          <a href="/studio.html">Studio</a>
-          <a href="/blog/"{% if page.url == "/blog/" or page.layout == "post" %} aria-current="page"{% endif %}>Writing</a>
-        </nav>
-        <a class="language-switch" href="/kr/" lang="ko" aria-label="Switch to Korean">한국어</a>
-        <button class="menu-button" type="button" aria-label="Navigation is always visible">Menu</button>
-      </div>
-    </header>
-    <section class="music-banner" aria-label="Featured Spotify playlist">
-      <div class="music-banner-inner">
-        <p><span>Now playing</span> / My favourite songs! (that fit the mood of this website).</p>
-        <iframe class="spotify-player" title="Spotify playlist" src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator" width="100%" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" scrolling="no"></iframe>
-      </div>
-    </section>
-    <main class="page-main">
-      {{ content }}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="{{ page.description | default: site.description | escape }}" />
+  <title>imasepan — {{ page.title | default: "home" | escape }}</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link rel="preload" href="/assets/Belyga-Regular.otf" as="font" type="font/otf" crossorigin />
+  <link rel="stylesheet" href="/styles.css?v=20260926-14" />
+  <link rel="stylesheet" href="/overlay.css?v=20260926-14" />
+</head>
+<body class="overlay-site">
+  <div class="home-screen">
+    <header class="home-header"><button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button></header>
+    <main class="home-menu" aria-label="Home">
+
+      <nav class="home-links" aria-label="Main navigation">
+        <a href="/about.html">About<span class="link-arrow" aria-hidden="true">↗</span></a>
+        <a href="/work.html">Work<span class="link-arrow" aria-hidden="true">↗</span></a>
+        <a href="/blog/">Blog<span class="link-arrow" aria-hidden="true">↗</span></a>
+        <a href="/guestbook.html">Guestbook<span class="link-arrow" aria-hidden="true">↗</span></a>
+      </nav>
     </main>
-    <footer class="site-footer">
-      <a class="wordmark" href="/">imasepan<span>_</span></a>
-      <p>always doing something</p>
-      <a href="https://github.com/imasepan" target="_blank" rel="noreferrer">github.com/imasepan ↗</a>
-    </footer>
-    <script src="/script.js?v=20260912-1"></script>
-  </body>
+
+  </div>
+  <div class="overlay-veil" aria-hidden="true"></div>
+  <aside class="music-dock" aria-label="Featured Spotify playlist">
+
+    <iframe class="spotify-player" title="Spotify playlist" src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator" width="320" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+  </aside>
+  <dialog class="page-overlay" aria-labelledby="overlay-label">
+    <header class="overlay-bar"><span id="overlay-label">{{ page.title | default: "page" | escape }}</span><a class="overlay-close" href="/" autofocus>Close <span aria-hidden="true">×</span></a></header>
+    <div class="overlay-scroll" tabindex="0"><div class="overlay-content">{{ content }}</div></div>
+  </dialog>
+  <noscript><style>.page-overlay:not([open]){display:block;position:fixed}.home-screen{display:none}</style><p>Please enable JavaScript to use the overlay navigation. <a href="/blog/">Blog</a> · <a href="/about.html">About</a> · <a href="/guestbook.html">Guestbook</a> · <a href="/work.html">Work</a></p></noscript>
+  <script src="/script.js?v=20260926-14"></script>
+  <script src="/overlay.js?v=20260926-14"></script>
+</body>
 </html>

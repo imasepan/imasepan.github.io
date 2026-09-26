@@ -26,3 +26,17 @@ The site is static/Jekyll-compatible. Project cards have static fallbacks and ar
 # Progressive leaf shadow blur
 
 The animated sunlit leaf shadow uses three directionally masked blur layers (10px, 32px, and 80px), matching the progressive blur used by the window dividers. Each layer has a small, independently phased sway. A single low-octave SVG turbulence and displacement filter deforms the composite shadow on the leaf wrapper so the effect is calculated once rather than once per blur layer; the wrapper also carries the larger billowing transform. Reduced-motion mode disables the sway, billow, and deformation.
+
+## Viewport overlay redesign (2026-09-26)
+
+The English home, About, Guestbook, blog index and posts share the default Jekyll layout. The home has three links; pages load into a dialog, with Close/Escape returning home. Only the overlay content scrolls. The home is inert while a page is open; the Spotify dock remains mounted and usable at bottom left. Browser history and direct post URLs are supported, with retry controls for failed requests.
+
+- overlay.css: viewport layout, blurred backdrop, film grain, responsive content.
+- overlay.js: navigation, history, dialog state and cleanup.
+- script.js: original background, themes, image embeds and caption interactions.
+- legacy-script.js: retained behavior for the standalone Korean homepage.
+- tests/overlays.cjs and tests/captions.cjs: Playwright interaction checks (PLAYWRIGHT_MODULE and PLAYWRIGHT_CHANNEL can select an installed runtime/browser).
+
+The tests render the shared shell with content fixtures; they do not replace a full Jekyll production build. Posts and image assets remain unchanged. Projects are accessible inside About, and Guestbook links to the existing GitHub Discussions category.
+
+The home now links to About, Work, Blog and Guestbook. GitHub project cards live in work.html; About contains the introduction, photographs and email link.

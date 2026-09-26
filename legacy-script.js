@@ -80,7 +80,7 @@ const createSunlitField = () => {
   const field = document.createElement('div');
   field.className = 'sunlit-field';
   field.setAttribute('aria-hidden', 'true');
-  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sky-reflection"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
+  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
   document.body.prepend(field);
 };
 
@@ -132,6 +132,273 @@ createSunlitField();
 createAnalogField();
 createFilmGrain();
 startAnalogParallax();
+
+const pageLoader = document.createElement('div');
+pageLoader.className = 'page-loader';
+pageLoader.setAttribute('role', 'status');
+pageLoader.setAttribute('aria-label', 'Loading');
+pageLoader.setAttribute('aria-hidden', 'true');
+pageLoader.innerHTML = '<span class="page-loader-indicator" aria-hidden="true"></span>';
+document.body.appendChild(pageLoader);
+
+let arrivingPage = null;
+try {
+  arrivingPage = window.sessionStorage.getItem('page-loader-label');
+  window.sessionStorage.removeItem('page-loader-label');
+} catch {
+  // Navigation still works if session storage is unavailable.
+}
+
+if (arrivingPage) {
+  pageLoader.setAttribute('aria-label', `Loading ${arrivingPage}`);
+  pageLoader.classList.add('is-arrival');
+  pageLoader.setAttribute('aria-hidden', 'false');
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => pageLoader.classList.add('is-revealing'));
+  });
+}
+
+const runHeadlineMaterialise = () => {
+  const headline = document.querySelector('[data-reveal-heading]');
+  const hero = document.querySelector('.hero');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (hero) hero.classList.add('hero-tiles-ready');
+  if (!headline || headline.dataset.revealed) return;
+
+  headline.dataset.revealed = 'true';
+  if (reducedMotion) return;
+  headline.classList.add('is-materialising');
+
+  const reveal = () => window.requestAnimationFrame(() => headline.classList.add('is-visible'));
+  if (document.querySelector('[data-entry-loader]')) {
+    window.addEventListener('entry-loader-ready', reveal, { once: true });
+  } else {
+    reveal();
+  }
+};
+
+const handleScrollTarget = (url = new URL(window.location.href)) => {
+  const scrollTarget = url.hash.replace(/^#/, '') || new URLSearchParams(url.search).get('scroll');
+  if (!scrollTarget) return;
+  const target = document.getElementById(scrollTarget);
+
+  if (target) {
+    const initialScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    document.documentElement.style.scrollBehavior = initialScrollBehavior;
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        window.history.replaceState(null, '', `${url.pathname}#${scrollTarget}`);
+      });
+    });
+  }
+};
+
+if (wordmark && siteHeader) {
+  let controlsCloseTimer;
+  const hoverHeaderQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  const revealHeaderControls = () => {
+    if (!hoverHeaderQuery.matches) return;
+    window.clearTimeout(controlsCloseTimer);
+    siteHeader.classList.add('controls-open');
+  };
+  const concealHeaderControls = () => {
+    if (!hoverHeaderQuery.matches) return;
+    window.clearTimeout(controlsCloseTimer);
+    controlsCloseTimer = window.setTimeout(() => {
+      if (!siteHeader.classList.contains('is-open')) {
+        siteHeader.classList.remove('controls-open');
+      }
+    }, 180);
+  };
+
+  brandControls?.addEventListener('pointerenter', revealHeaderControls);
+  brandControls?.addEventListener('pointerleave', concealHeaderControls);
+  headerControls?.addEventListener('pointerenter', revealHeaderControls);
+  headerControls?.addEventListener('pointerleave', concealHeaderControls);
+  wordmark.addEventListener('click', () => {
+    wordmark.setAttribute('aria-expanded', 'false');
+    window.location.href = isKorean ? '/kr/' : '/';
+  });
+}
+
+const menuButton = document.querySelector('.menu-button');
+
+if (menuButton && siteHeader && nav) {
+  const setMenuOpen = (open) => {
+    siteHeader.classList.toggle('is-open', open);
+    siteHeader.classList.toggle('controls-open', open);
+    document.body.classList.toggle('menu-open', open);
+    menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    nav.setAttribute('aria-hidden', String(!open));
+  };
+
+  setMenuOpen(false);
+  menuButton.addEventListener('click', () => setMenuOpen(!siteHeader.classList.contains('is-open')));
+  nav.addEventListener('click', (event) => {
+    if (event.target.closest('a')) setMenuOpen(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setMenuOpen(false);
+  });
+}
+
+const loadProjects = () => {
+  const projectList = document.querySelector('#project-list');
+  if (!projectList || projectList.dataset.loaded) return;
+  projectList.dataset.loaded = 'true';
+
+  const cacheKey = 'imasepan-projects-v1';
+  const renderProjects = (repos) => {
+    projectList.innerHTML = repos.map((repo) => `
+      <a class="project-card${repo.name.toLowerCase() === 'playermarket' ? ' player-market' : ''}" href="${repo.html_url}" target="_blank" rel="noreferrer">
+        <h3>${repo.name}</h3>
+        <p>${repo.description || (isKorean ? 'imasepan의 프로젝트입니다.' : 'A project by imasepan.')}</p>
+        <span class="project-meta">${repo.language || 'Code'} · ${isKorean ? 'GitHub에서 보기 ↗' : 'View on GitHub ↗'}</span>
+      </a>`).join('');
+  };
+
+  try {
+    const cachedProjects = JSON.parse(window.sessionStorage.getItem(cacheKey));
+    if (Array.isArray(cachedProjects) && cachedProjects.length) {
+      renderProjects(cachedProjects);
+      return;
+    }
+  } catch {
+    // Continue with the static cards and refresh from GitHub when storage is unavailable.
+  }
+
+  fetch('https://api.github.com/users/imasepan/repos?sort=updated&per_page=100')
+    .then((response) => {
+      if (!response.ok) throw new Error('Could not load repositories');
+      return response.json();
+    })
+    .then((repos) => {
+      const visibleRepos = repos
+        .filter((repo) => repo.name !== 'imasepan.github.io')
+        .slice(0, 3);
+      if (!visibleRepos.length) throw new Error('No public repositories found');
+      renderProjects(visibleRepos);
+      try {
+        window.sessionStorage.setItem(cacheKey, JSON.stringify(visibleRepos));
+      } catch {
+        // The refreshed cards still render when storage is unavailable.
+      }
+    })
+    .catch(() => {
+      if (!projectList.querySelector('.project-card')) {
+        projectList.innerHTML = '<p class="loading">Projects will appear here as public repositories are added. <a href="https://github.com/imasepan?tab=repositories" target="_blank" rel="noreferrer">Browse GitHub ↗</a></p>';
+      }
+    });
+};
+
+const queueProjectLoad = () => {
+  const projectList = document.querySelector('#project-list');
+  if (!projectList || projectList.dataset.observed || projectList.dataset.loaded) return;
+  projectList.dataset.observed = 'true';
+
+  if (!('IntersectionObserver' in window)) {
+    loadProjects();
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    observer.disconnect();
+    loadProjects();
+  }, { rootMargin: '500px 0px' });
+  observer.observe(projectList);
+};
+
+const navigateWithLoader = async (destination, destinationLabel) => {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  pageLoader.setAttribute('aria-label', `Loading ${destinationLabel}`);
+  pageLoader.setAttribute('aria-hidden', 'false');
+  pageLoader.className = 'page-loader is-active';
+
+  const finishNavigation = () => {
+    pageLoader.className = 'page-loader';
+    pageLoader.setAttribute('aria-hidden', 'true');
+  };
+
+  try {
+    const response = await fetch(destination.href, { headers: { 'X-Requested-With': 'soft-navigation' } });
+    if (!response.ok) throw new Error(`Navigation failed: ${response.status}`);
+
+    const nextDocument = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const currentMain = document.querySelector('main');
+    const nextMain = nextDocument.querySelector('main');
+
+    // Keep the document (and therefore the Spotify iframe) mounted. If a page
+    // does not share this shell, fall back to a normal browser navigation.
+    if (!currentMain || !nextMain || !nextDocument.querySelector('.spotify-player')) {
+      window.location.assign(destination.href);
+      return;
+    }
+
+    currentMain.replaceWith(nextMain);
+    document.title = nextDocument.title;
+    window.history.pushState({}, '', destination.href);
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    initialisePortraitCaption();
+    enhanceObsidianImageEmbeds();
+    enhancePostFigureCaptions();
+    initialisePostFigureCaptions();
+    enhancePostSpotifyLinks();
+    queueProjectLoad();
+    runHeadlineMaterialise();
+    handleScrollTarget();
+
+    window.setTimeout(finishNavigation, reducedMotion ? 0 : 250);
+  } catch {
+    window.location.assign(destination.href);
+  }
+};
+
+window.addEventListener('popstate', () => {
+  if (document.querySelector('.spotify-player')) {
+    navigateWithLoader(new URL(window.location.href), 'Page');
+  }
+});
+
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[href]');
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
+
+  const destination = new URL(link.href, window.location.href);
+  if (destination.origin !== window.location.origin || destination.pathname === '/kr/' || link.classList.contains('language-switch')) return;
+
+  const homeSection = destination.hash.replace(/^#/, '') || new URLSearchParams(destination.search).get('scroll');
+  const isHomePath = (pathname) => /^\/(?:index\.html)?$/.test(pathname);
+  if (homeSection && isHomePath(destination.pathname)) {
+    const currentTarget = document.getElementById(homeSection);
+    if (currentTarget && isHomePath(window.location.pathname)) {
+      event.preventDefault();
+      currentTarget.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      window.history.pushState({}, '', `/#${homeSection}`);
+      return;
+    }
+  }
+
+  const isWriting = link.closest('.latest-post-card') || /(?:\/blog(?:\.html|\/)?|\/\d{4}\/\d{2}\/\d{2}\/)/.test(destination.pathname);
+  const isHome = isHomePath(destination.pathname);
+  if (!isWriting && !isHome) return;
+
+  event.preventDefault();
+  const destinationLabel = isWriting ? 'Writing' : 'Home';
+  navigateWithLoader(destination, destinationLabel);
+});
+
+runHeadlineMaterialise();
+queueProjectLoad();
+handleScrollTarget();
 
 
 // Render standalone Obsidian image embeds from the site's assets directory.
@@ -256,7 +523,7 @@ function initialisePostFigureCaptions() {
     tooltip.className = "post-caption-tooltip";
     tooltip.textContent = caption.textContent;
     tooltip.setAttribute("aria-hidden", "true");
-    (document.querySelector('.page-overlay') || document.body).append(tooltip);
+    document.body.append(tooltip);
     let pointerFrame = null;
     let pointerX = 0;
     let pointerY = 0;
@@ -343,7 +610,7 @@ function initialisePortraitCaption() {
   portraitTooltip.className = "portrait-caption-tooltip";
   portraitTooltip.textContent = portraitCaption.textContent;
   portraitTooltip.setAttribute("aria-hidden", "true");
-  (document.querySelector('.page-overlay') || document.body).append(portraitTooltip);
+  document.body.append(portraitTooltip);
 
   let previousPointerX = null;
   let targetRotation = 0;

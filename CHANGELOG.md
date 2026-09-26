@@ -19,3 +19,15 @@
 - Removed the nonfunctional dynamically injected `SYSTEM`/`CLASSIC` layout button.
 - Added `documentation.md` with site architecture and maintenance notes.
 - Added `CHAT_CONTEXT.md` for continuity in future development chats.
+
+## 2026-09-26
+
+- Replaced the English scrolling homepage with Guestbook, Blog and About links over the existing window-light background.
+- Added blurred page overlays, Close/Escape controls, internal reading scroll, history navigation and failed-load retry.
+- Moved the persistent Spotify playlist to the bottom-left viewport corner.
+- Restored animated film grain, respecting reduced-motion preferences.
+- Preserved post/image content and pointer/touch captions; moved project links into About.
+
+- Simplified the home to About, Blog, Guestbook; removed taglines, link numbers and dotted texture while retaining film grain. Added gradual backdrop and content entrance transitions.
+
+- Added a Work overlay for GitHub projects and removed the duplicate projects and extra biography sections from About. Simplified Guestbook copy.
