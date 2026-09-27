@@ -31,30 +31,30 @@ applyTheme(readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
 
 let activeThemeTransition = null;
 
-const transitionTheme = (theme) => {
-  if (theme === document.documentElement.dataset.theme || activeThemeTransition) return;
-
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) {
-    applyTheme(theme);
+const transitionAppearance = (update) => {
+  if (activeThemeTransition) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    update();
     return;
   }
 
+  const controls = document.querySelectorAll('.theme-toggle, .rain-toggle');
+  controls.forEach((control) => { control.disabled = true; });
   document.documentElement.classList.add('theme-is-transitioning');
-  if (themeToggle) themeToggle.disabled = true;
-
-  // Flush the transition rules before changing the palette so the colors
-  // interpolate directly, without a bright overlay covering the page.
+  // Interpolate the existing palette directly, as in the original transition.
   void document.body.offsetWidth;
-  applyTheme(theme);
-
+  update();
   activeThemeTransition = window.setTimeout(() => {
     document.documentElement.classList.remove('theme-is-transitioning');
-    if (themeToggle) themeToggle.disabled = false;
+    controls.forEach((control) => { control.disabled = false; });
     activeThemeTransition = null;
   }, 750);
 };
 
+const transitionTheme = (theme) => {
+  if (theme === document.documentElement.dataset.theme) return;
+  transitionAppearance(() => applyTheme(theme));
+};
 if (themeToggle) {
   themeToggle.addEventListener('click', () => {
     const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -75,13 +75,91 @@ systemTheme.addEventListener('change', (event) => {
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 
+const rainToggle = document.querySelector('.rain-toggle');
+const createRainField = () => {
+  if (!rainToggle) return;
+  const rainField = document.createElement('div');
+  rainField.className = 'rain-field';
+  rainField.setAttribute('aria-hidden', 'true');
+  // Staggered depths and speeds keep the rainfall soft and irregular.
+  rainField.innerHTML = Array.from({ length: 64 }, (_, index) => {
+    const x = (index * 37.7) % 112;
+    const duration = 1.1 + (index % 7) * .19;
+    return `<span class="raindrop" style="--rain-x:${x}%;--rain-duration:${duration}s;--rain-delay:${-((index * .73) % 4)}s;--rain-length:${24 + (index % 5) * 11}px;--rain-opacity:${.12 + (index % 4) * .07}"></span>`;
+  }).join('');
+  document.querySelector('.sunlit-shadows').appendChild(rainField);
+  const lightning = document.createElement('div');
+  lightning.className = 'rain-lightning';
+  document.querySelector('.sunlit-shadows').prepend(lightning);
+
+  const applyRain = (enabled) => {
+    document.documentElement.dataset.weather = enabled ? 'rain' : 'clear';
+    rainToggle.setAttribute('aria-pressed', String(enabled));
+  };
+  let savedRain = false;
+  try {
+    savedRain = window.localStorage.getItem('weather') === 'rain';
+  } catch {
+    // Weather controls also work when browser storage is unavailable.
+  }
+  applyRain(savedRain);
+  rainToggle.addEventListener('click', () => {
+    const enabled = document.documentElement.dataset.weather !== 'rain';
+    transitionAppearance(() => applyRain(enabled));
+    try {
+      window.localStorage.setItem('weather', enabled ? 'rain' : 'clear');
+    } catch {
+      // Keep this page's selection even when it cannot be saved.
+    }
+  });
+  const updateWeatherVisibility = () => {
+    rainField.classList.toggle('is-paused', document.hidden);
+    lightning.style.animationPlayState = document.hidden ? 'paused' : 'running';
+  };
+  document.addEventListener('visibilitychange', updateWeatherVisibility);
+  updateWeatherVisibility();
+};
+
 const createSunlitField = () => {
   if (document.querySelector('.sunlit-field')) return;
   const field = document.createElement('div');
   field.className = 'sunlit-field';
   field.setAttribute('aria-hidden', 'true');
-  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sky-reflection"></div><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div>`;
+  field.innerHTML = `<div class="sunlit-glow"></div><div class="sunlit-bounce"></div><div class="sky-reflection"></div><div class="sunlit-shadows"><div class="sunlit-perspective"><div class="sunlit-blinds"><div class="sunlit-shutters">${'<span class="sunlit-shutter"></span>'.repeat(18)}</div><div class="sunlit-bars"><span class="sunlit-bar"></span><span class="sunlit-bar"></span></div></div></div></div>`;
   document.body.prepend(field);
+};
+
+// Original vector silhouette: each hanging part pivots at its own attachment.
+const createWindchime = () => {
+  if (document.querySelector('.windchime-field')) return;
+  const field = document.createElement('div');
+  field.className = 'windchime-field';
+  field.setAttribute('aria-hidden', 'true');
+  const tubes = [
+    { x: 66, y: 180, length: 251, duration: 6.1, delay: -1.8 },
+    { x: 90, y: 178, length: 282, duration: 7.3, delay: -4.2 },
+    { x: 114, y: 181, length: 246, duration: 5.8, delay: -2.7 },
+    { x: 138, y: 179, length: 284, duration: 6.7, delay: -.6 },
+    { x: 162, y: 177, length: 251, duration: 7.7, delay: -3.5 },
+  ];
+  field.innerHTML = `<svg class="windchime" viewBox="0 0 240 680" fill="currentColor" xmlns="http://www.w3.org/2000/svg" focusable="false">
+    <g class="windchime-body">
+      <path d="M124 -18 C132 5 110 17 119 36" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <rect x="114" y="33" width="12" height="16" rx="3"/>
+      <path d="M120 46 L57 129 M120 46 L79 128 M120 46 L120 137 M120 46 L161 128 M120 46 L183 129" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <ellipse cx="120" cy="132" rx="64" ry="8" fill="none" stroke="currentColor" stroke-width="3"/>
+      <g class="windchime-sail">
+        <path d="M120 137 V585" fill="none" stroke="currentColor" stroke-width="2.8"/>
+        <ellipse cx="120" cy="310" rx="28" ry="7"/>
+        <ellipse cx="120" cy="614" rx="36" ry="42"/>
+      </g>
+      ${tubes.map(({ x, y, length, duration, delay }) => `<g class="windchime-tube" style="transform-origin:${x + 9}px 134px;--chime-duration:${duration}s;--chime-delay:${delay}s">
+        <path d="M${x + 9} 134 L${x + 1} ${y + 5} M${x + 9} 134 L${x + 17} ${y + 5}" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <rect x="${x}" y="${y}" width="18" height="${length}" rx="7"/>
+      </g>`).join('')}
+    </g>
+  </svg>`;
+  document.querySelector('.sunlit-shadows').appendChild(field);
 };
 
 const createAnalogField = () => {
@@ -129,6 +207,8 @@ const startAnalogParallax = () => {
 };
 
 createSunlitField();
+createWindchime();
+createRainField();
 createAnalogField();
 createFilmGrain();
 startAnalogParallax();

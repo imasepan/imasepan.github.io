@@ -41,7 +41,7 @@ html:has(.overlay-site), .overlay-site { width: 100%; height: 100%; overflow: hi
 }
 .overlay-site .analog-field { display: none; }
 .home-screen { position: fixed; inset: 0; z-index: 3; transition: filter .55s ease, opacity .55s ease; }
-.home-header { position: absolute; top: 30px; left: var(--page-inset); right: var(--page-inset); display: flex; align-items: center; justify-content: flex-end; }
+.home-header { position: absolute; top: 30px; left: var(--page-inset); right: var(--page-inset); display: flex; align-items: center; justify-content: flex-end; gap: 18px; }
 .home-name { font: 500 17px var(--mono); text-decoration: none; letter-spacing: 0; }
 .home-name span { opacity: .5; }
 .home-header .theme-toggle { position: static; display: block; opacity: 1; visibility: visible; border: 0; background: none; color: var(--ink); font: 11px var(--mono); min-height: 44px; cursor: pointer; }
@@ -246,3 +246,107 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 }
 
 .home-links a { font-family: Belyga, sans-serif; font-weight: 400; }
+
+/* Optional rainy weather keeps the controls and content above the atmosphere. */
+.home-header .rain-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 7px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 11px var(--mono);
+  cursor: pointer;
+}
+.rain-toggle::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.rain-toggle[aria-pressed='true']::before { background: currentColor; }
+.rain-toggle:hover { text-decoration: underline; text-underline-offset: 4px; }
+.rain-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+:root[data-weather='rain'] {
+  --paper: #c9d3da;
+  --ink: #344653;
+  --muted: #526674;
+  --line: #9cabb6;
+  --lime: #b5c4cf;
+  --name-accent: #365c78;
+  --sunlit-shadow: #3b536a;
+  --sunlit-blinds-opacity: .12;
+}
+:root[data-weather='rain'][data-theme='dark'] {
+  --paper: #25333f;
+  --ink: #d9e5ed;
+  --muted: #b1c2cf;
+  --line: #566d7d;
+  --lime: #465e70;
+  --name-accent: #b9d7ec;
+  --sunlit-shadow: #08131e;
+  --sunlit-blinds-opacity: .3;
+}
+:root[data-weather='rain'] .overlay-site .sunlit-field::before {
+  background: radial-gradient(ellipse at 80% 0%, #a7c3d84d, transparent 75%);
+  opacity: 1;
+}
+:root[data-weather='rain'] .overlay-site .sunlit-field::after,
+:root[data-weather='rain'] .overlay-site :is(.sunlit-glow, .sunlit-bounce, .sky-reflection) { opacity: 0; }
+.rain-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  display: none;
+  color: inherit;
+}
+:root[data-weather='rain'] .rain-field { display: block; }
+.raindrop {
+  position: absolute;
+  top: -90px;
+  left: var(--rain-x);
+  width: 4px;
+  height: var(--rain-length);
+  opacity: calc(var(--rain-opacity) * 3);
+  background: linear-gradient(transparent, currentColor);
+  animation: rainfall var(--rain-duration) var(--rain-delay) linear infinite;
+}
+@keyframes rainfall {
+  from { transform: translate3d(0, 0, 0) rotate(12deg); }
+  to { transform: translate3d(-22vh, calc(100vh + 180px), 0) rotate(12deg); }
+}
+.rain-lightning {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at 78% 12%, #d9edff99, #b5d4f029 40%, transparent 75%);
+}
+
+/* Opaque blind silhouettes occlude the flash before the shared blur is applied. */
+.overlay-site .sunlit-perspective { z-index: 1; }
+:root[data-weather='rain'][data-theme='dark'] .rain-lightning {
+  animation: rain-lightning 13s linear infinite;
+}
+/* Two distant, single flashes per cycle, several seconds apart. */
+@keyframes rain-lightning {
+  0%, 5%, 10%, 63%, 69%, 100% { opacity: 0; }
+  5.6% { opacity: .65; }
+  6.8% { opacity: .16; }
+  63.6% { opacity: .45; }
+  65% { opacity: .1; }
+}
+.rain-field.is-paused * { animation-play-state: paused !important; }
+@media (max-width: 600px) {
+  .raindrop:nth-child(2n) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rain-field .raindrop, :root[data-weather='rain'][data-theme='dark'] .rain-lightning { animation: none; }
+  .rain-field .raindrop { top: var(--rain-x); opacity: .1; transform: rotate(12deg); }
+}
