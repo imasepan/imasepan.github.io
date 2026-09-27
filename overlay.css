@@ -423,3 +423,19 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   .rain-field .raindrop, :root[data-weather='rain'][data-theme='dark'] .rain-lightning { animation: none; }
   .rain-field .raindrop { top: var(--rain-x); opacity: .1; transform: rotate(12deg); }
 }
+
+/* Blog layout and Belyga titles. */
+.overlay-content .journal-page h1 { font-family:'Belyga',sans-serif; font-size:clamp(44px,6vw,76px); max-width:650px; letter-spacing:-.055em; }
+.overlay-content .journal-page .post-card-title { font-family:'Belyga',sans-serif; font-size:clamp(42px,5vw,64px); letter-spacing:-.035em; }
+.overlay-content .journal-page .post-card:first-child { padding:30px 0 38px; grid-template-columns:minmax(0,1fr) 42%; border-top:0; }
+.overlay-content .journal-page .post-card:first-child:not(.has-image) { grid-template-columns:1fr; }
+.overlay-content .journal-page .post-card:first-child .post-card-image { height:280px; filter:sepia(.15); }
+.overlay-content .journal-page .post-card:not(:first-child) .post-card-image { height:140px; }
+.overlay-content .post-page .post-header { border-bottom:1px solid var(--line); padding-bottom:28px; }
+.overlay-content .post-page .post-header h1 { font-family:'Belyga',sans-serif; font-size:clamp(44px,6vw,76px); letter-spacing:-.04em; }
+.overlay-content .post-page .post-content blockquote { margin:34px 0; padding:20px 24px; border:0; border-block:1px solid var(--line); background:color-mix(in srgb,var(--ink) 3%,transparent); color:var(--ink); font:italic 22px/1.65 Georgia,serif; }
+.overlay-content .post-page .post-content blockquote p { font:inherit; }
+@media (max-width:650px) {
+  .overlay-content .journal-page .post-card:first-child { grid-template-columns:1fr; gap:20px; }
+  .overlay-content .journal-page .post-card:first-child .post-card-image { grid-column:1; grid-row:2; height:200px; }
+}

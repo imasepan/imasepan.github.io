@@ -44,3 +44,7 @@ The English home, About, Guestbook, blog index and posts share the default Jekyl
 The tests render the shared shell with content fixtures; they do not replace a full Jekyll production build. Posts and image assets remain unchanged. Projects are accessible inside About, and Guestbook links to the existing GitHub Discussions category.
 
 The home now links to About, Work, Blog and Guestbook. GitHub project cards live in work.html; About contains the introduction, photographs and email link.
+
+## Blog layout (2026-09-27)
+
+The blog keeps its featured-entry layout with a single introductory heading. Belyga is used for that heading, equally large entry titles, and individual post headings. Existing post quotations have journal styling, with responsive layouts in overlay.css. About, Work, and Guestbook retain their previous designs.

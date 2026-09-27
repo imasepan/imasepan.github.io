@@ -37,3 +37,10 @@
 - Simplified the home to About, Blog, Guestbook; removed taglines, link numbers and dotted texture while retaining film grain. Added gradual backdrop and content entrance transitions.
 
 - Added a Work overlay for GitHub projects and removed the duplicate projects and extra biography sections from About. Simplified Guestbook copy.
+
+## 2026-09-27 — Blog layout
+
+- Added a featured-entry layout and styled post quotations.
+- Simplified the blog introduction and applied Belyga to its heading and post titles.
+- Made all blog list titles equally large, scaling from 42px on mobile to 64px on desktop.
+- Reverted the experimental About, Work, and Guestbook designs.
