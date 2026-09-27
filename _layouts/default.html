@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/styles.css?v=20260926-25" />
-  <link rel="stylesheet" href="/overlay.css?v=20260927-2" />
+  <link rel="stylesheet" href="/overlay.css?v=20260927-3" />
 </head>
 <body class="overlay-site">
   <div class="home-screen">
@@ -25,16 +25,17 @@
         <a href="/about.html">About</a>
         <a href="/work.html">Work</a>
         <a href="/blog/">Blog</a>
-        <a href="/guestbook.html">Guestbook</a>
+        <div class="guestbook-menu-item">
+          <a href="/guestbook.html">Guestbook</a>
+          <aside class="music-dock" aria-label="Featured Spotify playlist">
+            <iframe class="spotify-player" title="Spotify playlist" src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator" width="320" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          </aside>
+        </div>
       </nav>
     </main>
 
   </div>
   <div class="overlay-veil" aria-hidden="true"></div>
-  <aside class="music-dock" aria-label="Featured Spotify playlist">
-
-    <iframe class="spotify-player" title="Spotify playlist" src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator" width="320" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-  </aside>
   <dialog class="page-overlay" aria-labelledby="overlay-label">
     <header class="overlay-bar"><span id="overlay-label">{{ page.title | default: "page" | escape }}</span><a class="overlay-close" href="/" autofocus>Close <span aria-hidden="true">×</span></a></header>
     <div class="overlay-scroll" tabindex="0"><div class="overlay-content">{{ content }}</div></div>
