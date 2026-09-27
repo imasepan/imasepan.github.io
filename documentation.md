@@ -22,6 +22,10 @@ The text-free entrance screen and between-page loading transition now mirror the
 
 ## Development notes
 
+Rain mode occasionally gathers the existing blurred drops into soft dots before stretching them into short smears within the blinds' background layer. The effect pauses when the page is hidden and stays still for reduced motion.
+
+The `.rain-glass` SVG adds monochrome droplet silhouettes and slowly moving rivulets alongside the existing rain inside `.sunlit-shadows`. It inherits the background's shadow color, opacity and blur so the water feels part of the same atmosphere. A quarter of the beads pause, creep and slide with staggered timing; rivulet heads follow winding motion paths while synchronized stroke reveals leave trails behind them. Droplets and falling rain are roughly a quarter smaller than the initial silhouette version. Both rain layers share the Rain toggle; all water motion pauses when hidden and remains still with reduced motion.
+
 The site is static/Jekyll-compatible. Project cards have static fallbacks and are refreshed from GitHub near the viewport by `script.js`; the Spotify player and guestbook are external embeds/links. When editing shared navigation or layout behavior, check both English and Korean pages as well as `_layouts/default.html`.
 # Progressive leaf shadow blur
 

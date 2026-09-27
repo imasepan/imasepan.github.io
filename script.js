@@ -85,9 +85,37 @@ const createRainField = () => {
   rainField.innerHTML = Array.from({ length: 64 }, (_, index) => {
     const x = (index * 37.7) % 112;
     const duration = 1.1 + (index % 7) * .19;
-    return `<span class="raindrop" style="--rain-x:${x}%;--rain-duration:${duration}s;--rain-delay:${-((index * .73) % 4)}s;--rain-length:${24 + (index % 5) * 11}px;--rain-opacity:${.12 + (index % 4) * .07}"></span>`;
+    return `<span class="raindrop" style="--rain-x:${x}%;--rain-duration:${duration}s;--rain-delay:${-((index * .73) % 4)}s;--rain-length:${18 + (index % 5) * 8}px;--rain-opacity:${.12 + (index % 4) * .07}"></span>`;
   }).join('');
   document.querySelector('.sunlit-shadows').appendChild(rainField);
+  // Droplet silhouettes share the rainfall and window shadows blur and palette.
+  const glass = document.createElement('div');
+  glass.className = 'rain-glass';
+  glass.setAttribute('aria-hidden', 'true');
+  let seed = 7919;
+  const random = () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+  const bead = 'M0 -1 C.48 -1.16 .83 -.54 .92 .02 C1.08 .69 .55 1.08 -.04 1 C-.78 1.1 -1.02 .56 -.86 -.07 C-.76 -.57 -.4 -.79 0 -1Z';
+  const beads = Array.from({ length: 680 }, (_, index) => {
+    const x = random() * 1440;
+    const y = random() * 1000;
+    const radius = 1.5 + Math.pow(random(), 2.4) * 6.75;
+    const stretch = .85 + random() * .8;
+    const motion = index % 4 === 0 ? `class="glass-droplet" style="--glass-duration:${14 + random() * 22}s;--glass-delay:${-random() * 40}s"` : '';
+    return `<g ${motion}><g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(random() * 50 - 25).toFixed(1)}) scale(${radius.toFixed(2)} ${(radius * stretch).toFixed(2)})" opacity="${(.35 + random() * .55).toFixed(2)}"><path d="${bead}" fill="currentColor"/></g></g>`;
+  }).join('');
+  const trails = Array.from({ length: 16 }, (_, index) => {
+    const x = 20 + random() * 1400;
+    const y = random() * 950 - 120;
+    const length = 50 + random() * 115;
+    const bend = random() * 16 - 8;
+    const path = `M0 0 C-4 ${length * .24} 5 ${length * .3} 1 ${length * .46} S${bend} ${length * .76} ${bend} ${length}`;
+    return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><g class="glass-rivulet" style="--glass-duration:${10 + index * .9}s;--glass-delay:${-index * 3.7}s"><path class="glass-trail" d="${path}" pathLength="1" fill="none" stroke="currentColor" stroke-opacity=".65" stroke-width="3.5" stroke-linecap="round"/><g class="glass-runner" style="offset-path:path('${path}')"><path d="${bead}" transform="scale(3.4 6)" fill="currentColor"/></g></g></g>`;
+  }).join('');
+  glass.innerHTML = `<svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" focusable="false">${trails}${beads}</svg>`;
+  document.querySelector('.sunlit-shadows').appendChild(glass);
   const lightning = document.createElement('div');
   lightning.className = 'rain-lightning';
   document.querySelector('.sunlit-shadows').prepend(lightning);
@@ -114,6 +142,8 @@ const createRainField = () => {
   });
   const updateWeatherVisibility = () => {
     rainField.classList.toggle('is-paused', document.hidden);
+    glass.classList.toggle('is-paused', document.hidden);
+
     lightning.style.animationPlayState = document.hidden ? 'paused' : 'running';
   };
   document.addEventListener('visibilitychange', updateWeatherVisibility);

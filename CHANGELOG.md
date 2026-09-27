@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-27
+
+- Reduced rain and droplet sizes by roughly a quarter; added staggered droplet slides and winding trails that extend behind their moving heads.
+- Added irregular droplet silhouettes and slow water trails to the shared blurred rain background, with reduced-motion and hidden-page pauses.
+- Added occasional soft dots and short smears to the existing rain in the blurred blinds background.
+
 ## 2026-08-10
 
 - Restyled the entrance screen around the homepage's paper palette, analog dot texture, soft light, and lilac accent.

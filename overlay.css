@@ -310,7 +310,7 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   position: absolute;
   top: -90px;
   left: var(--rain-x);
-  width: 4px;
+  width: 3px;
   height: var(--rain-length);
   opacity: calc(var(--rain-opacity) * 3);
   background: linear-gradient(transparent, currentColor);
@@ -319,6 +319,22 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 @keyframes rainfall {
   from { transform: translate3d(0, 0, 0) rotate(12deg); }
   to { transform: translate3d(-22vh, calc(100vh + 180px), 0) rotate(12deg); }
+}
+/* Some distant drops briefly gather into soft dots, then smear as they fall. */
+.raindrop:nth-child(3n + 1) { background: none; }
+.raindrop:nth-child(3n + 1)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(transparent, currentColor 65%);
+  transform-origin: center bottom;
+  animation: rain-smear calc(var(--rain-duration) * 2.7) var(--rain-delay) ease-in-out infinite;
+}
+@keyframes rain-smear {
+  0%, 28%, 76%, 100% { transform: scale(1, 1); }
+  39%, 48% { transform: scale(2.5, .18); }
+  60% { transform: scale(1.4, .75); }
 }
 .rain-lightning {
   position: absolute;
@@ -342,11 +358,68 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   63.6% { opacity: .45; }
   65% { opacity: .1; }
 }
-.rain-field.is-paused * { animation-play-state: paused !important; }
+.rain-field.is-paused *, .rain-field.is-paused *::before { animation-play-state: paused !important; }
+/* Droplet silhouettes inherit the shared background shadow color and blur. */
+.rain-glass {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  pointer-events: none;
+  color: inherit;
+  overflow: hidden;
+}
+:root[data-weather='rain'] .rain-glass { display: block; }
+.rain-glass svg { display: block; width: 100%; height: 100%; }
+.glass-rivulet { animation: glass-cycle var(--glass-duration) var(--glass-delay) linear infinite; }
+.glass-trail {
+  stroke-dasharray: 1;
+  animation: glass-trace var(--glass-duration) var(--glass-delay) linear infinite;
+}
+.glass-runner {
+  offset-position: 0 0;
+  offset-anchor: 0 0;
+  offset-rotate: 0deg;
+  animation: glass-run var(--glass-duration) var(--glass-delay) linear infinite;
+}
+/* The head and trail share timing: gather, creep, pause, then run. */
+@keyframes glass-run {
+  0%, 18% { offset-distance: 0%; }
+  36% { offset-distance: 12%; }
+  43% { offset-distance: 14%; }
+  63% { offset-distance: 58%; }
+  69% { offset-distance: 60%; }
+  86%, 100% { offset-distance: 100%; }
+}
+@keyframes glass-trace {
+  0%, 18% { stroke-dashoffset: 1; }
+  36% { stroke-dashoffset: .88; }
+  43% { stroke-dashoffset: .86; }
+  63% { stroke-dashoffset: .42; }
+  69% { stroke-dashoffset: .4; }
+  86%, 100% { stroke-dashoffset: 0; }
+}
+@keyframes glass-cycle {
+  0%, 100% { opacity: 0; }
+  8%, 86% { opacity: 1; }
+}
+.glass-droplet { animation: glass-creep var(--glass-duration) var(--glass-delay) linear infinite; }
+@keyframes glass-creep {
+  0% { transform: translate(0, 0); opacity: 0; }
+  9%, 30% { transform: translate(0, 0); opacity: 1; }
+  48% { transform: translate(1px, 9px); }
+  58% { transform: translate(1px, 11px); }
+  78% { transform: translate(-2px, 55px); opacity: 1; }
+  94%, 100% { transform: translate(1px, 125px); opacity: 0; }
+}
+.rain-glass.is-paused * { animation-play-state: paused !important; }
 @media (max-width: 600px) {
   .raindrop:nth-child(2n) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .glass-rivulet, .glass-trail, .glass-runner, .glass-droplet { animation: none; }
+  .glass-runner { offset-distance: 100%; }
+  .rain-field .raindrop::before { animation: none; }
   .rain-field .raindrop, :root[data-weather='rain'][data-theme='dark'] .rain-lightning { animation: none; }
   .rain-field .raindrop { top: var(--rain-x); opacity: .1; transform: rotate(12deg); }
 }
