@@ -91,6 +91,19 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
 .overlay-content .post-card .text-link { color: var(--ink); }
 .overlay-content .post-card-title { font-size: 25px; line-height: 1.2; }
 .overlay-content .post-card-excerpt { font-size: 14px; }
+/* Keep the label and its highlight inside image cards' clipped bounds. */
+.overlay-site .overlay-content .post-card .text-link {
+  justify-self: start;
+  padding: 5px 8px;
+  line-height: 1.4;
+  transform: none;
+  box-shadow: none;
+  transition: background-color .25s ease, color .25s ease;
+}
+.overlay-site .overlay-content .post-card:focus-visible .text-link {
+  background: var(--ink);
+  color: var(--paper);
+}
 .overlay-content .post-meta, .overlay-content .eyebrow { font: 10px/1.6 var(--mono); text-transform: uppercase; letter-spacing: .08em; }
 .overlay-content .page-back { display: inline-block; margin: 0 0 24px; }
 .overlay-content .post-spotify { position: static; width: min(100%, 360px); margin: 24px 0; }
