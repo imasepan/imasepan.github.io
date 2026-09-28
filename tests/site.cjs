@@ -52,9 +52,9 @@ const root = path.resolve(__dirname, '../dist');
     }
     await page.goto('http://site.test/');
     await page.emulateMedia({reducedMotion:'reduce'});
-    assert.equal(await page.locator('.raindrop').first().evaluate(n => getComputedStyle(n).animationName),'none');
-    assert.equal(await page.locator('.glass-droplet').first().evaluate(n => getComputedStyle(n).animationName),'none');
+    assert.notEqual(await page.locator('.raindrop').first().evaluate(n => getComputedStyle(n).animationName),'none');
+    assert.notEqual(await page.locator('.glass-droplet').first().evaluate(n => getComputedStyle(n).animationName),'none');
     assert.deepEqual(errors, []);
-    console.log('PASS: production routes, eight Markdown posts, Spotify embeds, Korean latest post, rectangular rain, persistent weather, unchanged glass markup and reduced motion.');
+    console.log('PASS: production routes, eight Markdown posts, Spotify embeds, Korean latest post, rectangular rain, persistent weather, unchanged glass markup and animation with reduced motion enabled.');
   } finally { await browser.close(); }
 })().catch(e => {console.error(e);process.exitCode=1;});

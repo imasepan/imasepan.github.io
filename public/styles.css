@@ -117,10 +117,12 @@ a {
 @media (max-width: 720px) {
   .windchime { right: -12px; height: min(68svh, 540px); }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) {
   .sunlit-shadows { transition: none; }
   .windchime-body, .windchime-tube, .windchime-sail { animation: none; }
 }
+*/
 /* Decorative fixed analog background: dotted grid, grain, marks, ripple state, and motion. */
 .analog-field {
   position: fixed;
@@ -1208,6 +1210,7 @@ h2 {
   display: block;
 }
 /* Respect reduced-motion preferences by removing nonessential transitions and animations. */
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) {
   .analog-field, .analog-grain, .analog-mark, .film-grain {
     transform: none;
@@ -1233,6 +1236,7 @@ h2 {
     transition: none;
   }
 }
+*/
 /* Floating navigation panel and full-screen editorial sections */
 :root {
   --page-gutter: clamp(22px, 5vw, 84px);
@@ -1704,11 +1708,13 @@ main:not(.page-main) > .future-section {
     word-break: keep-all;
   }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) {
   .site-header::before, .site-header::after, .site-header .brand-controls, .site-header .site-nav, .site-header .language-switch, .menu-button {
     transition: none;
   }
 }
+*/
 /* Writing page: larger, tactile entry tiles and a lifted intro. */
 .page-main:not(.guestbook-main) .page-intro {
   min-height: auto;
@@ -1976,12 +1982,14 @@ main:not(.page-main) > .future-section {
     transform: translate(14px, calc(-100% - 14px)) scale(1) rotate(0);
   }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) {
   .about-photo figcaption {
     animation: none !important;
     transition: opacity .01ms;
   }
 }
+*/
 /* Cleaner portrait bubble */
 .about-photo figcaption {
   box-shadow: none;
@@ -2428,6 +2436,7 @@ main:not(.page-main) > .future-section {
     scale: .95;
   }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
   .about-photo figcaption.is-entering {
     animation: none;
@@ -2439,6 +2448,7 @@ main:not(.page-main) > .future-section {
     opacity: 0;
   }
 }
+*/
 /* Layer the latest-post image, gradient, content, and hover zoom treatment. */
 .latest-post-card.has-image {
   overflow: hidden;
@@ -2524,9 +2534,11 @@ main:not(.page-main) > .future-section {
   .latest-post-card.has-image .latest-post-panel { color: var(--ink); }
   .latest-post-card.has-image .latest-post-panel::before { opacity: 1; }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) {
   .latest-post-card.has-image .latest-post-panel::before { transition: none; }
 }
+*/
 .latest-post-card.has-image:hover {
   background: var(--ink);
 }
@@ -2669,6 +2681,7 @@ main:not(.page-main) > .future-section {
   }
 }
 
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
   .post-caption-tooltip.is-entering {
     animation: none;
@@ -2683,6 +2696,7 @@ main:not(.page-main) > .future-section {
     scale: 1;
   }
 }
+*/
 .post-page .post-back {
   width: min(100%, 680px);
   margin: 68px auto 0;
@@ -2804,6 +2818,7 @@ main:not(.page-main) > .future-section {
     clip-path: inset(0 100% 0 0 round 999px);
   }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
   .about-photo img {
     transition: none;
@@ -2820,6 +2835,7 @@ main:not(.page-main) > .future-section {
     clip-path: inset(0 100% 0 0 round 999px);
   }
 }
+*/
 /* Finalize the portrait hover tag as a square outlined caption. */
 @media (hover: hover) and (pointer: fine) {
   .about-photo figcaption {
@@ -2860,6 +2876,7 @@ main:not(.page-main) > .future-section {
     clip-path: inset(0 100% 0 0);
   }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
   .about-photo figcaption.is-entering {
     clip-path: inset(0);
@@ -2868,6 +2885,7 @@ main:not(.page-main) > .future-section {
     clip-path: inset(0 100% 0 0);
   }
 }
+*/
 /* Keep writing-page introductions compact after the earlier responsive defaults. */
 .page-main:not(.guestbook-main) .page-intro {
   min-height: auto;
@@ -3030,6 +3048,7 @@ main:not(.page-main) > .future-section {
   }
 }
 
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
   .portrait-caption-tooltip.is-entering {
     animation: none;
@@ -3045,6 +3064,7 @@ main:not(.page-main) > .future-section {
     scale: 1;
   }
 }
+*/
 
 /* Mobile controls are always available: touchscreens must not depend on a
    hover state before theme, language, or navigation actions can be tapped. */

@@ -66,8 +66,8 @@ const post = '<article class="post-page"><header class="post-header"><h1>Caption
  await mobile.goto('http://overlay.test/blog/2026/08/09/test/');
  assert.ok(await mobile.locator('.post-figure figcaption').isVisible());
  await mobile.emulateMedia({reducedMotion:'reduce'});
- assert.equal(await mobile.locator('.film-grain').evaluate(n=>getComputedStyle(n).animationName),'none');
+ assert.notEqual(await mobile.locator('.film-grain').evaluate(n=>getComputedStyle(n).animationName),'none');
  assert.deepEqual(errors,[]);
- console.log('PASS: overlays, close/Escape, history, direct links, retry, persistent Spotify iframe, portrait/post captions, isolated scrolling, mobile layout and reduced motion.');
+ console.log('PASS: overlays, close/Escape, history, direct links, retry, persistent Spotify iframe, portrait/post captions, isolated scrolling, mobile layout and animation with reduced motion enabled.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

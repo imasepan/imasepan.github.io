@@ -7,7 +7,8 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   } catch {
     return;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  // Keep the entire render, including the CRT pass, within a 720p frame.
+  renderer.setPixelRatio(1);
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xffffff);
@@ -90,7 +91,7 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
         // Restrained horizontal timebase wobble, without flashing or hard cuts.
         uv.x += (sin(uv.y * 71.0 + time * 1.3) * 0.45
           + sin(uv.y * 229.0 - time * 0.7) * 0.18) * pixel.x;
-        float split = 2.7 + 0.65 * sin(time * 0.6);
+        float split = 0.85 + 0.25 * sin(time * 0.6);
         vec2 shift = vec2(split, 0.55) * pixel;
         vec3 color = vec3(
           texture2D(image, uv + shift).r,
@@ -98,7 +99,7 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
           texture2D(image, uv + shift * 0.32).b
         );
         // Violet/cyan analog ghosting follows the ink, leaving the field white.
-        float ghost = 1.0 - texture2D(image, uv + vec2(5.5, 0.0) * pixel).r;
+        float ghost = 1.0 - texture2D(image, uv + vec2(1.8, 0.0) * pixel).r;
         color -= ghost * vec3(0.045, 0.15, 0.025);
         float scanline = 0.5 + 0.5 * sin(vUv.y * resolution.y * 3.14159265);
         float grain = noise(floor(vUv * resolution) + floor(time * 18.0));
@@ -109,7 +110,8 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   });
   const plane = new THREE.PlaneGeometry(2, 2);
   postScene.add(new THREE.Mesh(plane, material));
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // Reduced-motion handling is temporarily disabled to keep the cube animated.
+  // const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let elapsed = 0;
   let previous = 0;
   let disposed = false;
@@ -126,7 +128,8 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   function resize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    renderer.setSize(width, height, false);
+    const scale = Math.min(1, 720 / Math.min(width, height), 1280 / Math.max(width, height));
+    renderer.setSize(Math.max(1, Math.round(width * scale)), Math.max(1, Math.round(height * scale)), false);
     camera.aspect = width / height;
     // Fit the entire rotating cube, including its diagonal, on narrow screens.
     camera.position.z = 1.8 / (Math.tan(THREE.MathUtils.degToRad(19)) * Math.min(camera.aspect, 1)) + 1.1;
@@ -145,7 +148,8 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
 
   function syncPlayback() {
     previous = 0;
-    renderer.setAnimationLoop(!document.hidden && !reducedMotion.matches ? tick : null);
+    // renderer.setAnimationLoop(!document.hidden && !reducedMotion.matches ? tick : null);
+    renderer.setAnimationLoop(!document.hidden ? tick : null);
     render();
   }
 
@@ -156,7 +160,7 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
     window.removeEventListener('resize', resize);
     window.removeEventListener('pagehide', dispose);
     document.removeEventListener('visibilitychange', syncPlayback);
-    reducedMotion.removeEventListener('change', syncPlayback);
+    // reducedMotion.removeEventListener('change', syncPlayback);
     rods.forEach(geometry => geometry.dispose());
     ink.dispose();
     gridGeometry.dispose();
@@ -171,7 +175,7 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   syncPlayback();
   window.addEventListener('resize', resize);
   document.addEventListener('visibilitychange', syncPlayback);
-  reducedMotion.addEventListener('change', syncPlayback);
+  // reducedMotion.addEventListener('change', syncPlayback);
   window.addEventListener('pagehide', dispose);
   if (import.meta.hot) import.meta.hot.dispose(() => dispose());
 }

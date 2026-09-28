@@ -44,10 +44,12 @@ let activeThemeTransition = null;
 
 const transitionAppearance = (update) => {
   if (activeThemeTransition) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  /* Reduced-motion handling temporarily disabled.
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     update();
     return;
   }
+    */
 
   const controls = document.querySelectorAll('.theme-toggle, .rain-toggle');
   controls.forEach((control) => { control.disabled = true; });
@@ -85,7 +87,7 @@ systemTheme.addEventListener('change', (event) => {
   if (!readSavedTheme()) transitionTheme(event.matches ? 'dark' : 'light');
 });
 
-const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+// const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 
 const rainToggle = document.querySelector('.rain-toggle');
@@ -142,9 +144,11 @@ const createRainField = () => {
   const applyRain = (enabled) => {
     document.documentElement.dataset.weather = enabled ? 'rain' : 'clear';
     rainToggle.setAttribute('aria-pressed', String(enabled));
-    if (reducedMotionQuery.matches) {
+    /* Reduced-motion handling temporarily disabled.
+if (reducedMotionQuery.matches) {
       rainField.querySelectorAll('.raindrop').forEach(drop => { drop.hidden = false; });
     }
+    */
   };
   let savedRain = false;
   try {
@@ -174,10 +178,12 @@ const createRainField = () => {
   const resumeRain = () => {
     suspendRain();
     if (document.hidden || document.documentElement.dataset.weather !== 'rain') return;
-    if (reducedMotionQuery.matches) {
+    /* Reduced-motion handling temporarily disabled.
+if (reducedMotionQuery.matches) {
       batches.flat().forEach(drop => { drop.hidden = false; });
       return;
     }
+    */
     let stage = 0;
     const rates = [.3, .45, .65, .85, 1];
     const reveal = () => {
@@ -199,7 +205,7 @@ const createRainField = () => {
     else resumeRain();
   };
   document.addEventListener('visibilitychange', updateWeatherVisibility);
-  reducedMotionQuery.addEventListener('change', updateWeatherVisibility);
+  // reducedMotionQuery.addEventListener('change', updateWeatherVisibility);
   updateWeatherVisibility();
 
 };
@@ -276,7 +282,7 @@ const createFilmGrain = () => {
 };
 
 const startAnalogParallax = () => {
-  if (reducedMotionQuery.matches) return;
+  // if (reducedMotionQuery.matches) return;
   let animationFrame = null;
 
   const updateAnalogPosition = () => {
@@ -546,7 +552,7 @@ function initialisePortraitCaption() {
     portraitHoverTarget.style.setProperty("--portrait-shift-x", `${(-normalizedX * 10).toFixed(2)}px`);
     portraitHoverTarget.style.setProperty("--portrait-shift-y", `${(-normalizedY * 8).toFixed(2)}px`);
 
-    if (previousPointerX !== null && !reducedMotionQuery.matches) {
+    if (previousPointerX !== null /* && !reducedMotionQuery.matches */) {
       targetRotation = Math.max(-5, Math.min(5, (event.clientX - previousPointerX) * .6));
       if (!rotationFrame) rotationFrame = window.requestAnimationFrame(animatePortraitCaption);
     }

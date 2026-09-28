@@ -51,7 +51,7 @@
         const projects = [...track.querySelectorAll('.project-feature, .project-row')];
         const progress = document.querySelector('.studio-scroll i');
         const mobileHint = document.querySelector('.studio-mobile-hint');
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        // const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let activeIndex = 0;
         let currentOffset = 0;
         let targetOffset = 0;
@@ -89,11 +89,13 @@
           const viewportCenter = viewport.clientHeight * (window.innerWidth <= 800 ? .5 : .44);
           targetOffset = activeCenter - viewportCenter;
 
-          if (reducedMotion.matches) {
+          /* Reduced-motion handling temporarily disabled.
+if (reducedMotion.matches) {
             currentOffset = targetOffset;
             track.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
             return;
           }
+    */
 
           if (!animationFrame) animationFrame = window.requestAnimationFrame(animateProjectPosition);
         };
@@ -180,7 +182,7 @@
         });
         new ResizeObserver(updateProjectPosition).observe(viewport);
         new ResizeObserver(updateProjectPosition).observe(track);
-        reducedMotion.addEventListener('change', updateProjectPosition);
+        // reducedMotion.addEventListener('change', updateProjectPosition);
         selectProject(0);
       })();
     </script>

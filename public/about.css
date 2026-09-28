@@ -108,7 +108,9 @@ footer a:hover { color: var(--acid); }
   footer { flex-direction: column; padding: 28px 20px 36px; }
 }
 
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .portrait img, .contact-band > a { transition: none; }
 }
+*/

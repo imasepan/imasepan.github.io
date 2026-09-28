@@ -53,6 +53,7 @@ const html = shell.replace('<div class="overlay-content">', '<div class="overlay
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.mouse.move(5, 5);
     await figure.hover();
+    await page.waitForTimeout(500);
     assert.equal(await tooltip.evaluate(node => getComputedStyle(node).opacity), '1');
     for (let i = 0; i < 3; i++) {
       await page.evaluate(() => initialisePostFigureCaptions());
@@ -62,11 +63,11 @@ const html = shell.replace('<div class="overlay-content">', '<div class="overlay
     await page.locator('.post-figure').first().waitFor();
     assert.equal(await page.locator('.post-caption-tooltip').count(), 2);
     await page.locator('.post-figure').first().hover();
+    await page.waitForTimeout(500);
     assert.equal(await page.locator('.post-caption-tooltip').first().evaluate(node => getComputedStyle(node).opacity), '1');
     assert.equal(await page.locator('.sunlit-blur').count(), 0);
-    for (const selector of ['.film-grain', '.analog-grain']) {
-      assert.equal(await page.locator(selector).evaluate(node => getComputedStyle(node).animationName), 'none');
-    }
+    assert.notEqual(await page.locator('.film-grain').evaluate(node => getComputedStyle(node).animationName), 'none');
+    assert.equal(await page.locator('.analog-grain').evaluate(node => getComputedStyle(node).animationName), 'none');
     const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     await mobile.route('**/*', async route => {
       const url = new URL(route.request().url());

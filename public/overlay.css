@@ -149,10 +149,12 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
   .overlay-content .post-card-image { width: 100%; height: 160px; }
   .overlay-content .post-card-title { font-size: 21px; }
 }
+/* Reduced-motion override temporarily disabled.
 @media(prefers-reduced-motion: reduce) {
   .overlay-site .film-grain, .page-overlay[open] { animation: none; }
   .home-screen, .home-links a { transition: none; }
 }
+*/
 
 .about-keepsake { margin: 40px 0 0; }
 .about-keepsake img { width: 100%; max-height: 320px; object-fit: cover; }
@@ -162,7 +164,9 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
 body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; pointer-events: auto; }
 .page-overlay { z-index: 10; }
 
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) { .overlay-veil { transition: none; } }
+*/
 
 .overlay-content .about-contact { margin: 32px 0; font-size: 14px; }
 
@@ -200,7 +204,9 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   transition: opacity .7s ease;
 }
 :root[data-theme='light'] .sky-reflection { opacity: 1; }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) { .sky-reflection { transition: none; } }
+*/
 
 /* Repository names use the regular reading font. */
 .overlay-content .project-card h3 { font-family: var(--sans); font-weight: 600; }
@@ -421,6 +427,7 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 @media (max-width: 600px) {
   .raindrop:nth-child(2n) { display: none; }
 }
+/* Reduced-motion override temporarily disabled.
 @media (prefers-reduced-motion: reduce) {
   .glass-rivulet, .glass-trail, .glass-runner, .glass-droplet { animation: none; }
   .glass-runner { offset-distance: 100%; }
@@ -428,6 +435,7 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   :root[data-weather='rain'][data-theme='dark'] .rain-lightning { animation: none; }
   .rain-field .raindrop { bottom: auto; top: var(--rain-x); opacity: .1; }
 }
+*/
 
 /* Blog layout and Belyga titles. */
 .overlay-content .journal-page h1 { font-family:'Belyga',sans-serif; font-size:clamp(44px,6vw,76px); max-width:650px; letter-spacing:-.055em; }

@@ -40,11 +40,13 @@ let activeThemeTransition = null;
 const transitionTheme = (theme) => {
   if (theme === document.documentElement.dataset.theme || activeThemeTransition) return;
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) {
+  // const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Reduced-motion handling temporarily disabled.
+if (prefersReducedMotion) {
     applyTheme(theme);
     return;
   }
+    */
 
   document.documentElement.classList.add('theme-is-transitioning');
   if (themeToggle) themeToggle.disabled = true;
@@ -78,7 +80,7 @@ systemTheme.addEventListener('change', (event) => {
   if (!readSavedTheme()) transitionTheme(event.matches ? 'dark' : 'light');
 });
 
-const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+// const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 
 const createSunlitField = () => {
@@ -120,7 +122,7 @@ const createFilmGrain = () => {
 };
 
 const startAnalogParallax = () => {
-  if (reducedMotionQuery.matches) return;
+  // if (reducedMotionQuery.matches) return;
   let animationFrame = null;
 
   const updateAnalogPosition = () => {
@@ -168,13 +170,13 @@ if (arrivingPage) {
 const runHeadlineMaterialise = () => {
   const headline = document.querySelector('[data-reveal-heading]');
   const hero = document.querySelector('.hero');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (hero) hero.classList.add('hero-tiles-ready');
   if (!headline || headline.dataset.revealed) return;
 
   headline.dataset.revealed = 'true';
-  if (reducedMotion) return;
+  // if (reducedMotion) return;
   headline.classList.add('is-materialising');
 
   const reveal = () => window.requestAnimationFrame(() => headline.classList.add('is-visible'));
@@ -197,8 +199,8 @@ const handleScrollTarget = (url = new URL(window.location.href)) => {
     document.documentElement.style.scrollBehavior = initialScrollBehavior;
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        // const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: /* prefersReducedMotion ? 'auto' : */ 'smooth' });
         window.history.replaceState(null, '', `${url.pathname}#${scrollTarget}`);
       });
     });
@@ -324,7 +326,7 @@ const queueProjectLoad = () => {
 };
 
 const navigateWithLoader = async (destination, destinationLabel) => {
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   pageLoader.setAttribute('aria-label', `Loading ${destinationLabel}`);
   pageLoader.setAttribute('aria-hidden', 'false');
   pageLoader.className = 'page-loader is-active';
@@ -352,7 +354,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     currentMain.replaceWith(nextMain);
     document.title = nextDocument.title;
     window.history.pushState({}, '', destination.href);
-    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    window.scrollTo({ top: 0, behavior: /* reducedMotion ? 'auto' : */ 'smooth' });
     initialisePortraitCaption();
     enhanceObsidianImageEmbeds();
     enhancePostFigureCaptions();
@@ -362,7 +364,7 @@ const navigateWithLoader = async (destination, destinationLabel) => {
     runHeadlineMaterialise();
     handleScrollTarget();
 
-    window.setTimeout(finishNavigation, reducedMotion ? 0 : 250);
+    window.setTimeout(finishNavigation, /* reducedMotion ? 0 : */ 250);
   } catch {
     window.location.assign(destination.href);
   }
@@ -387,7 +389,7 @@ document.addEventListener('click', (event) => {
     const currentTarget = document.getElementById(homeSection);
     if (currentTarget && isHomePath(window.location.pathname)) {
       event.preventDefault();
-      currentTarget.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      currentTarget.scrollIntoView({ behavior: /* window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : */ 'smooth' });
       window.history.pushState({}, '', `/#${homeSection}`);
       return;
     }
@@ -655,7 +657,7 @@ function initialisePortraitCaption() {
     portraitHoverTarget.style.setProperty("--portrait-shift-x", `${(-normalizedX * 10).toFixed(2)}px`);
     portraitHoverTarget.style.setProperty("--portrait-shift-y", `${(-normalizedY * 8).toFixed(2)}px`);
 
-    if (previousPointerX !== null && !reducedMotionQuery.matches) {
+    if (previousPointerX !== null /* && !reducedMotionQuery.matches */) {
       targetRotation = Math.max(-5, Math.min(5, (event.clientX - previousPointerX) * .6));
       if (!rotationFrame) rotationFrame = window.requestAnimationFrame(animatePortraitCaption);
     }
