@@ -319,6 +319,7 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   height: 180px;
   animation: rainfall var(--rain-duration) var(--rain-delay) linear infinite;
 }
+.raindrop[hidden] { display: none; }
 .rain-stem {
   display: block;
   width: 3px;
@@ -414,6 +415,8 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   78% { transform: translate(-2px, 55px); opacity: 1; }
   94%, 100% { transform: translate(1px, 125px); opacity: 0; }
 }
+/* Keep the glass image steady while its shared palette changes. */
+.theme-is-transitioning .rain-glass * { animation-play-state: paused !important; }
 .rain-glass.is-paused * { animation-play-state: paused !important; }
 @media (max-width: 600px) {
   .raindrop:nth-child(2n) { display: none; }

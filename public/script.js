@@ -40,6 +40,7 @@ const transitionAppearance = (update) => {
 
   const controls = document.querySelectorAll('.theme-toggle, .rain-toggle');
   controls.forEach((control) => { control.disabled = true; });
+  document.dispatchEvent(new Event('weather-transition-start'));
   document.documentElement.classList.add('theme-is-transitioning');
   // Interpolate the existing palette directly, as in the original transition.
   void document.body.offsetWidth;
@@ -48,6 +49,7 @@ const transitionAppearance = (update) => {
     document.documentElement.classList.remove('theme-is-transitioning');
     controls.forEach((control) => { control.disabled = false; });
     activeThemeTransition = null;
+    document.dispatchEvent(new Event('weather-transition-end'));
   }, 750);
 };
 
@@ -82,16 +84,15 @@ const createRainField = () => {
   rainField.className = 'rain-field';
   rainField.setAttribute('aria-hidden', 'true');
   // Adapted from https://codepen.io/arickle/pen/XKjMZY:
-  // randomized front/back rows and fading stems, without splash elements.
-  rainField.innerHTML = ['front', 'back'].map((layer) => {
-    let position = 0;
-    const drops = [];
-    while (position < 100) {
-      const spacing = .6 + Math.random();
-      position += spacing;
-      const duration = .32 + Math.random() * .08;
-      drops.push(`<span class="raindrop" style="--rain-x:${position}%;--rain-duration:${duration}s;--rain-delay:${-Math.random()}s;--rain-start:${spacing * 2 - 1}%"><span class="rain-stem"></span></span>`);
-    }
+  // Repeat a fixed five-drop rhythm across two evenly spaced rows.
+  rainField.innerHTML = ['front', 'back'].map((layer, row) => {
+    const drops = Array.from({ length: 90 }, (_, index) => {
+      const beat = index % 5;
+      const position = (index + .5 + row * .5) * 100 / 90;
+      const duration = .32 + beat * .02;
+      const delay = -((index * 7 + row * 3) % 19) / 19 * duration;
+      return `<span class="raindrop" data-rain-batch="${beat}" style="--rain-x:${position}%;--rain-duration:${duration}s;--rain-delay:${delay}s;--rain-start:${1 + beat * .4}%"><span class="rain-stem"></span></span>`;
+    });
     return `<div class="rain-row rain-row--${layer}">${drops.join('')}</div>`;
   }).join('');
   document.querySelector('.sunlit-shadows').appendChild(rainField);
@@ -130,6 +131,9 @@ const createRainField = () => {
   const applyRain = (enabled) => {
     document.documentElement.dataset.weather = enabled ? 'rain' : 'clear';
     rainToggle.setAttribute('aria-pressed', String(enabled));
+    if (reducedMotionQuery.matches) {
+      rainField.querySelectorAll('.raindrop').forEach(drop => { drop.hidden = false; });
+    }
   };
   let savedRain = false;
   try {
@@ -147,14 +151,46 @@ const createRainField = () => {
       // Keep this page's selection even when it cannot be saved.
     }
   });
+  // Remove falling-drop animations during palette interpolation, then bring
+  // back evenly distributed batches at increasing playback rates.
+  let rampTimer;
+  const batches = Array.from({ length: 5 }, (_, batch) =>
+    [...rainField.querySelectorAll(`[data-rain-batch="${batch}"]`)]);
+  const suspendRain = () => {
+    window.clearTimeout(rampTimer);
+    batches.flat().forEach(drop => { drop.hidden = true; });
+  };
+  const resumeRain = () => {
+    suspendRain();
+    if (document.hidden || document.documentElement.dataset.weather !== 'rain') return;
+    if (reducedMotionQuery.matches) {
+      batches.flat().forEach(drop => { drop.hidden = false; });
+      return;
+    }
+    let stage = 0;
+    const rates = [.3, .45, .65, .85, 1];
+    const reveal = () => {
+      batches[stage].forEach(drop => { drop.hidden = false; });
+      rainField.getAnimations({ subtree: true }).forEach(animation => {
+        animation.updatePlaybackRate(rates[stage]);
+      });
+      stage += 1;
+      if (stage < batches.length) rampTimer = window.setTimeout(reveal, 250);
+    };
+    reveal();
+  };
+  document.addEventListener('weather-transition-start', suspendRain);
+  document.addEventListener('weather-transition-end', resumeRain);
   const updateWeatherVisibility = () => {
-    rainField.classList.toggle('is-paused', document.hidden);
     glass.classList.toggle('is-paused', document.hidden);
-
     lightning.style.animationPlayState = document.hidden ? 'paused' : 'running';
+    if (document.hidden || document.documentElement.classList.contains('theme-is-transitioning')) suspendRain();
+    else resumeRain();
   };
   document.addEventListener('visibilitychange', updateWeatherVisibility);
+  reducedMotionQuery.addEventListener('change', updateWeatherVisibility);
   updateWeatherVisibility();
+
 };
 
 const createSunlitField = () => {
