@@ -1,3 +1,9 @@
+# 2026-09-27 — Astro migration and falling rain
+
+- Migrated pages, shared shell and Markdown blog rendering to Astro, preserving existing URLs and overlay navigation.
+- Added npm development/build commands and GitHub Pages deployment workflow.
+- Enlarged falling rain into thin, square-ended rectangles; preserved window beads and rivulets.
+
 # Changelog
 
 ## 2026-09-27

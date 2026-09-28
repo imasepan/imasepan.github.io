@@ -1,10 +1,14 @@
+---
+interface Props { title?: string; description?: string; }
+const { title = "home", description = "Stuff for my stuff" } = Astro.props;
+---
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="{{ page.description | default: site.description | escape }}" />
-  <title>imasepan — {{ page.title | default: "home" | escape }}</title>
+  <meta name="description" content="{description}" />
+  <title>imasepan — {title}</title>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,11 +41,11 @@
   </div>
   <div class="overlay-veil" aria-hidden="true"></div>
   <dialog class="page-overlay" aria-labelledby="overlay-label">
-    <header class="overlay-bar"><span id="overlay-label">{{ page.title | default: "page" | escape }}</span><a class="overlay-close" href="/" autofocus>Close <span aria-hidden="true">×</span></a></header>
-    <div class="overlay-scroll" tabindex="0"><div class="overlay-content">{{ content }}</div></div>
+    <header class="overlay-bar"><span id="overlay-label">{title}</span><a class="overlay-close" href="/" autofocus>Close <span aria-hidden="true">×</span></a></header>
+    <div class="overlay-scroll" tabindex="0"><div class="overlay-content"><slot /></div></div>
   </dialog>
-  <noscript><style>.page-overlay:not([open]){display:block;position:fixed}.home-screen{display:none}</style><p>Please enable JavaScript to use the overlay navigation. <a href="/blog/">Blog</a> · <a href="/about.html">About</a> · <a href="/guestbook.html">Guestbook</a> · <a href="/work.html">Work</a></p></noscript>
-  <script src="/script.js?v=20260927-2"></script>
-  <script src="/overlay.js?v=20260926-20"></script>
+  <noscript><style is:inline>.page-overlay:not([open]){display:block;position:fixed}.home-screen{display:none}</style><p>Please enable JavaScript to use the overlay navigation. <a href="/blog/">Blog</a> · <a href="/about.html">About</a> · <a href="/guestbook.html">Guestbook</a> · <a href="/work.html">Work</a></p></noscript>
+  <script is:inline src="/script.js?v=20260927-2"></script>
+  <script is:inline src="/overlay.js?v=20260926-20"></script>
 </body>
 </html>

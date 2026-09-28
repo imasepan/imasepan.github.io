@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/entry-loader.css?v=20260810-2" />
     <link rel="stylesheet" href="studio.css?v=20260810-2" />
-    <script src="/entry-loader.js?v=20260809-1" defer></script>
+    <script is:inline src="/entry-loader.js?v=20260809-1" defer></script>
   </head>
   <body>
     <div class="entry-loader" data-entry-loader data-light-asset="/assets/lightmode_edited.webp" data-dark-asset="/assets/darkmode.webp" role="status" aria-label="Loading studio" aria-live="polite">
@@ -42,7 +42,7 @@
     <p class="studio-mobile-hint" aria-hidden="true">SWIPE TO EXPLORE ↓</p>
     <aside class="studio-scroll" aria-hidden="true"><span>SCROLL</span><b><i></i></b><small>▼</small></aside>
     <footer>© 2026 <span>BASED IN SEOUL, KOREA</span></footer>
-    <script>
+    <script is:inline>
       (() => {
         const viewport = document.querySelector('.studio-main');
         const track = document.querySelector('.studio-projects');

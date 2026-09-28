@@ -12,7 +12,7 @@ For example: 2026-08-03-my-first-post.md
 
 ## Images
 
-Place attachments in `/assets`, then embed them in a post with Obsidian syntax:
+Place attachments in `public/assets` (served at `/assets`), then embed them in a post with Obsidian syntax:
 
 ```md
 ![[my-photo.webp]]
@@ -26,7 +26,6 @@ Optional width and alt text are supported:
 ```
 
 ---
-layout: post
 title: Your post title
 date: 2026-08-03
 description: A short one-sentence preview for the blog page.
@@ -36,4 +35,4 @@ Write the post below the second `---` using normal Markdown:
 
 Start writing here.
 
-Choose **Commit changes** when you are ready. GitHub Pages will build and publish it automatically. Everything in `_posts` is public once committed.
+Choose **Commit changes** when you are ready. The Astro GitHub Actions workflow will build and publish it automatically. Everything in `_posts` is public once committed.

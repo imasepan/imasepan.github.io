@@ -310,31 +310,16 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   position: absolute;
   top: -90px;
   left: var(--rain-x);
-  width: 3px;
+  width: 4px;
   height: var(--rain-length);
+  border-radius: 0;
   opacity: calc(var(--rain-opacity) * 3);
-  background: linear-gradient(transparent, currentColor);
+  background: currentColor;
   animation: rainfall var(--rain-duration) var(--rain-delay) linear infinite;
 }
 @keyframes rainfall {
   from { transform: translate3d(0, 0, 0) rotate(12deg); }
   to { transform: translate3d(-22vh, calc(100vh + 180px), 0) rotate(12deg); }
-}
-/* Some distant drops briefly gather into soft dots, then smear as they fall. */
-.raindrop:nth-child(3n + 1) { background: none; }
-.raindrop:nth-child(3n + 1)::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(transparent, currentColor 65%);
-  transform-origin: center bottom;
-  animation: rain-smear calc(var(--rain-duration) * 2.7) var(--rain-delay) ease-in-out infinite;
-}
-@keyframes rain-smear {
-  0%, 28%, 76%, 100% { transform: scale(1, 1); }
-  39%, 48% { transform: scale(2.5, .18); }
-  60% { transform: scale(1.4, .75); }
 }
 .rain-lightning {
   position: absolute;

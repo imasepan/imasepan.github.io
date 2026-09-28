@@ -1,0 +1,20 @@
+{
+  "name": "imasepan-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "npm run build && node tests/overlays.cjs && node tests/captions.cjs && node tests/site.cjs"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "dependencies": {
+    "astro": "^7.3.5"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.0"
+  }
+}

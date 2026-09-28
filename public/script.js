@@ -85,7 +85,7 @@ const createRainField = () => {
   rainField.innerHTML = Array.from({ length: 64 }, (_, index) => {
     const x = (index * 37.7) % 112;
     const duration = 1.1 + (index % 7) * .19;
-    return `<span class="raindrop" style="--rain-x:${x}%;--rain-duration:${duration}s;--rain-delay:${-((index * .73) % 4)}s;--rain-length:${18 + (index % 5) * 8}px;--rain-opacity:${.12 + (index % 4) * .07}"></span>`;
+    return `<span class="raindrop" style="--rain-x:${x}%;--rain-duration:${duration}s;--rain-delay:${-((index * .73) % 4)}s;--rain-length:${36 + (index % 5) * 12}px;--rain-opacity:${.12 + (index % 4) * .07}"></span>`;
   }).join('');
   document.querySelector('.sunlit-shadows').appendChild(rainField);
   // Droplet silhouettes share the rainfall and window shadows blur and palette.

@@ -1,15 +1,13 @@
 # Chat Context
 
-Use this file as a quick briefing when starting a new task on this repository.
-
 - Repository: `imasepan/imasepan.github.io`
-- Local path: `/Users/charlie/Documents/Codex/Website`
-- Site type: static/Jekyll-compatible personal portfolio and blog.
-- Languages: English (`index.html`) and Korean (`kr.html`).
-- Main styling: `styles.css`, with standalone styles for About and Studio.
-- Main behavior: `script.js`; entry asset warmup: `entry-loader.js`.
-- Blog content: `_posts/`; templates: `_layouts/`.
-- External integrations: GitHub repository API for project cards, Spotify playlist, GitHub Discussions guestbook.
-- Deployment target: GitHub Pages from the `main` branch.
-
-Before changing shared UI, inspect both language pages and the default Jekyll layout. Keep documentation updates in `documentation.md` and record notable user-facing changes in `CHANGELOG.md`.
+- Site type: Astro static personal portfolio and blog.
+- Page routes: `src/pages/`; shared overlay shell: `src/layouts/SiteLayout.astro`.
+- English home: `src/pages/index.astro`; Korean home: `src/pages/kr.html.astro`.
+- Blog: `_posts/`, loaded through `src/content.config.ts`; dated URLs are preserved.
+- Styling and browser behavior: `public/styles.css`, `public/overlay.css`, `public/script.js`, `public/overlay.js`.
+- The Korean page uses `public/legacy-script.js`.
+- Images: `public/assets/`, served at `/assets/`.
+- GitHub Pages deployment: `.github/workflows/deploy.yml` builds Astro on pushes to main.
+- Keep documentation in `documentation.md` and notable changes in `CHANGELOG.md`.
+- Verify shared UI on English and Korean pages; `npm test` builds and runs browser checks.

@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { postUrl, formatDate } from '../../lib/posts';
+export async function getStaticPaths() {
+  return (await getCollection('posts')).map(post => ({
+    params: { slug: postUrl(post).replace(/^\/blog\//, '').replace(/\/$/, '') },
+    props: { post },
+  }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+const spotify = post.data.spotify?.trim().replace(/open\.spotify\.com\/(?!embed\/)/, 'open.spotify.com/embed/').split('?')[0];
+---
+<SiteLayout title={post.data.title} description={post.data.description}>
+  <a class="page-back" href="/blog/">← Back to writing</a>
+  <article class="post-page">
+    <header class="post-header">
+      <p class="post-meta">{formatDate(post.data.date)}</p>
+      <h1>{post.data.title}</h1>
+      {post.data.description && <p class="post-description">{post.data.description}</p>}
+    </header>
+    {spotify && <aside class="post-spotify" aria-label="Spotify player">
+      <p class="eyebrow">soundtrack</p>
+      <iframe class="post-spotify-player" title={`Spotify player for ${post.data.title}`} src={`${spotify}?utm_source=generator`} width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </aside>}
+    <div class="post-content"><Content /></div>
+    <p class="post-back"><a class="text-link" href="/blog/">← All writing</a></p>
+  </article>
+</SiteLayout>

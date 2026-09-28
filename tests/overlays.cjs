@@ -2,13 +2,14 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const fs = require('fs');
 const path = require('path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../dist');
 const read = file => fs.readFileSync(path.join(root,file),'utf8');
-const strip = text => text.replace(/^---[\s\S]*?---\s*/, '');
-const shell = content => read('_layouts/default.html').replace('{{ content }}',content).replace(/{{.*?}}/g,'Page');
+const strip = text => text.match(/<div class="overlay-content">([\s\S]*?)<\/div><\/div>/)?.[1] || '';
+const shell = content => read('index.html').replace('<div class="overlay-content">', '<div class="overlay-content">' + content);
 const post = '<article class="post-page"><header class="post-header"><h1>Caption test</h1></header><div class="post-content"><p>![[sun.webp]]</p><p>[figcaption: A preserved caption]</p>'+ '<p>Long post content.</p>'.repeat(40) + '</div><a href="/blog/">All writing</a></article>';
 (async()=>{
- const browser=await chromium.launch({headless:true,channel:process.env.PLAYWRIGHT_CHANNEL || 'msedge'});
+ fs.mkdirSync(path.join(root, '../test-results'), {recursive:true});
+ const browser=await chromium.launch({headless:true,channel:process.env.PLAYWRIGHT_CHANNEL || undefined});
  try {
  const page=await browser.newPage({viewport:{width:1440,height:1000}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -24,7 +25,7 @@ const post = '<article class="post-page"><header class="post-header"><h1>Caption
  await page.route('**/*',route);
  await page.goto('http://overlay.test/');
  await page.evaluate(()=>window.savedPlayer=document.querySelector('.spotify-player'));
- await page.screenshot({path:path.join(root,'../home-preview.png')});
+ await page.screenshot({path:path.join(root,'../test-results/home-preview.png')});
  await page.getByRole('link',{name:'Work',exact:true}).click();
  await page.locator('#project-list').waitFor();
  assert.equal(await page.locator('#project-list a').count(),3);
@@ -40,7 +41,7 @@ const post = '<article class="post-page"><header class="post-header"><h1>Caption
  assert.equal(await page.locator('.home-screen').evaluate(n=>n.inert),true);
  await page.locator('.about-photo').hover();await page.waitForTimeout(500);
  assert.equal(await page.locator('.portrait-caption-tooltip').evaluate(n=>getComputedStyle(n).opacity),'1');
- await page.screenshot({path:path.join(root,'../about-preview.png')});
+ await page.screenshot({path:path.join(root,'../test-results/about-preview.png')});
  await page.keyboard.press('Escape');
  assert.equal(new URL(page.url()).pathname,'/');
  await page.getByRole('link',{name:'Blog',exact:true}).click();
@@ -61,7 +62,7 @@ const post = '<article class="post-page"><header class="post-header"><h1>Caption
  await mobile.route('**/*',route);await mobile.goto('http://overlay.test/about.html');
  assert.ok(await mobile.locator('.about-photo figcaption').isVisible());
  assert.equal(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
- await mobile.screenshot({path:path.join(root,'../mobile-preview.png')});
+ await mobile.screenshot({path:path.join(root,'../test-results/mobile-preview.png')});
  await mobile.goto('http://overlay.test/blog/2026/08/09/test/');
  assert.ok(await mobile.locator('.post-figure figcaption').isVisible());
  await mobile.emulateMedia({reducedMotion:'reduce'});

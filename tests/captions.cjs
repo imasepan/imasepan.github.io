@@ -3,15 +3,15 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '..');
-const shell = fs.readFileSync(path.join(root, '_layouts/default.html'), 'utf8');
+const root = path.resolve(__dirname, '../dist');
+const shell = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const post = `<article class="post-page"><div class="post-content">
   <p><img width="400" height="240" alt="Test image" src="/fixture.svg"></p>
   <p>[figcaption: A caption that must survive every hover]</p>
   <p><img width="400" height="240" alt="Second image" src="/fixture.svg"></p>
   <p>[figcaption: A second caption]</p>
   </div></article>`;
-const html = shell.replace('{{ content }}', post).replace(/<script src="\/entry-loader[^<]+<\/script>/, '')
+const html = shell.replace('<div class="overlay-content">', '<div class="overlay-content">' + post).replace(/<script src="\/entry-loader[^<]+<\/script>/, '')
   .replace(/<div class="entry-loader"[\s\S]*?<\/div>\s*<\/div>/, '');
 
 (async () => {
