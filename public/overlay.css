@@ -306,20 +306,36 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   color: inherit;
 }
 :root[data-weather='rain'] .rain-field { display: block; }
+.rain-row {
+  position: absolute;
+  inset: 0 -32vh 0 0;
+}
+.rain-row--back { opacity: .65; }
 .raindrop {
   position: absolute;
-  top: -90px;
+  bottom: calc(100% + var(--rain-start));
   left: var(--rain-x);
-  width: 4px;
-  height: var(--rain-length);
-  border-radius: 0;
-  opacity: calc(var(--rain-opacity) * 3);
-  background: currentColor;
+  width: 15px;
+  height: 180px;
   animation: rainfall var(--rain-duration) var(--rain-delay) linear infinite;
 }
+.rain-stem {
+  display: block;
+  width: 3px;
+  height: 60%;
+  margin-left: 7px;
+  background: linear-gradient(to bottom, transparent, currentColor);
+  transform: rotate(14deg);
+  transform-origin: bottom;
+  animation: rain-stem var(--rain-duration) var(--rain-delay) linear infinite;
+}
 @keyframes rainfall {
-  from { transform: translate3d(0, 0, 0) rotate(12deg); }
-  to { transform: translate3d(-22vh, calc(100vh + 180px), 0) rotate(12deg); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-25vh - 90px), calc(100vh + 360px), 0); }
+}
+@keyframes rain-stem {
+  0%, 80% { opacity: .8; }
+  100% { opacity: 0; }
 }
 .rain-lightning {
   position: absolute;
@@ -330,8 +346,9 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   background: radial-gradient(ellipse at 78% 12%, #d9edff99, #b5d4f029 40%, transparent 75%);
 }
 
-/* Opaque blind silhouettes occlude the flash before the shared blur is applied. */
-.overlay-site .sunlit-perspective { z-index: 1; }
+/* Composite rain behind opaque blinds, then blur and fade the shared shadow once. */
+.overlay-site .sunlit-shadows { z-index: 2; }
+.overlay-site .sunlit-perspective { z-index: 3; }
 :root[data-weather='rain'][data-theme='dark'] .rain-lightning {
   animation: rain-lightning 13s linear infinite;
 }
@@ -404,9 +421,9 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 @media (prefers-reduced-motion: reduce) {
   .glass-rivulet, .glass-trail, .glass-runner, .glass-droplet { animation: none; }
   .glass-runner { offset-distance: 100%; }
-  .rain-field .raindrop::before { animation: none; }
-  .rain-field .raindrop, :root[data-weather='rain'][data-theme='dark'] .rain-lightning { animation: none; }
-  .rain-field .raindrop { top: var(--rain-x); opacity: .1; transform: rotate(12deg); }
+  .rain-field .raindrop, .rain-field .rain-stem,
+  :root[data-weather='rain'][data-theme='dark'] .rain-lightning { animation: none; }
+  .rain-field .raindrop { bottom: auto; top: var(--rain-x); opacity: .1; }
 }
 
 /* Blog layout and Belyga titles. */

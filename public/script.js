@@ -81,11 +81,18 @@ const createRainField = () => {
   const rainField = document.createElement('div');
   rainField.className = 'rain-field';
   rainField.setAttribute('aria-hidden', 'true');
-  // Staggered depths and speeds keep the rainfall soft and irregular.
-  rainField.innerHTML = Array.from({ length: 64 }, (_, index) => {
-    const x = (index * 37.7) % 112;
-    const duration = 1.1 + (index % 7) * .19;
-    return `<span class="raindrop" style="--rain-x:${x}%;--rain-duration:${duration}s;--rain-delay:${-((index * .73) % 4)}s;--rain-length:${36 + (index % 5) * 12}px;--rain-opacity:${.12 + (index % 4) * .07}"></span>`;
+  // Adapted from https://codepen.io/arickle/pen/XKjMZY:
+  // randomized front/back rows and fading stems, without splash elements.
+  rainField.innerHTML = ['front', 'back'].map((layer) => {
+    let position = 0;
+    const drops = [];
+    while (position < 100) {
+      const spacing = .6 + Math.random();
+      position += spacing;
+      const duration = .32 + Math.random() * .08;
+      drops.push(`<span class="raindrop" style="--rain-x:${position}%;--rain-duration:${duration}s;--rain-delay:${-Math.random()}s;--rain-start:${spacing * 2 - 1}%"><span class="rain-stem"></span></span>`);
+    }
+    return `<div class="rain-row rain-row--${layer}">${drops.join('')}</div>`;
   }).join('');
   document.querySelector('.sunlit-shadows').appendChild(rainField);
   // Droplet silhouettes share the rainfall and window shadows blur and palette.
