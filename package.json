@@ -12,7 +12,8 @@
     "node": ">=22.19.0"
   },
   "dependencies": {
-    "astro": "^7.3.5"
+    "astro": "^7.3.5",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "playwright": "^1.58.0"

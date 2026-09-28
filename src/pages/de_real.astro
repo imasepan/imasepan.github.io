@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>de_real</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <style>
+      :global(astro-dev-toolbar) {
+        display: none;
+      }
+
+      :global(html),
+      :global(body) {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      main {
+        position: fixed;
+        inset: 0;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <canvas id="de-real" aria-label="A rotating wireframe box with chromatic CRT distortion"></canvas>
+    </main>
+    <script>
+      import { mountWireframe } from '../scripts/de-real';
+      const canvas = document.querySelector<HTMLCanvasElement>('#de-real');
+      if (canvas) mountWireframe(canvas);
+    </script>
+  </body>
+</html>
