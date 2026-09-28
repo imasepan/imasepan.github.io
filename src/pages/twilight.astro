@@ -1,0 +1,130 @@
+---
+// Periodic value noise makes the two CSS mountain tiles meet seamlessly.
+const smooth = (t: number) => t * t * (3 - 2 * t);
+function noise(x: number, frequency: number, seed: number) {
+  const hash = (i: number) => {
+    const value = Math.sin((i % frequency) * 127.1 + seed * 311.7) * 43758.5453;
+    return (value - Math.floor(value)) * 2 - 1;
+  };
+  const position = x * frequency;
+  const index = Math.floor(position);
+  return hash(index) + (hash(index + 1) - hash(index)) * smooth(position - index);
+}
+function ridge(seed: number, baseline: number, amplitude: number) {
+  const points = Array.from({ length: 513 }, (_, i) => {
+    const x = i / 512;
+    let detail = 0;
+    for (let octave = 0; octave < 7; octave++) {
+      detail += noise(x, 4 * 2 ** octave, seed + octave) * .5 ** octave;
+    }
+    const height = baseline + amplitude * Math.cos(x * Math.PI * 2) + detail * 2.5;
+    return `${(x * 100).toFixed(3)}% ${height.toFixed(3)}%`;
+  });
+  return `polygon(0 100%, ${points.join(', ')}, 100% 100%)`;
+}
+const stars = Array.from({ length: 34 }, (_, i) => {
+  const random = (salt: number) => {
+    const n = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453;
+    return n - Math.floor(n);
+  };
+  return { x: 4 + random(1) * 92, y: 7 + random(2) * 42,
+    size: .7 + random(3) * .8, opacity: .12 + random(4) * .28 };
+});
+const mountains = [
+  { name: 'distant', shape: ridge(13, 78, 6) },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Twilight: blue, lavender and peach skies above mountains drifting through blue hour." />
+    <title>imasepan — twilight</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  </head>
+  <body>
+    <main aria-label="Twilight landscape: a dark blue and pink dusk sky with faint stars above passing mountains">
+      <div class="landscape" aria-hidden="true">
+        <canvas class="atmosphere"></canvas>
+        <div class="sky-haze"></div>
+        <div class="stars">
+          {stars.map(star => <i style={`left:${star.x}%;top:${star.y}%;width:${star.size}px;height:${star.size}px;opacity:${star.opacity}`}></i>)}
+        </div>
+        {mountains.map(({ name, shape }) => (
+          <div class:list={['mountain-track', name]} style={`--ridge: ${shape}`}>
+            <div class="mountain"></div><div class="mountain"></div>
+          </div>
+        ))}
+      </div>
+      <div class="film-grain" aria-hidden="true"></div>
+      <header><a href="/" aria-label="Back to home">← home</a><h1>twilight</h1></header>
+      <footer><span>blue hour</span><button type="button" aria-pressed="false">Pause motion</button></footer>
+    </main>
+    <script>
+      import { mountAtmosphere } from '../scripts/twilight-atmosphere';
+      const atmosphere = document.querySelector<HTMLCanvasElement>('.atmosphere');
+      if (atmosphere) mountAtmosphere(atmosphere);
+      const button = document.querySelector<HTMLButtonElement>('button');
+      const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+      function setPaused(paused: boolean) {
+        document.documentElement.classList.toggle('paused', paused);
+        document.documentElement.classList.add('motion-ready');
+        button?.setAttribute('aria-pressed', String(paused));
+        if (button) button.textContent = paused ? 'Resume motion' : 'Pause motion';
+      }
+      setPaused(preference.matches);
+      preference.addEventListener('change', event => setPaused(event.matches));
+      button?.addEventListener('click', () => setPaused(button.getAttribute('aria-pressed') !== 'true'));
+    </script>
+  </body>
+</html>
+<style>
+  :global(html), :global(body) { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #071329; }
+  :global(astro-dev-toolbar) { display: none; }
+  main { position: fixed; inset: 0; isolation: isolate; color: #a1aec5; font: 11px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
+  .landscape { position: absolute; inset: -12px; overflow: hidden; background: linear-gradient(#08152f, #30486a 48%, #65516a 69%, #795b66 76%, #24344e); }
+  .atmosphere { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .sky-haze { position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 55%, #788bad08, transparent 65%); }
+  .stars { position: absolute; inset: 0; }
+  .stars i { position: absolute; display: block; border-radius: 50%; background: #d6e2ff; }
+  .mountain-track { position: absolute; inset: 0 auto 0 0; width: 200%; display: flex; animation: drift var(--duration) linear infinite; will-change: transform; }
+  .mountain { flex: 0 0 50%; height: 100%; clip-path: var(--ridge); background: radial-gradient(ellipse at 50% 48%, var(--haze) 0%, transparent 62%), var(--mountain-color); }
+  .distant { --duration: 5s; --mountain-color: #233453; --haze: #8583a525; animation-delay: -2.4s; }
+  @keyframes drift { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
+  :global(.paused) .mountain-track, :global(.paused) .film-grain { animation-play-state: paused; }
+  /* Same animated grain asset and settings as the regular website. */
+.film-grain {
+  position: fixed;
+  inset: -50%;
+  width: 400%;
+  height: 400vh;
+  z-index: 900;
+  background: transparent url('/assets/noise.png') repeat 0 0;
+  animation: noise 1000ms infinite;
+  pointer-events: none;
+  opacity: 1;
+  mix-blend-mode: soft-light;
+}
+@keyframes noise {
+  0%, 100% { background-position: 0 0; }
+  10% { background-position: -5% -10%; }
+  20% { background-position: -15% 5%; }
+  30% { background-position: 7% -25%; }
+  40% { background-position: 20% 25%; }
+  50% { background-position: -25% 10%; }
+  60% { background-position: 15% 5%; }
+  70% { background-position: 0 15%; }
+  80% { background-position: 25% 35%; }
+  90% { background-position: -10% 10%; }
+}
+  header, footer { position: absolute; z-index: 901; left: 32px; right: 32px; display: flex; justify-content: space-between; align-items: center; letter-spacing: .08em; }
+  header { top: 28px; } footer { bottom: 28px; }
+  h1 { margin: 0; font: inherit; }
+  a, button { color: inherit; text-decoration: none; transition: color .2s; }
+  button { border: 0; padding: 8px 0 8px 12px; background: none; font: inherit; letter-spacing: inherit; cursor: pointer; }
+  a:hover, button:hover { color: #e3e7ee; }
+  a:focus-visible, button:focus-visible { outline: 1px solid #f1b6c8; outline-offset: 6px; }
+  @media (max-width: 600px) { header, footer { left: 22px; right: 22px; } header { top: 22px; } footer { bottom: 22px; } }
+  @media (prefers-reduced-motion: reduce) { :global(html:not(.motion-ready)) .mountain-track, :global(html:not(.motion-ready)) .film-grain { animation-play-state: paused; } }
+</style>
