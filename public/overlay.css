@@ -316,13 +316,13 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   bottom: calc(100% + var(--rain-start));
   left: var(--rain-x);
   width: 15px;
-  height: 180px;
+  height: 240px;
   animation: rainfall var(--rain-duration) var(--rain-delay) linear infinite;
 }
 .raindrop[hidden] { display: none; }
 .rain-stem {
   display: block;
-  width: 3px;
+  width: 4px;
   height: 60%;
   margin-left: 7px;
   background: linear-gradient(to bottom, transparent, currentColor);
