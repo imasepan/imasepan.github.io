@@ -18,6 +18,12 @@ const readSavedTheme = () => {
 
 const applyTheme = (theme) => {
   document.documentElement.dataset.theme = theme;
+  document.querySelectorAll('iframe.spotify-player, iframe.post-spotify-player').forEach((player) => {
+    const source = new URL(player.src);
+    if (theme === 'dark') source.searchParams.set('theme', '0');
+    else source.searchParams.delete('theme');
+    if (player.src !== source.href) player.src = source.href;
+  });
 
   if (themeToggle) {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';

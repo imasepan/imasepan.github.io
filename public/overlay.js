@@ -14,6 +14,7 @@
     initialisePostFigureCaptions();
     initialisePortraitCaption();
     enhancePostSpotifyLinks();
+    syncSpotifyTheme();
   };
   function open() {
     home.inert = true;

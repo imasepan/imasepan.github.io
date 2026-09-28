@@ -16,8 +16,19 @@ const readSavedTheme = () => {
   }
 };
 
+const syncSpotifyTheme = (theme = document.documentElement.dataset.theme) => {
+  document.querySelectorAll('iframe.spotify-player, iframe.post-spotify-player').forEach((player) => {
+    const source = new URL(player.src);
+    // Spotify offers an artwork-coloured default and a charcoal theme.
+    if (theme === 'dark') source.searchParams.set('theme', '0');
+    else source.searchParams.delete('theme');
+    if (player.src !== source.href) player.src = source.href;
+  });
+};
+
 const applyTheme = (theme) => {
   document.documentElement.dataset.theme = theme;
+  syncSpotifyTheme(theme);
 
   if (themeToggle) {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
@@ -617,6 +628,7 @@ const enhancePostSpotifyLinks = () => {
   iframe.className = 'post-spotify-player';
   iframe.title = 'Spotify player for ' + postTitle;
   iframe.src = embedSource + '?utm_source=generator';
+  if (document.documentElement.dataset.theme === 'dark') iframe.src += '&theme=0';
   iframe.width = '100%';
   iframe.height = '152';
   iframe.setAttribute('frameborder', '0');
