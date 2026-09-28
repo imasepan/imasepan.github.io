@@ -11,53 +11,58 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   renderer.setPixelRatio(1);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xffffff);
+  scene.background = new THREE.Color(0x09090d);
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
   const box = new THREE.Group();
   scene.add(box);
 
-  // The twelve structural edges stay substantial at every viewing angle.
+  // Subdivide the twelve edges so each can fold into angular peaks.
   const source = new THREE.BoxGeometry(2, 2, 2);
   const edges = new THREE.EdgesGeometry(source);
   const positions = edges.getAttribute('position');
-  const ink = new THREE.MeshBasicMaterial({ color: 0x16151d });
-  const rods: THREE.CylinderGeometry[] = [];
+  const ink = new THREE.MeshBasicMaterial({ color: 0xe8e5f2 });
+  const rodGeometry = new THREE.CylinderGeometry(0.009, 0.009, 1, 6);
+  const segments: { mesh: THREE.Mesh; start: number; end: number }[] = [];
+  const vertices: { rest: THREE.Vector3; point: THREE.Vector3; peak: number }[] = [];
+  const up = new THREE.Vector3(0, 1, 0);
+  const direction = new THREE.Vector3();
   for (let i = 0; i < positions.count; i += 2) {
     const start = new THREE.Vector3().fromBufferAttribute(positions, i);
     const end = new THREE.Vector3().fromBufferAttribute(positions, i + 1);
-    const direction = end.clone().sub(start);
-    const geometry = new THREE.CylinderGeometry(0.009, 0.009, direction.length(), 6);
-    rods.push(geometry);
-    const edge = new THREE.Mesh(geometry, ink);
-    edge.position.copy(start).add(end).multiplyScalar(0.5);
-    edge.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
-    box.add(edge);
+    const first = vertices.length;
+    for (let step = 0; step <= 4; step++) {
+      const rest = start.clone().lerp(end, step / 4);
+      vertices.push({ rest, point: rest.clone(), peak: step % 2 });
+      if (step === 0) continue;
+      const mesh = new THREE.Mesh(rodGeometry, ink);
+      segments.push({ mesh, start: first + step - 1, end: first + step });
+      box.add(mesh);
+    }
   }
   source.dispose();
   edges.dispose();
 
-  // Open faces reveal the far side of the grid through the box.
-  const grid: number[] = [];
-  for (let axis = 0; axis < 3; axis++) {
-    for (const side of [-1, 1]) {
-      for (let step = 1; step < 6; step++) {
-        const offset = -1 + step / 3;
-        for (let across = 1; across <= 2; across++) {
-          for (const end of [-1, 1]) {
-            const vertex = [0, 0, 0];
-            vertex[axis] = side;
-            vertex[(axis + across) % 3] = offset;
-            vertex[(axis + 3 - across) % 3] = end;
-            grid.push(...vertex);
-          }
-        }
-      }
-    }
+  // Pick the undeformed volume, including the open faces, for stable hover.
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  const localRay = new THREE.Ray();
+  const inverse = new THREE.Matrix4();
+  const bounds = new THREE.Box3(new THREE.Vector3(-1, -1, -1), new THREE.Vector3(1, 1, 1));
+  const hit = new THREE.Vector3();
+  const hotspot = new THREE.Vector3(0, 0, 1);
+  let pointerInside = false;
+  let deformation = 0;
+
+  function movePointer(event: PointerEvent) {
+    const rect = canvas.getBoundingClientRect();
+    pointer.set((event.clientX - rect.left) / rect.width * 2 - 1,
+      -(event.clientY - rect.top) / rect.height * 2 + 1);
+    pointerInside = true;
   }
-  const gridGeometry = new THREE.BufferGeometry();
-  gridGeometry.setAttribute('position', new THREE.Float32BufferAttribute(grid, 3));
-  const gridMaterial = new THREE.LineBasicMaterial({ color: 0x575361, transparent: true, opacity: 0.64 });
-  box.add(new THREE.LineSegments(gridGeometry, gridMaterial));
+
+  function clearPointer() {
+    pointerInside = false;
+  }
 
   const target = new THREE.WebGLRenderTarget(1, 1, { depthBuffer: true });
   const postScene = new THREE.Scene();
@@ -69,6 +74,7 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
       image: { value: target.texture },
       resolution: { value: new THREE.Vector2(1, 1) },
       time: { value: 0 },
+      darkMode: { value: 0 },
     },
     vertexShader: `
       varying vec2 vUv;
@@ -81,6 +87,7 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
       uniform sampler2D image;
       uniform vec2 resolution;
       uniform float time;
+      uniform float darkMode;
       varying vec2 vUv;
       float noise(vec2 p) {
         return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -98,12 +105,17 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
           texture2D(image, uv - shift * 0.8).g,
           texture2D(image, uv + shift * 0.32).b
         );
-        // Violet/cyan analog ghosting follows the ink, leaving the field white.
-        float ghost = 1.0 - texture2D(image, uv + vec2(1.8, 0.0) * pixel).r;
-        color -= ghost * vec3(0.045, 0.15, 0.025);
+        float ghost = texture2D(image, uv + vec2(1.8, 0.0) * pixel).r;
         float scanline = 0.5 + 0.5 * sin(vUv.y * resolution.y * 3.14159265);
         float grain = noise(floor(vUv * resolution) + floor(time * 18.0));
-        color -= scanline * 0.018 + grain * 0.022;
+        if (darkMode > 0.5) {
+          color += ghost * vec3(0.045, 0.15, 0.09);
+          color *= 1.0 - scanline * 0.07;
+          color += (grain - 0.5) * 0.012;
+        } else {
+          color -= (1.0 - ghost) * vec3(0.045, 0.15, 0.025);
+          color -= scanline * 0.018 + grain * 0.022;
+        }
         gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
       }
     `,
@@ -116,8 +128,57 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   let previous = 0;
   let disposed = false;
 
-  function render() {
+  const themeToggle = document.querySelector<HTMLButtonElement>('#theme-toggle');
+  function applyTheme() {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    (scene.background as THREE.Color).set(dark ? 0x09090d : 0xffffff);
+    ink.color.set(dark ? 0xe8e5f2 : 0x16151d);
+    material.uniforms.darkMode.value = dark ? 1 : 0;
+    themeToggle?.setAttribute('aria-pressed', String(dark));
+    const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (themeColor) themeColor.content = dark ? '#09090d' : '#ffffff';
+    render();
+  }
+
+  function toggleTheme() {
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem('de-real-theme', theme); } catch {}
+    applyTheme();
+  }
+
+  function render(delta = 0) {
     box.rotation.set(0.32 + elapsed * 0.105, 0.55 + elapsed * 0.18, -0.12 + Math.sin(elapsed * 0.12) * 0.1);
+    box.updateMatrixWorld(true);
+    camera.updateMatrixWorld();
+    let hovering = false;
+    if (pointerInside) {
+      raycaster.setFromCamera(pointer, camera);
+      inverse.copy(box.matrixWorld).invert();
+      localRay.copy(raycaster.ray).applyMatrix4(inverse);
+      hovering = localRay.intersectBox(bounds, hit) !== null;
+      if (hovering) hotspot.lerp(hit, 1 - Math.exp(-delta * 12));
+    }
+    deformation = THREE.MathUtils.damp(deformation, hovering ? 1 : 0, hovering ? 8 : 5, delta);
+    for (const vertex of vertices) {
+      const { rest, point, peak } = vertex;
+      const proximity = Math.exp(-rest.distanceToSquared(hotspot) * 0.65);
+      const pulse = 0.8 + 0.2 * Math.sin(elapsed * 3.5 + rest.x * 3 + rest.y * 4 + rest.z * 2);
+      const spike = peak * (0.14 + proximity * 0.65) * pulse;
+      point.copy(rest).multiplyScalar(1 + deformation * spike);
+      // Shared corner positions stay joined as the whole frame shears.
+      point.x += deformation * 0.18 * Math.sin(rest.y * 2 + elapsed * 1.4);
+      point.y += deformation * 0.14 * Math.sin(rest.z * 2 - elapsed * 1.1);
+      point.z += deformation * 0.16 * Math.sin(rest.x * 2 + elapsed * 1.2);
+    }
+    for (const segment of segments) {
+      const start = vertices[segment.start].point;
+      const end = vertices[segment.end].point;
+      direction.subVectors(end, start);
+      segment.mesh.position.copy(start).add(end).multiplyScalar(0.5);
+      segment.mesh.scale.y = direction.length();
+      segment.mesh.quaternion.setFromUnitVectors(up, direction.normalize());
+    }
     material.uniforms.time.value = elapsed;
     renderer.setRenderTarget(target);
     renderer.render(scene, camera);
@@ -141,13 +202,15 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   }
 
   function tick(now: number) {
-    if (previous) elapsed += Math.min((now - previous) / 1000, 0.05);
+    const delta = previous ? Math.min((now - previous) / 1000, 0.05) : 0;
+    elapsed += delta;
     previous = now;
-    render();
+    render(delta);
   }
 
   function syncPlayback() {
     previous = 0;
+    if (document.hidden) clearPointer();
     // renderer.setAnimationLoop(!document.hidden && !reducedMotion.matches ? tick : null);
     renderer.setAnimationLoop(!document.hidden ? tick : null);
     render();
@@ -161,19 +224,28 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
     window.removeEventListener('pagehide', dispose);
     document.removeEventListener('visibilitychange', syncPlayback);
     // reducedMotion.removeEventListener('change', syncPlayback);
-    rods.forEach(geometry => geometry.dispose());
+    canvas.removeEventListener('pointermove', movePointer);
+    canvas.removeEventListener('pointerleave', clearPointer);
+    canvas.removeEventListener('pointercancel', clearPointer);
+    window.removeEventListener('blur', clearPointer);
+    themeToggle?.removeEventListener('click', toggleTheme);
+    rodGeometry.dispose();
     ink.dispose();
-    gridGeometry.dispose();
-    gridMaterial.dispose();
     target.dispose();
     material.dispose();
     plane.dispose();
     renderer.dispose();
   }
 
+  applyTheme();
+  themeToggle?.addEventListener('click', toggleTheme);
   resize();
   syncPlayback();
   window.addEventListener('resize', resize);
+  canvas.addEventListener('pointermove', movePointer);
+  canvas.addEventListener('pointerleave', clearPointer);
+  canvas.addEventListener('pointercancel', clearPointer);
+  window.addEventListener('blur', clearPointer);
   document.addEventListener('visibilitychange', syncPlayback);
   // reducedMotion.addEventListener('change', syncPlayback);
   window.addEventListener('pagehide', dispose);

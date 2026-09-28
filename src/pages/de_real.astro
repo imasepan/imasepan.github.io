@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <script is:inline>
+      try {
+        if (localStorage.getItem('de-real-theme') === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+          document.querySelector('meta[name="theme-color"]').content = '#09090d';
+        }
+      } catch {}
+    </script>
     <title>de_real</title>
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <style>
@@ -16,7 +25,39 @@
         height: 100%;
         margin: 0;
         overflow: hidden;
+        color-scheme: light;
         background: #fff;
+      }
+
+      :global(html[data-theme='dark']),
+      :global(html[data-theme='dark'] body) {
+        color-scheme: dark;
+        background: #09090d;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        right: max(20px, env(safe-area-inset-right));
+        bottom: max(20px, env(safe-area-inset-bottom));
+        min-height: 44px;
+        padding: 8px 14px;
+        border: 1px solid #16151d40;
+        border-radius: 4px;
+        background: #ffffffd9;
+        color: #16151d;
+        font: 12px monospace;
+        cursor: pointer;
+      }
+
+      .theme-toggle:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+      }
+
+      :global(html[data-theme='dark']) .theme-toggle {
+        border-color: #e8e5f240;
+        background: #09090dd9;
+        color: #e8e5f2;
       }
 
       main {
@@ -35,8 +76,9 @@
   </head>
   <body>
     <main>
-      <canvas id="de-real" aria-label="A rotating wireframe box with chromatic CRT distortion"></canvas>
+      <canvas id="de-real" aria-label="A rotating wireframe cube that spikes and deforms on hover, with chromatic CRT distortion"></canvas>
     </main>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
     <script>
       import { mountWireframe } from '../scripts/de-real';
       const canvas = document.querySelector<HTMLCanvasElement>('#de-real');
