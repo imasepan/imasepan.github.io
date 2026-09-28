@@ -1,10 +1,17 @@
-# 2026-09-27 — Astro migration and falling rain
-
-- Migrated pages, shared shell and Markdown blog rendering to Astro, preserving existing URLs and overlay navigation.
-- Added npm development/build commands and GitHub Pages deployment workflow.
-- Enlarged falling rain into thin, square-ended rectangles; preserved window beads and rivulets.
-
 # Changelog
+
+## 2026-09-27 — Astro migration and falling rain
+
+- Replaced the Jekyll configuration and Liquid layouts with Astro static pages in `src/pages` and a shared `SiteLayout.astro` shell. Migrated Home, About, Work, Guestbook, Blog, Korean Home, and Studio.
+- Added an Astro content collection with validated post metadata. Kept all eight Markdown posts in `_posts`, retained their dated URLs and filename capitalization, and preserved post images, captions, excerpts, and Spotify embeds. The Korean homepage still displays the latest post.
+- Preserved existing `.html` page addresses, the `/blog.html` redirect, and `/kr/`. Added a build hook that converts Astro's generated `.html` route directories into actual HTML files for static hosting.
+- Moved images, stylesheets, and browser scripts into `public`, keeping their public request URLs and script execution order. Preserved overlay navigation, Close/Escape controls, browser history, retry behavior, and the persistent Spotify player.
+- Added Astro configuration, TypeScript configuration, a dependency lockfile, and npm commands for development, production builds, previews, and browser tests. Documented Node.js 22.19+ as the runtime requirement.
+- Added a GitHub Actions workflow to build and publish `dist` to GitHub Pages on pushes to `main`. Publishing requires selecting **GitHub Actions** as the repository's Pages source; this migration did not itself deploy the site.
+- Enlarged falling rain to 4px-wide, 36–84px-long, square-ended rectangles and removed its dot/smear morphing. Left the window-droplet and rivulet generation, styling, and animation unchanged.
+- Updated the README, site documentation, task context, and post-writing instructions for the Astro structure and publishing workflow.
+- Verified the production build and browser checks for generated pages, all eight posts, Korean latest-post content, overlay navigation, history, captions, mobile layout, persistent weather settings, and reduced motion. Compared the window-glass generation and styling against the original source to confirm they were unchanged.
+
 
 ## 2026-09-27
 
