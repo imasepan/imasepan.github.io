@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-29 — Twilight 2
+
+- Added `/twilight2/`, a separate seaside layout based on the supplied reference: open blue-hour sky, coastal lights, railing, and a reflective pedestrian crossing, without people, a streetlamp, or clouds.
+- Added stronger animated sea ripples, distorted sky/coast/light reflections, and the original Twilight rocket and smoke trail at 42% scale, with a synchronized water reflection. All motion pauses with the control, reduced-motion preference, or a hidden tab.
+- Added subtle water and film-grain motion with pause/resume, reduced-motion support, and a link to the original Twilight page.
+- Verified the production build, desktop and mobile previews, and motion control.
+
 ## 2026-09-27 — Astro migration and falling rain
 
 - Replaced the Jekyll configuration and Liquid layouts with Astro static pages in `src/pages` and a shared `SiteLayout.astro` shell. Migrated Home, About, Work, Guestbook, Blog, Korean Home, and Studio.

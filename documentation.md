@@ -7,6 +7,7 @@ This repository contains the personal website for imasepan, built as an Astro st
 ## Key files
 
 - `src/pages/index.astro` — English homepage.
+- `src/pages/twilight2.astro` — separate `/twilight2/` seaside composition with a clear dusk sky, distant coast, empty lookout, and wet crossing. Self-contained SVG artwork with animated sea ripples and clipped sky/coast/light reflections. The original Twilight rocket and smoke arc appear at 42% scale in the distance, with a synchronized, distorted reflection in the sea. Water, rocket, and grain motion share a reduced-motion-aware pause control and stop while the tab is hidden. The original `/twilight/` remains available.
 - `src/pages/kr.html.astro` — Korean homepage.
 - `src/pages/blog/index.astro` — writing index; `blog.html.astro` preserves the redirect.
 - `_posts/` — Markdown blog posts.

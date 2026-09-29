@@ -1,0 +1,294 @@
+---
+// Fixed seeds keep the shoreline and water consistent between visits.
+const random = (i: number, salt = 1) => {
+  const n = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453;
+  return n - Math.floor(n);
+};
+const stars = Array.from({ length: 72 }, (_, i) => {
+  const height = random(i, 12);
+  return { x: 22 + random(i, 11) * 956, y: 28 + height * 465,
+    size: .45 + random(i, 13) ** 3 * .8,
+    opacity: (.35 + random(i, 14) * .5) * (1 - height * .65) };
+});
+const lights = Array.from({ length: 85 }, (_, i) => {
+  const cluster = [285, 412, 453, 567, 609, 707][i % 6];
+  return { x: cluster + (random(i) - .5) * 49, y: 645 - random(i, 2) * 5,
+    size: .45 + random(i, 3) * .8, opacity: .3 + random(i, 4) * .6 };
+});
+const ripples = Array.from({ length: 520 }, (_, i) => {
+  const depth = random(i, 2);
+  return { x: random(i) * 1000, y: 649 + depth ** 1.45 * 179,
+    width: 1 + random(i, 3) * (3 + depth * 48), height: .35 + depth * .7, opacity: .035 + random(i, 4) * .14 };
+});
+const reflections = lights.flatMap((light, i) => Array.from({ length: 18 }, (_, j) => ({
+  x: light.x + (random(i * 18 + j, 6) - .5) * (2 + j * 1.1),
+  y: 651 + j * 3.4 + random(i * 18 + j, 7) * 2,
+  width: .6 + random(i * 18 + j, 8) * (1 + j * .65),
+  opacity: light.opacity * (1 - j / 19) ** 1.4 * .48,
+})));
+const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="An empty seaside crossing at blue hour. A second Twilight study." />
+    <title>imasepan — twilight2</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  </head>
+  <body>
+    <main aria-label="Twilight 2 — an empty seaside crossing at dusk">
+      <svg class="scene" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="sky" x2="0" y2="1">
+            <stop stop-color="#111c46" />
+            <stop offset=".30" stop-color="#293e70" />
+            <stop offset=".56" stop-color="#59668c" />
+            <stop offset=".76" stop-color="#96849e" />
+            <stop offset=".91" stop-color="#c393a0" />
+            <stop offset="1" stop-color="#e1aa98" />
+          </linearGradient>
+          <radialGradient id="afterglow" cx=".49" cy="1" r=".65" gradientTransform="translate(0 .4) scale(1 .6)">
+            <stop stop-color="#ffd09a" stop-opacity=".26" />
+            <stop offset="1" stop-color="#f0b899" stop-opacity="0" />
+          </radialGradient>
+          <linearGradient id="sea" x2="0" y2="1">
+            <stop stop-color="#25344e" />
+            <stop offset=".3" stop-color="#34425b" />
+            <stop offset=".68" stop-color="#38445b" />
+            <stop offset="1" stop-color="#1e293e" />
+          </linearGradient>
+          <filter id="light-glow" x="-300%" y="-300%" width="700%" height="700%"><feGaussianBlur stdDeviation="2" /></filter>
+          <clipPath id="water-clip"><rect y="647" width="1000" height="181" /></clipPath>
+          <!-- Reuse the original flight and smoke at 42% scale, anchored to this horizon. -->
+            <path id="spark-arc" d="M 235 789 C 235 650 280 410 435 235" pathLength="1" />
+            <!-- Five-octave fBm and nested domain warping, adapted from
+                 Patricio Gonzalez Vivo's supplied 2015 smoke shader. SVG keeps
+                 the smoke, its reflection, and pause control on one timeline.
+                 Fixed seeds and frequencies keep the smoke pattern reusable;
+                 only its reveal and fade animate. -->
+            <filter id="spark-smoke" filterUnits="userSpaceOnUse" x="190" y="190" width="290" height="630" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency=".018 .028" numOctaves="5" seed="17" result="fbm" />
+              <feTurbulence type="fractalNoise" baseFrequency=".009 .016" numOctaves="5" seed="31" result="warp" />
+              <feDisplacementMap in="fbm" in2="warp" scale="32" xChannelSelector="R" yChannelSelector="G" result="warped-fbm" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="soft-trail" />
+              <feDisplacementMap in="soft-trail" in2="warped-fbm" scale="23" xChannelSelector="R" yChannelSelector="G" result="wisps" />
+              <feColorMatrix in="warped-fbm" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  2.8 0 0 0 -.8" result="density" />
+              <feComposite in="wisps" in2="density" operator="in" />
+              <feGaussianBlur stdDeviation=".45" />
+            </filter>
+            <radialGradient id="spark-glow">
+              <stop stop-color="#bcffff" stop-opacity=".8" />
+              <stop offset=".3" stop-color="#63efff" stop-opacity=".3" />
+              <stop offset="1" stop-color="#41dcff" stop-opacity="0" />
+            </radialGradient>
+            <filter id="spark-flare-blur" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.1" />
+            </filter>
+            <linearGradient id="spark-flare-horizontal">
+              <stop stop-color="white" stop-opacity="0" />
+              <stop offset=".5" stop-color="white" stop-opacity=".9" />
+              <stop offset="1" stop-color="white" stop-opacity="0" />
+            </linearGradient>
+            <linearGradient id="spark-flare-vertical" x1="0" y1="0" x2="0" y2="1">
+              <stop stop-color="white" stop-opacity="0" />
+              <stop offset=".5" stop-color="white" stop-opacity=".9" />
+              <stop offset="1" stop-color="white" stop-opacity="0" />
+            </linearGradient>
+            <linearGradient id="spark-trail-fade" gradientUnits="userSpaceOnUse" x1="0" y1="810" x2="0" y2="930">
+              <stop stop-color="white" />
+              <stop offset="1" stop-color="white" stop-opacity="0" />
+              <animateTransform attributeName="gradientTransform" type="translate" values="0 0;0 0;0 -760;0 -760" keyTimes="0;.82;.98;1" dur="52s" repeatCount="indefinite" />
+            </linearGradient>
+            <mask id="spark-trail-mask" maskUnits="userSpaceOnUse" x="200" y="180" width="270" height="650">
+              <rect x="200" y="180" width="270" height="650" fill="url(#spark-trail-fade)" />
+            </mask>
+            <g id="rising-spark" opacity="0">
+              <animate attributeName="opacity" values="0;0;.85;.85" keyTimes="0;.05;.16;1" dur="52s" repeatCount="indefinite" />
+              <!-- Retain the travelled arc, then dissolve it from the horizon upward. -->
+              <g mask="url(#spark-trail-mask)">
+              <g fill="none" stroke="#f3c69d" stroke-linecap="round" filter="url(#spark-smoke)">
+                <use href="#spark-arc" stroke-width="11" stroke-opacity=".3" stroke-dasharray="1 1" stroke-dashoffset="1">
+                  <animate attributeName="stroke-dashoffset" values="1;1;0;0" keyTimes="0;.05;.8;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" dur="52s" repeatCount="indefinite" />
+                </use>
+                <use href="#spark-arc" stroke-width="4" stroke-opacity=".3" stroke-dasharray="1 1" stroke-dashoffset="1">
+                  <animate attributeName="stroke-dashoffset" values="1;1;0;0" keyTimes="0;.05;.8;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" dur="52s" repeatCount="indefinite" />
+                </use>
+              </g>
+              </g>
+              <g>
+                <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.94;.99;1" dur="52s" repeatCount="indefinite" />
+                <animateMotion keyPoints="0;0;1;1" keyTimes="0;.05;.8;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" dur="52s" repeatCount="indefinite">
+                  <mpath href="#spark-arc" />
+                </animateMotion>
+                <g>
+                  <animate attributeName="opacity" values="1;.72;.94;.63;1;.82;1" keyTimes="0;.13;.29;.43;.58;.79;1" dur="1.7s" repeatCount="indefinite" />
+                  <circle r="12" fill="url(#spark-glow)" />
+                  <circle r="1.5" fill="#a3faff" />
+                </g>
+                <g filter="url(#spark-flare-blur)">
+                  <animate attributeName="opacity" values=".9;.48;1;.66;.88;.42;.9" keyTimes="0;.17;.31;.48;.64;.83;1" dur="2.3s" repeatCount="indefinite" />
+                  <rect x="-24" y="-.8" width="48" height="1.6" fill="url(#spark-flare-horizontal)" />
+                  <rect x="-.8" y="-32" width="1.6" height="64" fill="url(#spark-flare-vertical)" />
+                </g>
+              </g>
+            </g>
+          <g id="distant-rocket" transform="translate(90 315.62) scale(.42)">
+            <use href="#rising-spark" />
+          </g>
+          <linearGradient id="water-reflection-fade" x1="0" y1="647" x2="0" y2="828" gradientUnits="userSpaceOnUse">
+            <stop stop-color="white" stop-opacity=".55" />
+            <stop offset=".42" stop-color="white" stop-opacity=".3" />
+            <stop offset="1" stop-color="white" stop-opacity="0" />
+          </linearGradient>
+          <mask id="water-reflection-mask" maskUnits="userSpaceOnUse" x="0" y="647" width="1000" height="181">
+            <rect y="647" width="1000" height="181" fill="url(#water-reflection-fade)" />
+          </mask>
+          <filter id="water-ripples" x="-5%" y="-10%" width="110%" height="120%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency=".012 .19" numOctaves="1" seed="8" result="waves">
+              <animate attributeName="baseFrequency" values=".012 .19;.0124 .198;.012 .19" dur="96s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="waves" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <filter id="water-reflection-blur" x="-5%" y="-10%" width="110%" height="120%" color-interpolation-filters="sRGB">
+            <feGaussianBlur stdDeviation="1.8 .9" />
+          </filter>
+          <filter id="water-texture" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency=".009 .28" numOctaves="1" seed="12">
+              <animate attributeName="baseFrequency" values=".009 .28;.0094 .288;.009 .28" dur="80s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feColorMatrix type="matrix" values="0 0 0 0 .63  0 0 0 0 .70  0 0 0 0 .83  0 0 0 .08 0" />
+          </filter>
+          <g id="railing">
+            <!-- Solid rail silhouettes against the water. -->
+            <g fill="#090d14">
+              {backPosts.map(x => <rect x={x} y="695" width="3.5" height="84" />)}
+              <rect x="276" y="691" width="450" height="5" rx="1.5" />
+              <rect x="276" y="716" width="450" height="3.7" />
+              <rect x="276" y="738" width="450" height="3.7" />
+              <rect x="276" y="765" width="450" height="4.5" />
+            </g>
+            {[276, 497, 722].map(x => <g><rect x={x} y="691" width="7" height="90" rx="1" fill="#090d14" /></g>)}
+            <!-- Rails return toward the crossing on both sides of the landing. -->
+            <g stroke="#090d14" fill="none" stroke-linejoin="round">
+              <path d="M278 694 183 734 183 823 M725 694 819 734 819 823" stroke-width="6" />
+              <path d="M278 719 184 761 M725 719 818 761 M278 741 184 788 M725 741 818 788 M278 768 185 816 M725 768 818 816" stroke-width="4" />
+              <path d="M209 725V804 M233 714V794 M257 704V785 M748 705V787 M773 715V797 M796 725V808" stroke-width="3" />
+            </g>
+            <g fill="#090d14"><rect x="180" y="730" width="7" height="97" rx="1" /><rect x="816" y="730" width="7" height="97" rx="1" /></g>
+            <!-- Roadside fencing continues outside the frame. -->
+            <g fill="none" stroke="#090d14">
+              <path d="M-40 730H151 M-40 758H151 M-40 791H151 M851 730H1040 M851 758H1040 M851 791H1040" stroke-width="5" />
+              <path d="M-40 848 148 759 M852 759 1040 848" stroke-width="13" />
+              <path d="M-40 868 148 776 M852 776 1040 868" stroke-width="4" />
+            </g>
+            {[33, 93, 906, 967].map(x => <path d={`M${x} 732V816`} stroke="#090d14" stroke-width="4" />)}
+            {[138, 849].map(x => <g><rect x={x} y="722" width="14" height="113" rx="2" fill="#090d14" /><rect x={x - 1} y="721" width="16" height="5" rx="2" fill="#090d14" /></g>)}
+          </g>
+        </defs>
+
+        <rect width="1000" height="650" fill="url(#sky)" />
+        <rect width="1000" height="650" fill="url(#afterglow)" />
+        <g fill="#e0e5ff">
+          {stars.map(star => <circle cx={star.x} cy={star.y} r={star.size} opacity={star.opacity} />)}
+        </g>
+        <use href="#distant-rocket" />
+        <g id="coast">
+        <!-- Low coastal silhouettes leave nearly two thirds of the frame as clear sky. -->
+        <path d="M0 637 32 633 58 638 82 629 110 633 135 627 164 634 187 631 219 639 257 633 291 636 322 630 364 640 403 634 444 638 486 627 527 635 568 631 611 637 658 630 700 635 739 628 774 633 811 627 842 630 874 623 909 630 940 627 970 634 1000 631V651H0Z" fill="#69677c" />
+        <path d="M172 648 211 643 239 635 268 634 296 623 316 626 343 617 370 620 403 611 427 614 449 609 478 605 505 608 522 610 541 620 560 619 578 622 600 621 621 629 646 633 667 638 701 641 735 647Z" fill="#444d68" />
+        <path d="M0 648 80 646 137 650 234 645 299 646 342 642 383 646 428 641 459 645 503 642 548 645 590 641 633 645 689 643 736 647 784 644 841 649 904 646 1000 648V655H0Z" fill="#36425a" />
+        </g>
+        <rect y="647" width="1000" height="187" fill="url(#sea)" />
+        <!-- Reflect the sky, coast, and flight into the sea, behind the foreground rails. -->
+        <g clip-path="url(#water-clip)">
+          <g mask="url(#water-reflection-mask)" filter="url(#water-reflection-blur)">
+            <g filter="url(#water-ripples)">
+              <g transform="translate(0 918.74) scale(1 -.42)">
+                <rect x="-12" width="1024" height="650" fill="url(#sky)" />
+                <rect x="-12" width="1024" height="650" fill="url(#afterglow)" />
+                <use href="#coast" />
+              </g>
+            </g>
+          </g>
+          <g opacity=".55" filter="url(#water-ripples)">
+            <g filter="url(#water-reflection-blur)">
+              <use href="#distant-rocket" transform="translate(0 918.74) scale(1 -.42)" />
+            </g>
+          </g>
+          <rect y="647" width="1000" height="181" filter="url(#water-texture)" />
+        </g>
+        <g fill="#ffdfa2">
+          {lights.map(light => <circle cx={light.x} cy={light.y} r={light.size * 2.7} opacity={light.opacity * .45} filter="url(#light-glow)" />)}
+          {lights.map(light => <ellipse cx={light.x} cy={light.y} rx={light.size} ry={light.size * .7} opacity={light.opacity} />)}
+        </g>
+        <g clip-path="url(#water-clip)">
+        <g class="water-shimmer" filter="url(#water-ripples)">
+          <g fill="#ffe0a7" filter="url(#water-reflection-blur)">{reflections.map(r => <rect x={r.x} y={r.y} width={r.width} height=".65" opacity={r.opacity} />)}</g>
+          <g fill="#b2bad0" opacity=".55">{ripples.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} opacity={r.opacity} />)}</g>
+          <g fill="none" stroke="#939cb2" stroke-width="1" opacity=".13">
+            <path d="M-20 702Q56 698 126 703T285 701 M586 697Q699 693 774 699T1010 698" />
+            <path d="M-10 749Q78 739 159 749T353 747 M561 742Q635 735 730 744T1020 746" />
+            <path d="M-10 776Q73 767 165 777 M829 777Q931 767 1010 774" />
+          </g>
+        </g>
+        </g>
+        <!-- The landing and crossing merge into one uninterrupted shadow. -->
+        <path d="M276 775H727L858 827 876 829H1000V1000H0V829H124L140 827Z" fill="#090d14" />
+        <use href="#railing" />
+      </svg>
+      <div class="vignette" aria-hidden="true"></div>
+      <div class="film-grain" aria-hidden="true"></div>
+      <header><a href="/" aria-label="Back to home">← home</a><span>twilight / 02</span></header>
+      <footer><a href="/twilight/">original twilight ↗</a><button type="button" aria-pressed="false">Pause motion</button></footer>
+    </main>
+    <script>
+      const button = document.querySelector<HTMLButtonElement>('button');
+      const scene = document.querySelector<SVGSVGElement>('.scene');
+      const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+      function syncMotion() {
+        if (document.hidden || document.documentElement.classList.contains('paused')) scene?.pauseAnimations();
+        else scene?.unpauseAnimations();
+      }
+      // Open midway through the flight so the distant spark and trail are visible on arrival.
+      scene?.setCurrentTime(26);
+      function setPaused(paused: boolean) {
+        document.documentElement.classList.toggle('paused', paused);
+        document.documentElement.classList.add('motion-ready');
+        syncMotion();
+        button?.setAttribute('aria-pressed', String(paused));
+        if (button) button.textContent = paused ? 'Resume motion' : 'Pause motion';
+      }
+      setPaused(preference.matches);
+      preference.addEventListener('change', event => setPaused(event.matches));
+      button?.addEventListener('click', () => setPaused(button.getAttribute('aria-pressed') !== 'true'));
+      document.addEventListener('visibilitychange', () => {
+        document.documentElement.classList.toggle('hidden', document.hidden);
+        syncMotion();
+      });
+    </script>
+  </body>
+</html>
+<style>
+  :global(html), :global(body) { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #111927; }
+  :global(astro-dev-toolbar) { display: none; }
+  main { position: fixed; inset: 0; isolation: isolate; color: #8991ab; font: 10px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
+  .scene { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.65); }
+  .vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, #080f1b55, transparent 27%), radial-gradient(ellipse at 50% 38%, transparent 35%, #080e222e 100%); }
+  .film-grain { position: absolute; inset: -50%; pointer-events: none; background: url('/assets/noise.png') repeat; opacity: .38; mix-blend-mode: soft-light; animation: grain 1s steps(1) infinite; }
+  .water-shimmer { animation: shimmer 48s ease-in-out infinite alternate; }
+  header, footer { position: absolute; left: 30px; right: 30px; display: flex; justify-content: space-between; align-items: center; gap: 20px; letter-spacing: .09em; }
+  header { top: 27px; } footer { bottom: 23px; }
+  header span { opacity: .5; font-size: 9px; }
+  a, button { color: inherit; text-decoration: none; opacity: .7; transition: opacity .2s; }
+  button { border: 0; background: none; padding: 8px 0 8px 8px; font: inherit; letter-spacing: inherit; cursor: pointer; }
+  a:hover, button:hover { opacity: 1; }
+  a:focus-visible, button:focus-visible { outline: 1px solid #e5c6bf; outline-offset: 6px; opacity: 1; }
+  :global(.paused) .water-shimmer, :global(.paused) .film-grain,
+  :global(.hidden) .water-shimmer, :global(.hidden) .film-grain { animation-play-state: paused; }
+  @keyframes shimmer { from { opacity: .65; transform: translateY(0); } to { opacity: .75; transform: translateY(.2px); } }
+  @keyframes grain { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-3%, 1%); } 40% { transform: translate(1%, -3%); } 60% { transform: translate(-2%, 3%); } 80% { transform: translate(3%, 2%); } }
+  @media (max-width: 600px) { header, footer { left: 21px; right: 21px; } header { top: 21px; } footer { bottom: max(16px, env(safe-area-inset-bottom)); } }
+  @media (prefers-reduced-motion: reduce) { :global(html:not(.motion-ready)) .water-shimmer, :global(html:not(.motion-ready)) .film-grain { animation-play-state: paused; } }
+</style>
