@@ -3,7 +3,7 @@
  * Reference: https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-16-accurate-atmospheric-scattering
  * Distances are in kilometres; exposure/night fill are art-directed for blue hour.
  */
-export function mountAtmosphere(canvas: HTMLCanvasElement) {
+export function mountAtmosphere(canvas: HTMLCanvasElement, onRender?: () => void) {
   const context = canvas.getContext('2d', { alpha: false });
   if (!context) return;
   const earth = 6371;
@@ -94,6 +94,7 @@ export function mountAtmosphere(canvas: HTMLCanvasElement) {
       }
     }
     context!.putImageData(pixels, 0, 0);
+    onRender?.();
   }
   let resizeTimer: ReturnType<typeof setTimeout>;
   const observerResize = new ResizeObserver(() => {
