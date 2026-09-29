@@ -16,53 +16,26 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   const box = new THREE.Group();
   scene.add(box);
 
-  // Subdivide the twelve edges so each can fold into angular peaks.
+  // Build the twelve straight edges of the cube.
   const source = new THREE.BoxGeometry(2, 2, 2);
   const edges = new THREE.EdgesGeometry(source);
   const positions = edges.getAttribute('position');
   const ink = new THREE.MeshBasicMaterial({ color: 0xe8e5f2 });
   const rodGeometry = new THREE.CylinderGeometry(0.009, 0.009, 1, 6);
-  const segments: { mesh: THREE.Mesh; start: number; end: number }[] = [];
-  const vertices: { rest: THREE.Vector3; point: THREE.Vector3; peak: number }[] = [];
   const up = new THREE.Vector3(0, 1, 0);
   const direction = new THREE.Vector3();
   for (let i = 0; i < positions.count; i += 2) {
     const start = new THREE.Vector3().fromBufferAttribute(positions, i);
     const end = new THREE.Vector3().fromBufferAttribute(positions, i + 1);
-    const first = vertices.length;
-    for (let step = 0; step <= 4; step++) {
-      const rest = start.clone().lerp(end, step / 4);
-      vertices.push({ rest, point: rest.clone(), peak: step % 2 });
-      if (step === 0) continue;
-      const mesh = new THREE.Mesh(rodGeometry, ink);
-      segments.push({ mesh, start: first + step - 1, end: first + step });
-      box.add(mesh);
-    }
+    const mesh = new THREE.Mesh(rodGeometry, ink);
+    direction.subVectors(end, start);
+    mesh.position.copy(start).add(end).multiplyScalar(0.5);
+    mesh.scale.y = direction.length();
+    mesh.quaternion.setFromUnitVectors(up, direction.normalize());
+    box.add(mesh);
   }
   source.dispose();
   edges.dispose();
-
-  // Pick the undeformed volume, including the open faces, for stable hover.
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2();
-  const localRay = new THREE.Ray();
-  const inverse = new THREE.Matrix4();
-  const bounds = new THREE.Box3(new THREE.Vector3(-1, -1, -1), new THREE.Vector3(1, 1, 1));
-  const hit = new THREE.Vector3();
-  const hotspot = new THREE.Vector3(0, 0, 1);
-  let pointerInside = false;
-  let deformation = 0;
-
-  function movePointer(event: PointerEvent) {
-    const rect = canvas.getBoundingClientRect();
-    pointer.set((event.clientX - rect.left) / rect.width * 2 - 1,
-      -(event.clientY - rect.top) / rect.height * 2 + 1);
-    pointerInside = true;
-  }
-
-  function clearPointer() {
-    pointerInside = false;
-  }
 
   const target = new THREE.WebGLRenderTarget(1, 1, { depthBuffer: true });
   const postScene = new THREE.Scene();
@@ -147,38 +120,8 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
     applyTheme();
   }
 
-  function render(delta = 0) {
+  function render() {
     box.rotation.set(0.32 + elapsed * 0.105, 0.55 + elapsed * 0.18, -0.12 + Math.sin(elapsed * 0.12) * 0.1);
-    box.updateMatrixWorld(true);
-    camera.updateMatrixWorld();
-    let hovering = false;
-    if (pointerInside) {
-      raycaster.setFromCamera(pointer, camera);
-      inverse.copy(box.matrixWorld).invert();
-      localRay.copy(raycaster.ray).applyMatrix4(inverse);
-      hovering = localRay.intersectBox(bounds, hit) !== null;
-      if (hovering) hotspot.lerp(hit, 1 - Math.exp(-delta * 12));
-    }
-    deformation = THREE.MathUtils.damp(deformation, hovering ? 1 : 0, hovering ? 8 : 5, delta);
-    for (const vertex of vertices) {
-      const { rest, point, peak } = vertex;
-      const proximity = Math.exp(-rest.distanceToSquared(hotspot) * 0.65);
-      const pulse = 0.8 + 0.2 * Math.sin(elapsed * 3.5 + rest.x * 3 + rest.y * 4 + rest.z * 2);
-      const spike = peak * (0.14 + proximity * 0.65) * pulse;
-      point.copy(rest).multiplyScalar(1 + deformation * spike);
-      // Shared corner positions stay joined as the whole frame shears.
-      point.x += deformation * 0.18 * Math.sin(rest.y * 2 + elapsed * 1.4);
-      point.y += deformation * 0.14 * Math.sin(rest.z * 2 - elapsed * 1.1);
-      point.z += deformation * 0.16 * Math.sin(rest.x * 2 + elapsed * 1.2);
-    }
-    for (const segment of segments) {
-      const start = vertices[segment.start].point;
-      const end = vertices[segment.end].point;
-      direction.subVectors(end, start);
-      segment.mesh.position.copy(start).add(end).multiplyScalar(0.5);
-      segment.mesh.scale.y = direction.length();
-      segment.mesh.quaternion.setFromUnitVectors(up, direction.normalize());
-    }
     material.uniforms.time.value = elapsed;
     renderer.setRenderTarget(target);
     renderer.render(scene, camera);
@@ -205,12 +148,11 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
     const delta = previous ? Math.min((now - previous) / 1000, 0.05) : 0;
     elapsed += delta;
     previous = now;
-    render(delta);
+    render();
   }
 
   function syncPlayback() {
     previous = 0;
-    if (document.hidden) clearPointer();
     // renderer.setAnimationLoop(!document.hidden && !reducedMotion.matches ? tick : null);
     renderer.setAnimationLoop(!document.hidden ? tick : null);
     render();
@@ -224,10 +166,6 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
     window.removeEventListener('pagehide', dispose);
     document.removeEventListener('visibilitychange', syncPlayback);
     // reducedMotion.removeEventListener('change', syncPlayback);
-    canvas.removeEventListener('pointermove', movePointer);
-    canvas.removeEventListener('pointerleave', clearPointer);
-    canvas.removeEventListener('pointercancel', clearPointer);
-    window.removeEventListener('blur', clearPointer);
     themeToggle?.removeEventListener('click', toggleTheme);
     rodGeometry.dispose();
     ink.dispose();
@@ -242,10 +180,6 @@ export function mountWireframe(canvas: HTMLCanvasElement) {
   resize();
   syncPlayback();
   window.addEventListener('resize', resize);
-  canvas.addEventListener('pointermove', movePointer);
-  canvas.addEventListener('pointerleave', clearPointer);
-  canvas.addEventListener('pointercancel', clearPointer);
-  window.addEventListener('blur', clearPointer);
   document.addEventListener('visibilitychange', syncPlayback);
   // reducedMotion.addEventListener('change', syncPlayback);
   window.addEventListener('pagehide', dispose);
