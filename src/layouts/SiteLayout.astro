@@ -1,13 +1,13 @@
 ---
 interface Props { title?: string; description?: string; }
-const { title = "home", description = "Stuff for my stuff" } = Astro.props;
+const { title = "home", description = "charlie's website where he writes about stuff people don't care about" } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="{description}" />
+  <meta name="description" content={description} />
   <title>imasepan — {title}</title>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
