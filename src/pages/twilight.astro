@@ -22,12 +22,12 @@ const mountainPath = `M 330 787 Q 380 784 414 775
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Twilight: blue, lavender and peach skies above a quiet mountain at blue hour." />
+    <meta name="description" content="Twilight blue hour." />
     <title>imasepan — twilight</title>
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
   </head>
   <body>
-    <main aria-label="Twilight landscape: a dark blue and pink dusk sky with faint stars above a still mountain">
+    <main aria-label="Twilight">
       <div class="landscape" aria-hidden="true">
         <canvas class="atmosphere"></canvas>
         <div class="sky-haze"></div>
@@ -158,8 +158,8 @@ const mountainPath = `M 330 787 Q 380 784 414 775
         </svg>
       </div>
       <div class="film-grain" aria-hidden="true"></div>
-      <header><a href="/" aria-label="Back to home">← home</a><h1>twilight</h1></header>
-      <footer><span>blue hour</span><button type="button" aria-pressed="false">Pause motion</button></footer>
+      <header><a href="/" aria-label="Back to home">← home</a></header>
+      <footer><button type="button" aria-pressed="false">Pause motion</button></footer>
     </main>
     <script>
       import { mountAtmosphere } from '../scripts/twilight-atmosphere';
