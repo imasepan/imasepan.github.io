@@ -52,7 +52,7 @@
       document.title = page.title;
       if (updateHistory) history.pushState({}, '', url.href);
       refresh();
-      /* if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) */ {
+      if (document.documentElement.dataset.appearance !== 'frutiger' || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         content.getAnimations().forEach(animation => animation.cancel());
         content.animate([
           { opacity: 0, transform: 'translateY(14px)' },

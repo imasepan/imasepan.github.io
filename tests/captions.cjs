@@ -39,7 +39,7 @@ const html = shell.replace('<div class="overlay-content">', '<div class="overlay
       assert.equal(await tooltip.evaluate(node => getComputedStyle(node).opacity), '1');
       assert.equal(await tooltip.evaluate(node => node.classList.contains('is-exiting')), false);
       await page.mouse.move(5, 5);
-      await page.waitForTimeout(180);
+      await page.waitForFunction(() => getComputedStyle(document.querySelector('.post-caption-tooltip')).opacity === '0');
       assert.equal(await tooltip.evaluate(node => getComputedStyle(node).opacity), '0');
       assert.equal(await figure.evaluate(node => node.offsetHeight), height, 'Hover must not change layout');
     }

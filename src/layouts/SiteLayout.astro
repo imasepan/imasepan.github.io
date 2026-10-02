@@ -15,13 +15,16 @@ const { title = "home", description = "charlie's website where he writes about s
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/styles.css?v=20260926-25" />
-  <link rel="stylesheet" href="/overlay.css?v=20260929-2" />
+  <link rel="stylesheet" href="/overlay.css?v=20261002-3" />
+  <link rel="stylesheet" href="/frutiger.css?v=20261002-3" />
 </head>
 <body class="overlay-site">
   <div class="home-screen">
     <header class="home-header">
-      <button class="rain-toggle" type="button" aria-label="Rain" aria-pressed="false">Rain</button>
+      <button class="appearance-button" type="button" data-appearance-mode="default" aria-pressed="false">Default</button>
+      <button class="rain-toggle" type="button" data-appearance-mode="rain" aria-pressed="false">Rain</button>
       <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
+      <button class="appearance-button" type="button" data-appearance-mode="frutiger" aria-pressed="false">Frutiger</button>
     </header>
     <main class="home-menu" aria-label="Home">
 
@@ -31,12 +34,12 @@ const { title = "home", description = "charlie's website where he writes about s
         <a href="/blog/">Blog</a>
         <div class="guestbook-menu-item">
           <a href="/guestbook.html">Guestbook</a>
+
+        </div>
+      </nav>
           <aside class="music-dock" aria-label="Featured Spotify playlist">
             <iframe class="spotify-player" title="Spotify playlist" src="https://open.spotify.com/embed/playlist/3U7y10CsdmnU7IfRpZRooU?utm_source=generator" width="320" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
           </aside>
-        </div>
-      </nav>
-    </main>
 
     <nav class="home-webring" aria-label="Purdue Hackers webring">
       <a href="https://ring.purduehackers.com/previous"><-</a>
@@ -53,6 +56,7 @@ const { title = "home", description = "charlie's website where he writes about s
       </a>
       <a href="https://ring.purduehackers.com/next">-></a>
     </nav>
+    </main>
 
   </div>
   <div class="overlay-veil" aria-hidden="true"></div>
@@ -61,7 +65,8 @@ const { title = "home", description = "charlie's website where he writes about s
     <div class="overlay-scroll" tabindex="0"><div class="overlay-content"><slot /></div></div>
   </dialog>
   <noscript><style is:inline>.page-overlay:not([open]){display:block;position:fixed}.home-screen{display:none}</style><p>Please enable JavaScript to use the overlay navigation. <a href="/blog/">Blog</a> · <a href="/about.html">About</a> · <a href="/guestbook.html">Guestbook</a> · <a href="/work.html">Work</a></p></noscript>
-  <script is:inline src="/script.js?v=20260928-1"></script>
-  <script is:inline src="/overlay.js?v=20260928-1"></script>
+  <script is:inline src="/script.js?v=20261002-3"></script>
+  <script is:inline src="/overlay.js?v=20261002-1"></script>
+  <script is:inline type="module" src="/frutiger.js?v=20261001-1"></script>
 </body>
 </html>

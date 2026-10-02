@@ -12,8 +12,8 @@ const posts = defineCollection({
     date: z.coerce.date(),
     description: z.string().optional(),
     excerpt: z.string().optional(),
-    image: z.string().optional(),
-    spotify: z.string().optional(),
+    image: z.preprocess(value => value === null ? undefined : value, z.string().optional()),
+    spotify: z.preprocess(value => value === null ? undefined : value, z.string().optional()),
   }),
 });
 export const collections = { posts };

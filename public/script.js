@@ -6,6 +6,21 @@ const headerControls = document.querySelector('.header-controls');
 const isKorean = document.documentElement.lang === 'ko';
 const themeToggle = document.querySelector('.theme-toggle');
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+const appearanceButtons = document.querySelectorAll('[data-appearance-mode]');
+const hasAppearanceControls = appearanceButtons.length > 0;
+const appearanceModes = ['default', 'light', 'dark', 'rain', 'frutiger'];
+const readAppearance = () => {
+  try {
+    const requested = new URLSearchParams(location.search).get('layout');
+    if (appearanceModes.includes(requested)) return requested;
+    const saved = localStorage.getItem('imasepan-appearance');
+    if (appearanceModes.includes(saved)) return saved;
+    if (localStorage.getItem('weather') === 'rain') return 'rain';
+    const theme = localStorage.getItem('theme');
+    if (theme === 'light' || theme === 'dark') return theme;
+  } catch { /* The buttons also work without storage. */ }
+  return 'default';
+};
 
 const readSavedTheme = () => {
   try {
@@ -19,8 +34,9 @@ const readSavedTheme = () => {
 const syncSpotifyTheme = (theme = document.documentElement.dataset.theme) => {
   document.querySelectorAll('iframe.spotify-player, iframe.post-spotify-player').forEach((player) => {
     const source = new URL(player.src);
-    // Spotify offers an artwork-coloured default and a charcoal theme.
-    if (theme === 'dark') source.searchParams.set('theme', '0');
+    // Use a neutral base for the themed home dock, independent of playlist artwork.
+    // Post embeds keep Spotify’s artwork palette except in dark mode.
+    if (theme === 'dark' || player.closest('.music-dock')) source.searchParams.set('theme', '0');
     else source.searchParams.delete('theme');
     if (player.src !== source.href) player.src = source.href;
   });
@@ -38,7 +54,20 @@ const applyTheme = (theme) => {
   }
 };
 
-applyTheme(readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
+const applyAppearance = (mode) => {
+  const next = appearanceModes.includes(mode) ? mode : 'default';
+  document.documentElement.dataset.appearance = next;
+  document.documentElement.dataset.weather = next === 'rain' ? 'rain' : 'clear';
+  applyTheme(next === 'dark' ? 'dark' : next === 'light' || next === 'frutiger' ? 'light' : readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
+  if (themeToggle) themeToggle.hidden = next === 'frutiger';
+  appearanceButtons.forEach(button => {
+    const selected = button.dataset.appearanceMode === (next === 'light' || next === 'dark' ? 'default' : next);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+  document.dispatchEvent(new CustomEvent('appearance-change', { detail: { mode: next } }));
+};
+if (hasAppearanceControls) applyAppearance(readAppearance());
+else applyTheme(readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
 
 let activeThemeTransition = null;
 
@@ -51,7 +80,7 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   }
     */
 
-  const controls = document.querySelectorAll('.theme-toggle, .rain-toggle');
+  const controls = document.querySelectorAll('.theme-toggle, .rain-toggle, [data-appearance-mode]');
   controls.forEach((control) => { control.disabled = true; });
   document.dispatchEvent(new Event('weather-transition-start'));
   document.documentElement.classList.add('theme-is-transitioning');
@@ -73,7 +102,14 @@ const transitionTheme = (theme) => {
 if (themeToggle) {
   themeToggle.addEventListener('click', () => {
     const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    transitionTheme(nextTheme);
+    if (hasAppearanceControls) {
+      const mode = document.documentElement.dataset.appearance === 'rain' ? 'rain' : nextTheme;
+      transitionAppearance(() => {
+        applyAppearance(mode);
+        applyTheme(nextTheme);
+      });
+      persistAppearance(mode);
+    } else transitionTheme(nextTheme);
 
     try {
       window.localStorage.setItem('theme', nextTheme);
@@ -84,15 +120,34 @@ if (themeToggle) {
 }
 
 systemTheme.addEventListener('change', (event) => {
-  if (!readSavedTheme()) transitionTheme(event.matches ? 'dark' : 'light');
+  if (hasAppearanceControls) {
+    const mode = document.documentElement.dataset.appearance;
+    if ((mode === 'default' || mode === 'rain') && !readSavedTheme()) transitionAppearance(() => applyAppearance(mode));
+  } else if (!readSavedTheme()) transitionTheme(event.matches ? 'dark' : 'light');
 });
+
+function persistAppearance(mode) {
+  try {
+    localStorage.setItem('imasepan-appearance', mode);
+    // Explicit choices supersede a URL preview of a layout.
+    const url = new URL(location.href);
+    url.searchParams.delete('layout');
+    history.replaceState(history.state, '', url);
+  } catch { /* Keep the selection for this page. */ }
+}
+appearanceButtons.forEach(button => button.addEventListener('click', () => {
+  const requested = button.dataset.appearanceMode;
+  const mode = requested !== 'default' && document.documentElement.dataset.appearance === requested ? 'default' : requested;
+  transitionAppearance(() => applyAppearance(mode));
+  persistAppearance(mode);
+}));
 
 // const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const portraitPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 
 const rainToggle = document.querySelector('.rain-toggle');
 const createRainField = () => {
-  if (!rainToggle) return;
+  if (!rainToggle && !hasAppearanceControls) return;
   const rainField = document.createElement('div');
   rainField.className = 'rain-field';
   rainField.setAttribute('aria-hidden', 'true');
@@ -143,7 +198,7 @@ const createRainField = () => {
 
   const applyRain = (enabled) => {
     document.documentElement.dataset.weather = enabled ? 'rain' : 'clear';
-    rainToggle.setAttribute('aria-pressed', String(enabled));
+    rainToggle?.setAttribute('aria-pressed', String(enabled));
     /* Reduced-motion handling temporarily disabled.
 if (reducedMotionQuery.matches) {
       rainField.querySelectorAll('.raindrop').forEach(drop => { drop.hidden = false; });
@@ -156,8 +211,9 @@ if (reducedMotionQuery.matches) {
   } catch {
     // Weather controls also work when browser storage is unavailable.
   }
-  applyRain(savedRain);
-  rainToggle.addEventListener('click', () => {
+  applyRain(hasAppearanceControls ? document.documentElement.dataset.appearance === 'rain' : savedRain);
+  document.addEventListener('appearance-change', event => applyRain(event.detail.mode === 'rain'));
+  if (!hasAppearanceControls) rainToggle?.addEventListener('click', () => {
     const enabled = document.documentElement.dataset.weather !== 'rain';
     transitionAppearance(() => applyRain(enabled));
     try {

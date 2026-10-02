@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "npm run build && node tests/overlays.cjs && node tests/captions.cjs && node tests/site.cjs"
+    "test": "npm run build && node tests/overlays.cjs && node tests/captions.cjs && node tests/site.cjs && node tests/appearance.cjs"
   },
   "engines": {
     "node": ">=22.19.0"

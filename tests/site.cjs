@@ -26,8 +26,9 @@ const root = path.resolve(__dirname, '../dist');
       const s = getComputedStyle(n);
       return {width:s.width,height:parseFloat(s.height),radius:s.borderRadius,background:s.backgroundImage};
     }));
-    assert.equal(drops.length, 64);
-    assert.ok(drops.every(d => d.width === '4px' && d.height >= 36 && d.height <= 84 && d.radius === '0px' && d.background === 'none'));
+    assert.equal(drops.length, 180);
+    assert.ok(drops.every(d => d.width === '15px' && d.height === 240 && d.radius === '0px' && d.background === 'none'));
+    assert.equal(await page.locator('.rain-stem').first().evaluate(n => getComputedStyle(n).width), '4px');
     await page.reload();
     assert.equal(await page.locator('.rain-glass').innerHTML(), glass);
     assert.equal(await page.locator('html').getAttribute('data-weather'), 'rain');
@@ -35,26 +36,29 @@ const root = path.resolve(__dirname, '../dist');
     await page.screenshot({path:path.resolve(__dirname,'../test-results/rain-preview.png')});
     await page.getByRole('link',{name:'Blog',exact:true}).click();
     await page.locator('.post-card').first().waitFor();
-    assert.equal(await page.locator('.post-card').count(), 8);
+    const posts = fs.readdirSync(path.resolve(__dirname, '../_posts')).filter(name => /^\d{4}-.*\.md$/.test(name));
+    assert.equal(await page.locator('.post-card').count(), posts.length);
+    const latestTitle = await page.locator('.post-card-title').first().innerText();
     const links = await page.locator('.post-card').evaluateAll(nodes => nodes.map(n => n.getAttribute('href')));
     for (const link of links) {
       await page.goto('http://site.test' + link);
       await page.locator('.post-header h1').waitFor();
       assert.equal(await page.locator('dialog').evaluate(n => n.open), true);
-      assert.equal(await page.locator('.post-spotify-player').count(), 1);
+      const source = fs.readFileSync(path.join(root, link, 'index.html'), 'utf8');
+      assert.equal(await page.locator('.post-spotify-player').count(), source.includes('class="post-spotify-player"') ? 1 : 0);
       assert.ok(!(await page.locator('.post-content').innerText()).includes('![['));
     }
     for (const url of ['/about.html','/work.html','/guestbook.html','/kr/','/kr.html','/studio.html','/blog.html']) {
       await page.goto('http://site.test' + url);
       if (url === '/blog.html') { await page.waitForURL('**/blog/'); await page.locator('.post-card').first().waitFor(); }
       assert.ok(!(await page.content()).includes('{%'));
-      if (url.startsWith('/kr')) assert.equal(await page.locator('.latest-post-card h2').innerText(),'Loss');
+      if (url.startsWith('/kr')) assert.equal(await page.locator('.latest-post-card h2').innerText(), latestTitle);
     }
     await page.goto('http://site.test/');
     await page.emulateMedia({reducedMotion:'reduce'});
     assert.notEqual(await page.locator('.raindrop').first().evaluate(n => getComputedStyle(n).animationName),'none');
     assert.notEqual(await page.locator('.glass-droplet').first().evaluate(n => getComputedStyle(n).animationName),'none');
     assert.deepEqual(errors, []);
-    console.log('PASS: production routes, eight Markdown posts, Spotify embeds, Korean latest post, rectangular rain, persistent weather, unchanged glass markup and animation with reduced motion enabled.');
+    console.log('PASS: production routes, Markdown posts, optional Spotify embeds, Korean latest post, rectangular rain, persistent weather, unchanged glass markup and animation with reduced motion enabled.');
   } finally { await browser.close(); }
 })().catch(e => {console.error(e);process.exitCode=1;});

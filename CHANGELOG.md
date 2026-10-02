@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-02 — Frutiger layout
+
+- Made the Y2K/Frutiger sky repeat a smooth four-minute light-blue/night cycle instead of darkening indefinitely, keeping sunlight present throughout.
+
+- Fixed music/webring overlaps with a shared vertical stack and themed the home Spotify dock, including a blue glass treatment for Frutiger.
+
+- Restyled Frutiger page overlays as blurred blue liquid glass with luminous beveled edges, diagonal reflections, and a subtle perspective entrance.
+
+- Added persistent Default, Rain, Light/Dark, and Frutiger buttons to the shared site shell; the theme button is hidden while Frutiger is active.
+- Integrated the water-and-cloud background without buildings or fish, retaining ripples, caustics, and cloud-covered sunlight.
+- Added the supplied Neuropol X font, glossy colored navigation buttons, and matching glass page panels in Frutiger mode.
+- Load the water renderer only when selected; pause it while hidden or inactive and honor reduced motion.
+- Added layout/browser regression coverage and accepted blank optional image/Spotify metadata in posts.
+
 ## 2026-09-29 — Twilight 2
 
 - Added `/twilight2/`, a separate seaside layout based on the supplied reference: open blue-hour sky, coastal lights, railing, and a reflective pedestrian crossing, without people, a streetlamp, or clouds.

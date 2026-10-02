@@ -57,3 +57,17 @@ Astro generates every page and Markdown post. `src/content.config.ts` validates 
 Use Node 22.19+, `npm ci`, and `npm run dev`. `npm run build` creates `dist`; `npm run preview` serves it. `npm test` builds first and exercises overlay and caption interactions against the generated shell. `tests/site.cjs` verifies real generated routes and rain behavior. Set `PLAYWRIGHT_CHANNEL=chrome` to use installed Chrome.
 
 The GitHub Actions workflow builds and publishes `dist` on pushes to `main`. Select GitHub Actions in repository Settings → Pages before deployment. No Jekyll build is required.
+
+## Frutiger layout (2026-10-02)
+
+The Y2K/Frutiger sky smoothly cycles from light blue to near-black over two minutes and back over two minutes, repeating without a color reset. Its gradient stays fixed while clouds drift. The sun and lens flare retain their brightness throughout the cycle, with their existing cloud occlusion.
+
+The shared English site has separate Default, Rain, Light/Dark, and Frutiger buttons. Light/Dark is hidden in Frutiger; otherwise it changes the color palette independently of Rain. Default restores the regular layout and preferred color theme (or the system palette when no preference is saved). The choice is stored in `imasepan-appearance`; existing theme/weather preferences migrate on first use. `?layout=frutiger` previews the mode, and choosing another option clears the preview parameter. Overlays retain the choice and the same background canvas. The standalone Korean page keeps its existing controls.
+
+Frutiger uses the building-free Y2K water scene, including cloud occlusion of the sun and flare, ripples, and caustics. `public/frutiger.js` lazily loads `public/frutiger/water.js` and `water.frag`. Rendering pauses in other layouts, hidden tabs, and under reduced motion (which shows a still frame). `public/frutiger.css` scopes the supplied Neuropol X font and glossy navigation buttons to this mode, leaving reading text in DM Sans. The original standalone water preview remains in `y2k/dist`; keep its `sky.frag` synchronized with `public/frutiger/water.frag`.
+
+`tests/appearance.cjs` covers mode changes, persistence, automatic theme changes, font loading, glossy controls, overlay navigation, canvas reuse/pause, reduced motion, and mobile bounds. Optional blank `image` and `spotify` post metadata are normalized to missing values during collection validation.
+
+Frutiger page overlays use translucent blue gradients, a 26px backdrop blur, saturation, inset edge highlights, and diagonal reflections. The outside veil has only a slight blur so the pane itself supplies the frosted effect. Its perspective entrance and content movement are disabled for reduced motion; other modes retain their existing page styling. Browsers without backdrop filtering receive an opaque readable fallback.
+
+The home navigation, Spotify dock, and webring share a vertical layout with 24px gaps to prevent collisions at short viewport heights. The home embed uses Spotify’s neutral dark base plus layout-specific CSS color filters; Frutiger adds a blue tint and a glass frame. The filter also tints artwork and controls. Page navigation preserves the mounted player.

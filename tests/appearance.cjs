@@ -1,0 +1,102 @@
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+const root = path.resolve(__dirname, '../dist');
+(async () => {
+  const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || undefined });
+  try {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, colorScheme: 'light' });
+    const errors = [];
+    const requests = [];
+    await context.route('**/*', route => {
+      const url = new URL(route.request().url());
+      if (url.hostname !== 'appearance.test') return route.fulfill({ body: '' });
+      requests.push(url.pathname);
+      let file = path.join(root, decodeURIComponent(url.pathname));
+      if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
+      if (!fs.existsSync(file)) return route.fulfill({ status: 404, body: '' });
+      return route.fulfill({ path: file });
+    });
+    const page = await context.newPage();
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto('http://appearance.test/');
+    const currentMode = () => page.locator('html').getAttribute('data-appearance');
+    const mode = async value => {
+      const button = value === 'light' || value === 'dark'
+        ? page.getByRole('button', { name: `Switch to ${value} mode`, exact: true })
+        : page.locator(`[data-appearance-mode="${value}"]`);
+      await button.click();
+      await page.waitForFunction(() => !document.querySelector('[data-appearance-mode]').disabled);
+    };
+    assert.equal(await page.getByRole('combobox').count(), 0);
+    assert.equal(await currentMode(), 'default');
+    assert.ok(!requests.some(p => p.startsWith('/frutiger/')));
+    await mode('dark');
+    assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+    await mode('light');
+    assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+    await mode('rain');
+    assert.equal(await page.locator('html').getAttribute('data-weather'), 'rain');
+    await mode('dark');
+    assert.equal(await currentMode(), 'rain');
+    assert.equal(await page.locator('html').getAttribute('data-weather'), 'rain');
+    await page.reload();
+    assert.equal(await currentMode(), 'rain');
+    assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+    await mode('frutiger');
+    await page.waitForFunction(() => document.querySelector('.frutiger-water')?.dataset.ready === 'true');
+    await page.evaluate(() => document.fonts.ready);
+    assert.equal(await page.locator('.theme-toggle').isVisible(), false);
+    assert.equal(await page.getByRole('button', { name: 'Frutiger', exact: true }).getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('html').getAttribute('data-weather'), 'clear');
+    assert.ok(await page.evaluate(() => document.fonts.check('24px "Neuropol X"')));
+    assert.match(await page.locator('.home-links a').first().evaluate(n => getComputedStyle(n).fontFamily), /Neuropol X/);
+    assert.match(await page.locator('.home-links a').first().evaluate(n => getComputedStyle(n).backgroundImage), /gradient/);
+    await page.evaluate(() => { window.savedWater = document.querySelector('.frutiger-water'); });
+    await page.screenshot({ path: path.resolve(__dirname, '../test-results/frutiger-desktop.png') });
+    await page.getByRole('link', { name: 'Blog', exact: true }).click();
+    await page.locator('.journal-page h1').waitFor();
+    assert.match(await page.locator('.journal-page h1').evaluate(n => getComputedStyle(n).fontFamily), /Neuropol X/);
+    await page.locator('.post-card').first().click();
+    await page.locator('.post-header h1').waitFor();
+    assert.match(await page.locator('.post-header h1').evaluate(n => getComputedStyle(n).fontFamily), /Neuropol X/);
+    await page.keyboard.press('Escape');
+    assert.ok(await page.evaluate(() => window.savedWater === document.querySelector('.frutiger-water')));
+    await page.reload();
+    assert.equal(await currentMode(), 'frutiger');
+    await page.waitForFunction(() => document.querySelector('.frutiger-water')?.dataset.ready === 'true');
+    await mode('default');
+    assert.equal(await page.locator('.theme-toggle').isVisible(), true);
+    assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+    await page.evaluate(() => localStorage.removeItem('theme'));
+    assert.equal(await page.locator('.frutiger-water').getAttribute('data-active'), 'false');
+    assert.equal(await page.locator('.frutiger-water').isVisible(), false);
+    assert.match(await page.locator('.home-links a').first().evaluate(n => getComputedStyle(n).fontFamily), /Belyga/);
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+    await page.waitForFunction(() => !document.querySelector('[data-appearance-mode]').disabled);
+    await mode('frutiger');
+    assert.equal(await page.locator('.frutiger-water').count(), 1);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForTimeout(100);
+    const frozen = await page.locator('.frutiger-water').getAttribute('data-time');
+    await page.waitForTimeout(180);
+    assert.equal(await page.locator('.frutiger-water').getAttribute('data-time'), frozen);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    assert.ok(await page.evaluate(() => document.querySelector('.home-webring').getBoundingClientRect().top - document.querySelector('.music-dock').getBoundingClientRect().bottom >= 24), 'Music and webring must keep a visible gap');
+    assert.ok(new URL(await page.locator('.music-dock iframe').getAttribute('src')).searchParams.get('theme') === '0');
+    for (const box of await page.locator('.home-links a, .home-webring a').evaluateAll(nodes => nodes.map(n => { const r = n.getBoundingClientRect(); return {x:r.x,right:r.right,bottom:r.bottom}; }))) {
+      assert.ok(box.x >= 0 && box.right <= 390 && box.bottom <= 844);
+    }
+    await page.screenshot({ path: path.resolve(__dirname, '../test-results/frutiger-mobile.png') });
+    await page.getByRole('link', { name: 'About', exact: true }).click();
+    await page.locator('.about-photo').waitFor();
+    await page.screenshot({ path: path.resolve(__dirname, '../test-results/frutiger-about-mobile.png') });
+    assert.deepEqual(errors, []);
+    assert.ok(!requests.some(p => /building|fish/.test(p)));
+    console.log('PASS: layout buttons, independent rainy light/dark themes, hidden Frutiger theme control, persistence, system theme, Neuropol font, glossy links, overlay navigation, water lifecycle, reduced motion, mobile layout.');
+  } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exitCode = 1; });
