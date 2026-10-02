@@ -3,3 +3,7 @@ dist/
 .astro/
 .DS_Store
 test-results/
+
+# Y2K stores its standalone site files in dist.
+!y2k/dist/
+!y2k/dist/**
