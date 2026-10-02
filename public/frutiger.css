@@ -11,7 +11,7 @@
 .home-header .appearance-button[aria-pressed='true']::before { background: currentColor; }
 .home-header .appearance-button:hover { text-decoration: underline; text-underline-offset: 4px; }
 .home-header .appearance-button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.home-header .theme-toggle[hidden] { display: none; }
+.home-header :is(.theme-toggle, .rain-toggle)[hidden] { display: none; }
 @media (max-width: 600px) { .home-header { gap: 7px; } .home-header .appearance-button, .home-header .rain-toggle { padding-inline: 7px; } }
 .frutiger-water { display: none; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 :root[data-appearance='frutiger'] {
@@ -29,6 +29,11 @@
 :root[data-appearance='frutiger'] .home-menu { left: 12%; top: auto; bottom: max(30px, 6vh); transform: none; width: min(250px, 70vw); }
 :root[data-appearance='frutiger'] .home-links { gap: 10px; }
 :root[data-appearance='frutiger'] .guestbook-menu-item { width: 100%; }
+/* Frutiger alone keeps navigation, music and the webring in one stack. */
+:root[data-appearance='frutiger'] .home-menu { display: flex; flex-direction: column; gap: 24px; }
+:root[data-appearance='frutiger'] .home-menu > .music-dock { position: relative; inset: auto; flex: none; }
+:root[data-appearance='frutiger'] .home-menu > .home-webring { position: relative; inset: auto; flex: none; width: max-content; max-width: 100%; padding-bottom: 0; }
+@media (max-height: 640px) { :root[data-appearance='frutiger'] .home-menu { padding-bottom: 30px; } }
 /* Glassy, rounded controls: a bright upper reflection over a deep colored center. */
 :root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page) {
   --button-hue: 207;

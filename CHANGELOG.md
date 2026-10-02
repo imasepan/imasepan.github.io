@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-02 — Restore default menu
+
+- Use the selected Spotify album only in Frutiger mode and restore the original playlist when leaving it.
+
+- Restored the pre-Frutiger default menu placement, Spotify artwork palette and unframed player below Guestbook, with the webring anchored to the bottom of the screen.
+- Kept Frutiger’s stacked menu and glass player. Default mode shows Rain, Light/Dark, and Frutiger; Frutiger mode shows only its own on/off button.
+
 ## 2026-10-02 — Frutiger layout
 
 - Made the Y2K/Frutiger sky repeat a smooth four-minute light-blue/night cycle instead of darkening indefinitely, keeping sunlight present throughout.

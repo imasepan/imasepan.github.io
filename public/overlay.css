@@ -467,12 +467,3 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
   .overlay-content .journal-page .post-card:first-child { grid-template-columns:1fr; gap:20px; }
   .overlay-content .journal-page .post-card:first-child .post-card-image { grid-column:1; grid-row:2; height:200px; }
 }
-
-/* Keep navigation, music and the webring in one flow, including short screens. */
-.home-menu { display: flex; flex-direction: column; gap: 24px; }
-.home-menu > .music-dock { position: relative; inset: auto; flex: none; width: min(380px, 100%); max-width: 100%; padding: 4px; border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--paper) 80%, transparent); }
-.home-menu > .home-webring { position: relative; inset: auto; flex: none; width: max-content; max-width: 100%; padding-bottom: 0; }
-.music-dock .spotify-player { filter: sepia(.45) saturate(.75) brightness(1.15); }
-:root[data-theme='dark'] .music-dock .spotify-player { filter: none; }
-:root[data-weather='rain'] .music-dock .spotify-player { filter: sepia(.4) saturate(.7) hue-rotate(165deg) brightness(1.2); }
-@media (max-height: 640px) { .home-menu { padding-bottom: 30px; } }

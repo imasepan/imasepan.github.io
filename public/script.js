@@ -31,12 +31,20 @@ const readSavedTheme = () => {
   }
 };
 
+const defaultHomeSpotifySource = document.querySelector('.music-dock .spotify-player')?.getAttribute('src');
+const frutigerSpotifySource = 'https://open.spotify.com/embed/album/07NVjt98kIbx7SKynHNrFr?utm_source=generator';
+
 const syncSpotifyTheme = (theme = document.documentElement.dataset.theme) => {
   document.querySelectorAll('iframe.spotify-player, iframe.post-spotify-player').forEach((player) => {
-    const source = new URL(player.src);
-    // Use a neutral base for the themed home dock, independent of playlist artwork.
-    // Post embeds keep Spotify’s artwork palette except in dark mode.
-    if (theme === 'dark' || player.closest('.music-dock')) source.searchParams.set('theme', '0');
+    const homeDock = player.closest('.music-dock');
+    const isFrutiger = document.documentElement.dataset.appearance === 'frutiger';
+    const source = new URL(homeDock ? (isFrutiger ? frutigerSpotifySource : defaultHomeSpotifySource) : player.src);
+    if (homeDock) {
+      player.title = isFrutiger ? 'Spotify album' : 'Spotify playlist';
+      homeDock.setAttribute('aria-label', isFrutiger ? 'Featured Spotify album' : 'Featured Spotify playlist');
+    }
+    // Preserve Spotify’s artwork palette except in dark mode or the Frutiger dock.
+    if (theme === 'dark' || (isFrutiger && homeDock)) source.searchParams.set('theme', '0');
     else source.searchParams.delete('theme');
     if (player.src !== source.href) player.src = source.href;
   });
@@ -57,9 +65,19 @@ const applyTheme = (theme) => {
 const applyAppearance = (mode) => {
   const next = appearanceModes.includes(mode) ? mode : 'default';
   document.documentElement.dataset.appearance = next;
+  const homeMenu = document.querySelector('.home-menu');
+  const musicDock = document.querySelector('.music-dock');
+  const webring = document.querySelector('.home-webring');
+  const musicParent = next === 'frutiger' ? homeMenu : document.querySelector('.guestbook-menu-item');
+  const ringParent = next === 'frutiger' ? homeMenu : document.querySelector('.home-screen');
+  // Move the existing elements so the default layout retains its original anchors.
+  if (musicDock && musicParent && musicDock.parentElement !== musicParent) musicParent.append(musicDock);
+  if (webring && ringParent && webring.parentElement !== ringParent) ringParent.append(webring);
   document.documentElement.dataset.weather = next === 'rain' ? 'rain' : 'clear';
   applyTheme(next === 'dark' ? 'dark' : next === 'light' || next === 'frutiger' ? 'light' : readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
   if (themeToggle) themeToggle.hidden = next === 'frutiger';
+  const rainButton = document.querySelector('.rain-toggle');
+  if (rainButton) rainButton.hidden = next === 'frutiger';
   appearanceButtons.forEach(button => {
     const selected = button.dataset.appearanceMode === (next === 'light' || next === 'dark' ? 'default' : next);
     button.setAttribute('aria-pressed', String(selected));
