@@ -1,0 +1,211 @@
+---
+// Seeded scenery is rendered once; layered Perlin noise animates the water.
+const random = (i: number, salt = 1) => {
+  const n = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453;
+  return n - Math.floor(n);
+};
+const lamps = Array.from({ length: 56 }, (_, i) => {
+  const x = 2 + random(i, 2) * 77;
+  return { x, y: 50.2 + random(i, 4) * 1.7, strength: .45 + random(i, 5) * .55,
+    width: .25 + random(i, 6) * .8, length: 37 - x * .22 + random(i, 7) * 7 };
+});
+const buildings = Array.from({ length: 30 }, (_, i) => ({
+  x: 41 + i * .98, width: .8 + random(i, 9) * 1.6,
+  height: 1.1 + random(i, 10) * 4.4,
+  windows: Array.from({ length: 12 }, (_, j) => random(i * 12 + j, 11) > .47),
+}));
+const canopy = Array.from({ length: 200 }, (_, i) => {
+  const x = 345 + i * 5.6;
+  const y = x < 470 ? 453 - (x - 345) * .32 : x < 1000 ? 412 - Math.sin((x - 470) / 530 * Math.PI) * 28 : 407 + (x - 1000) * .22;
+  return { x, y: y + (random(i, 12) - .5) * 12, r: 7 + random(i, 13) * 10 };
+});
+const canopyBase = `M325 545 L${canopy.map(c => `${c.x} ${c.y}`).join(' L')} L1510 548Z`;
+const ripples = Array.from({ length: 260 }, (_, i) => {
+  const depth = random(i, 14) ** 1.6;
+  return { x: random(i, 15) * 100, y: 53 + depth * 39, width: .2 + depth * random(i, 16) * 11, opacity: .03 + random(i, 17) * .09 };
+});
+const reflectionShape = (i: number) => {
+  const left = Array.from({ length: 48 }, (_, j) => `${12 + random(i * 48 + j, 22) * 28}% ${j / 47 * 100}%`);
+  const right = Array.from({ length: 48 }, (_, j) => `${60 + random(i * 48 + j, 23) * 40}% ${(47 - j) / 47 * 100}%`);
+  return `polygon(${[...left, ...right].join(',')})`;
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A twilight beach in CSS: island silhouettes, amber lights on wet sand, and slowly breaking waves." />
+    <title>imasepan — twilight3</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  </head>
+  <body>
+    <main aria-label="Twilight 3 — amber harbor lights reflected on a blue-hour beach">
+      <div class="landscape" aria-hidden="true">
+        <div class="sky"></div>
+        <div class="cloud cloud-one"></div><div class="cloud cloud-two"></div>
+        <div class="sea"></div>
+        <div class="sand"></div>
+        <div class="wet-sand"></div>
+        <svg class="island" viewBox="0 0 1600 1067" preserveAspectRatio="none" focusable="false">
+          <defs>
+            <filter id="reflection-warp" x="-30%" y="-5%" width="160%" height="110%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency=".015 .28" numOctaves="2" seed="12" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+          <path fill="#0c1012" d="M325 545 335 479Q325 450 370 439T467 412Q540 390 614 403T763 390Q798 374 839 393T981 384Q1035 376 1080 410T1163 453Q1200 442 1237 456T1301 461Q1390 452 1477 527L1510 548Z" />
+          <path fill="#0c1012" d={canopyBase} />
+          <g fill="#0c1012">{canopy.map(c => <ellipse cx={c.x} cy={c.y} rx={c.r} ry={c.r * .65} />)}</g>
+          <path fill="#101418" d="M0 539 26 531 45 538 72 523 103 529 125 526 151 537 178 529 207 533 231 524 264 532 289 529 320 540H1600V555H0Z" />
+        </svg>
+        <div class="tower">
+          <div class="antenna"></div><div class="tower-cap"></div>
+          <div class="observation"></div><div class="tower-stem"></div>
+        </div>
+        <div class="town">
+          {buildings.map(b => <div class="building" style={`left:${b.x}%;width:${b.width}%;height:${b.height}%;`}>
+            {b.windows.map(lit => <i class:list={{ lit }}></i>)}
+          </div>)}
+          <div class="shop shop-one"></div><div class="shop shop-two"></div>
+        </div>
+        <div class="pier"><i></i></div>
+        <div class="lamps">
+          {lamps.map(l => <i class="lamp" style={`left:${l.x}%;top:${l.y}%;opacity:${l.strength};`}></i>)}
+          <div class="streetlight"><i></i></div>
+          <i class="white-light"></i>
+        </div>
+        <div class="reflections ocean-reflections">
+          {lamps.map((l, i) => <i class="reflection" style={`--x:${l.x}%;--length:${l.length}%;--width:${l.width}%;--strength:${l.strength};--delay:${-i * .73}s;--shape:${reflectionShape(i)};`}></i>)}
+        </div>
+        <div class="reflections beach-reflections">
+          {lamps.map((l, i) => <i class="reflection" style={`--x:${l.x}%;--length:${l.length}%;--width:${l.width}%;--strength:${l.strength};--delay:${-i * .73}s;--shape:${reflectionShape(i)};`}></i>)}
+          <i class="reflection silver" style={`--x:76%;--length:20%;--width:.8%;--strength:.8;--delay:-3s;--shape:${reflectionShape(60)};`}></i>
+          <i class="reflection" style={`--x:77.3%;--length:21%;--width:.75%;--strength:1;--delay:-4s;--shape:${reflectionShape(61)};`}></i>
+          <i class="reflection cyan" style={`--x:63.2%;--length:33%;--width:.55%;--strength:.35;--delay:-2s;--shape:${reflectionShape(62)};`}></i>
+        </div>
+        <div class="surface-texture"></div>
+        <div class="ripples">{ripples.map(r => <i style={`left:${r.x}%;top:${r.y}%;width:${r.width}%;opacity:${r.opacity};`}></i>)}</div>
+        <svg class="surf" viewBox="0 0 1600 1067" preserveAspectRatio="none" focusable="false">
+          <defs>
+            <linearGradient id="foam" x1="0" y1="0" x2="1" y2="0">
+              <stop stop-color="#82919e" stop-opacity=".18" /><stop offset=".5" stop-color="#a6b0b7" stop-opacity=".45" /><stop offset="1" stop-color="#c2b5a2" stop-opacity=".2" />
+            </linearGradient>
+            <filter id="foam-soft"><feGaussianBlur stdDeviation=".7" /></filter>
+            {[0, 1, 2, 3, 4, 5].map(i => <path class="wave-front" id={`wave-line-${i}`} d="M-160 796 C80 816 228 803 416 768 S716 730 915 676 S1258 598 1700 561" />)}
+          </defs>
+          <g class="distant-waves" fill="none" stroke="#8e9aa6">
+            <path d="M-40 578Q80 571 179 580T411 579M560 568Q729 574 909 567T1300 565" />
+            <path d="M-60 607Q76 596 223 604T557 601M630 590Q785 586 940 590" />
+            <path d="M-90 642Q58 627 224 638T554 625M877 604 1040 598" />
+          </g>
+          {[0, 1, 2, 3, 4, 5].map(i => <g class="breaker" style={`--delay:${-i * 3.8}s;`}>
+            <use class="wave-shadow" href={`#wave-line-${i}`} />
+            <use class="wave-body" href={`#wave-line-${i}`} />
+            <use class="wave-foam" href={`#wave-line-${i}`} />
+          </g>)}
+          <path class="wash-edge" d="M-90 1006 C140 984 338 936 529 880 S857 810 1060 732 S1430 629 1680 609" />
+        </svg>
+        <div class="foreground"></div>
+        <div class="grain"></div><div class="vignette"></div>
+      </div>
+      <header><a href="/" aria-label="Back to home">← home</a><span>twilight / 03</span></header>
+      <footer><a href="/twilight2/">twilight / 02 ↗</a><button type="button" aria-pressed="false">Pause motion</button></footer>
+    </main>
+    <script>
+      import { mountTwilightWater } from '../scripts/twilight-water';
+      const landscape = document.querySelector<HTMLElement>('.landscape');
+      const water = landscape ? mountTwilightWater(landscape) : null;
+      const syncWater = () => water?.setPaused(document.hidden || document.documentElement.classList.contains('paused'));
+      const button = document.querySelector<HTMLButtonElement>('button');
+      const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+      function setPaused(paused: boolean) {
+        document.documentElement.classList.toggle('paused', paused);
+        document.documentElement.classList.add('motion-ready');
+        button?.setAttribute('aria-pressed', String(paused));
+        if (button) button.textContent = paused ? 'Resume motion' : 'Pause motion';
+        syncWater();
+      }
+      setPaused(preference.matches);
+      preference.addEventListener('change', event => setPaused(event.matches));
+      button?.addEventListener('click', () => setPaused(button.getAttribute('aria-pressed') !== 'true'));
+      const syncVisibility = () => {
+        document.documentElement.classList.toggle('hidden', document.hidden);
+        syncWater();
+      };
+      window.addEventListener('pagehide', () => water?.setPaused(true));
+      window.addEventListener('pageshow', syncWater);
+      document.addEventListener('visibilitychange', syncVisibility);
+      syncVisibility();
+    </script>
+  </body>
+</html>
+<style>
+  :global(html), :global(body) { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #10141b; }
+  :global(astro-dev-toolbar) { display: none; }
+  main { position: fixed; inset: 0; isolation: isolate; color: #bdc3cc; font: 10px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
+  .landscape { position: absolute; inset: 0; overflow: hidden; background: #111b29; }
+  .sky { position: absolute; inset: 0 0 46%; background: radial-gradient(ellipse at 106% 100%, #b69a7c 0%, #8c8580 24%, #63707c88 53%, transparent 78%), linear-gradient(115deg, #263f5b, #50647a 57%, #747d87); }
+  .cloud { position: absolute; right: -4%; height: 1.6%; background: #555d69; filter: blur(3px); opacity: .42; clip-path: polygon(0 60%, 17% 45%, 24% 52%, 34% 15%, 62% 28%, 80% 0, 100% 30%, 100% 83%, 40% 80%); }
+  .cloud-one { top: 40%; width: 19%; }.cloud-two { top: 43%; width: 15%; opacity: .25; }
+  .sea { position: absolute; inset: 52% 0 0; background: linear-gradient(174deg, #26323e 0%, #1c2939 22%, #34404b 45%, #283442 65%, #151c27 90%); }
+  .sand { position: absolute; inset: 0; background: linear-gradient(160deg, #42484a 45%, #313638 63%, #131619 81%, #090a0c); clip-path: polygon(100% 53%, 100% 100%, 0 100%, 0 89%, 15% 85%, 33% 79%, 50% 73%, 65% 67%, 79% 61%, 92% 56%); }
+  .wet-sand { position: absolute; inset: 0; background: linear-gradient(173deg, #99938677 48%, #676c6a88 59%, #333c43 73%, #20242a 88%, #121419); clip-path: polygon(100% 53%, 100% 71%, 85% 74%, 70% 81%, 51% 86%, 34% 92%, 15% 97%, 0 99%, 0 84%, 17% 81%, 35% 76%, 53% 70%, 70% 63%, 86% 57%); }
+  .island, .surf { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .tower { position: absolute; left: 62.1%; top: 30.1%; width: 2.1%; height: 5.8%; }
+  .antenna { position: absolute; bottom: 88%; left: 50%; height: 34%; width: 1px; background: #788a93; opacity: .6; }
+  .tower-cap { position: absolute; top: 0; left: 6%; width: 88%; height: 26%; background: linear-gradient(#222c31, #746452 40%, #101c25 48%); clip-path: polygon(40% 0, 64% 0, 67% 28%, 92% 52%, 100% 100%, 0 100%, 8% 53%, 35% 27%); }
+  .observation { position: absolute; top: 25%; width: 100%; height: 32%; background: repeating-linear-gradient(90deg, #102c35 0 15%, #8cd4dc 18% 20%, #2a6b80 24% 34%); border-top: 1px solid #658c98; border-bottom: 1px solid #b6aebc; box-shadow: 0 0 7px #65d5ff44; clip-path: polygon(0 0, 100% 0, 88% 100%, 13% 100%); }
+  .tower-stem { position: absolute; top: 59%; left: 19%; width: 62%; height: 42%; background: repeating-linear-gradient(75deg, #243844 0 23%, #76b4c8 25% 28%, #1d323d 31% 48%); border-top: 1px solid #bac1c4; }
+  .town, .lamps { position: absolute; inset: 0; }
+  .building { position: absolute; bottom: 48.3%; background: linear-gradient(90deg, #242124, #302a27 65%, #1a1d20); border-top: 2px solid #1b1c1e; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15% 16%; padding: .25%; box-sizing: border-box; }
+  .building i { background: #141b20; }.building .lit { background: #cf8138; box-shadow: 0 0 3px #fc9e3488; opacity: .8; }
+  .shop { position: absolute; top: 49%; height: 2%; background: repeating-linear-gradient(90deg, #e5994e 0 7%, #38271d 8% 12%, #fba143 14% 18%); border-top: 4px solid #694129; box-shadow: 0 3px 8px #ff770044; }
+  .shop-one { left: 49%; width: 8%; }.shop-two { left: 59%; width: 3%; }
+  .pier { position: absolute; left: 49%; right: -1%; top: 51.9%; height: 2.7%; border-top: 2px solid #545554; background: repeating-linear-gradient(90deg, transparent 0 3.4%, #62636388 3.5% 3.7%, transparent 3.85% 4.7%); transform: rotate(-.8deg); opacity: .65; }
+  .pier i { display: block; height: 1px; margin-top: 5px; background: #51514e; }
+  .lamp { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff0ab; box-shadow: 0 0 3px 1px #ffd063, 0 0 8px 3px #ff7700aa, 0 0 19px 5px #ff590044; }
+  .lamp::after { content: ''; position: absolute; left: 1px; top: -5px; width: 1px; height: 13px; background: linear-gradient(transparent, #ffc063bb, transparent); }
+  .streetlight { position: absolute; left: 77.3%; top: 45.8%; width: .55%; height: 6.8%; border-right: 1px solid #636164; border-top: 1px solid #5b5654; border-radius: 0 80% 0 0; }
+  .streetlight i { position: absolute; top: -2px; width: 4px; height: 4px; background: #ffe4ad; box-shadow: 0 0 5px 2px #ff9a30, 0 0 16px 5px #fd630055; }
+  .white-light { position: absolute; left: 76%; top: 51.9%; width: 4px; height: 2px; background: #fff9db; box-shadow: 0 0 6px 2px #ffeac599; }
+  .reflections { position: absolute; inset: 0; filter: url('#reflection-warp'); }
+  .reflection { position: absolute; left: var(--x); top: 52.1%; width: var(--width); height: var(--length); transform-origin: top center; background: linear-gradient(90deg, #f2760600, #ec640e 20%, #ffb13d 48%, #ffd472 53%, #f5790d 70%, #e85f0600); clip-path: var(--shape); mask-image: repeating-linear-gradient(0deg, #000 0 1px, #0005 2px, #000c 3px, transparent 4px, #000 5px 7px), linear-gradient(transparent, #000 9% 73%, transparent); mask-composite: intersect; opacity: var(--strength); animation: reflected-light 5.7s ease-in-out var(--delay) infinite alternate; }
+  .ocean-reflections { opacity: .13; mask-image: linear-gradient(#000 57%, transparent 81%); }
+  .beach-reflections { filter: url('#reflection-warp') saturate(1.65); clip-path: polygon(100% 54%, 100% 73%, 85% 76%, 70% 82%, 51% 88%, 34% 94%, 15% 98%, 0 99%, 0 86%, 17% 82%, 35% 77%, 53% 71%, 70% 64%, 86% 58%); }
+  .beach-reflections .reflection { width: calc(var(--width) * 1.9); background-color: #ed731922; }
+  .reflection.silver { background: linear-gradient(90deg, transparent, #dbd3b4 25%, #fff5d4 50%, #d4d3c0 70%, transparent); }
+  .reflection.cyan { background: linear-gradient(90deg, transparent, #5fbbca, transparent); }
+  .surface-texture { position: absolute; inset: 53% -10% 0; background: repeating-linear-gradient(177deg, transparent 0 4px, #9fa9af0b 5px, #090f1b25 7px, transparent 9px 14px); mask-image: linear-gradient(transparent, #0008 30%, #000 65%, transparent); pointer-events: none; }
+  .ripples { position: absolute; inset: 0; clip-path: polygon(0 52%, 100% 52%, 100% 67%, 0 98%); animation: ripple-drift 9s ease-in-out infinite alternate; }
+  .ripples i { position: absolute; height: 1px; border-radius: 50%; background: #a1aab6; }
+  .surf { overflow: hidden; clip-path: polygon(0 52.4%, 100% 52.4%, 100% 100%, 0 100%); }
+  .distant-waves { stroke-width: 1.5; opacity: .16; animation: distant-swell 8s ease-in-out infinite alternate; }
+  .breaker { fill: none; animation: shore-break 15.2s linear var(--delay) infinite; }
+  .noise-ready .breaker, .noise-ready .reflection, .noise-ready .ripples, .noise-ready .wash-edge { animation: none; }
+  .noise-ready .wave-foam { stroke-width: calc(.5px + var(--depth) * 2px); stroke-dasharray: 19 2 33 1 47 3; }
+  .noise-ready .wave-body { stroke-width: calc(2px + var(--depth) * 10px); }
+  .noise-ready .surface-texture { opacity: .45; }
+  .wave-shadow { stroke: #080f1b; stroke-width: 16; opacity: .25; transform: translateY(-6px); filter: blur(4px); }
+  .wave-body { stroke: #8f9ba6; stroke-width: 9; opacity: .12; filter: blur(3px); }
+  .wave-foam { stroke: url('#foam'); stroke-width: 2; filter: url('#foam-soft'); }
+  .wash-edge { fill: none; stroke: #a4a6a0; stroke-width: 2; opacity: .12; filter: blur(1px); animation: wash 15.2s ease-in-out infinite; }
+  .foreground { position: absolute; inset: 0; background: linear-gradient(170deg, #16181a00 69%, #0d0f12 96%); clip-path: polygon(0 99%, 19% 97%, 36% 92%, 55% 88%, 72% 82%, 87% 78%, 100% 77%, 100% 100%, 0 100%); }
+  .grain { position: absolute; inset: 0; background: url('/assets/noise.png') repeat; opacity: .3; mix-blend-mode: soft-light; pointer-events: none; }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 55% 40%, transparent 35%, #0409134d 100%); pointer-events: none; }
+  header, footer { position: absolute; left: 30px; right: 30px; display: flex; justify-content: space-between; align-items: center; gap: 20px; letter-spacing: .09em; }
+  header { top: 27px; } footer { bottom: max(20px, env(safe-area-inset-bottom)); }
+  header span { opacity: .6; font-size: 9px; }
+  a, button { color: inherit; text-decoration: none; opacity: .75; transition: opacity .2s; text-shadow: 0 1px 5px #060a10; }
+  button { border: 0; background: none; padding: 10px 0 10px 10px; font: inherit; letter-spacing: inherit; cursor: pointer; }
+  a:hover, button:hover { opacity: 1; } a:focus-visible, button:focus-visible { outline: 1px solid #eed2aa; outline-offset: 6px; opacity: 1; }
+  @keyframes reflected-light { from { transform: translateX(-1px) skewX(-1.4deg) scaleX(.92); opacity: calc(var(--strength) * .7); } to { transform: translateX(2px) skewX(.7deg) scaleX(1.12); opacity: var(--strength); } }
+  @keyframes ripple-drift { to { transform: translate(5px, 2px); } }
+  @keyframes distant-swell { to { transform: translateY(3px); opacity: .26; } }
+  @keyframes shore-break { 0% { transform: translateY(-72px) scaleY(.97); opacity: 0; } 15% { opacity: .4; } 48% { opacity: .85; } 78% { opacity: .55; } 100% { transform: translateY(139px) scaleY(1.02); opacity: 0; } }
+  @keyframes wash { 0%, 100% { transform: translateY(-7px); opacity: .06; } 55% { transform: translateY(8px); opacity: .19; } }
+  :global(.paused) .landscape *, :global(.hidden) .landscape * { animation-play-state: paused !important; }
+  @media (prefers-reduced-motion: reduce) { :global(html:not(.motion-ready)) .landscape * { animation-play-state: paused !important; } }
+  @media (max-aspect-ratio: 4/5) { .landscape { width: 160%; left: -35%; } .lamp { width: 2px; height: 2px; } }
+  @media (max-width: 600px) { header, footer { left: 21px; right: 21px; } header { top: 21px; } }
+</style>

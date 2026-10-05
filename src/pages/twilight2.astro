@@ -13,19 +13,25 @@ const stars = Array.from({ length: 72 }, (_, i) => {
 const lights = Array.from({ length: 85 }, (_, i) => {
   const cluster = [285, 412, 453, 567, 609, 707][i % 6];
   return { x: cluster + (random(i) - .5) * 49, y: 645 - random(i, 2) * 5,
-    size: .45 + random(i, 3) * .8, opacity: .3 + random(i, 4) * .6 };
+    size: .45 + random(i, 3) * .8, opacity: .5 + random(i, 4) * .5 };
 });
 const ripples = Array.from({ length: 520 }, (_, i) => {
   const depth = random(i, 2);
   return { x: random(i) * 1000, y: 649 + depth ** 1.45 * 179,
     width: 1 + random(i, 3) * (3 + depth * 48), height: .35 + depth * .7, opacity: .035 + random(i, 4) * .14 };
 });
-const reflections = lights.flatMap((light, i) => Array.from({ length: 18 }, (_, j) => ({
-  x: light.x + (random(i * 18 + j, 6) - .5) * (2 + j * 1.1),
-  y: 651 + j * 3.4 + random(i * 18 + j, 7) * 2,
-  width: .6 + random(i * 18 + j, 8) * (1 + j * .65),
-  opacity: light.opacity * (1 - j / 19) ** 1.4 * .48,
-})));
+// Long vertical light paths break into wider wavelets toward the viewer.
+const reflections = lights.flatMap((light, i) => Array.from({ length: 36 }, (_, j) => {
+  const depth = j / 35;
+  const seed = i * 36 + j;
+  const width = .7 + random(seed, 8) * (1.2 + depth * 10);
+  return {
+    x: light.x - width / 2 + (random(seed, 6) - .5) * (1 + depth * 11),
+    y: 648 + depth ** 1.25 * (145 + random(i, 10) * 33) + random(seed, 7) * 1.8,
+    width, height: .6 + depth * 1.2,
+    opacity: light.opacity * (.18 + .82 * (1 - depth) ** 1.2) * (.4 + random(seed, 9) * .6),
+  };
+}));
 const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
 ---
 <!doctype html>
@@ -41,24 +47,34 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
     <main aria-label="Twilight 2 — an empty seaside crossing at dusk">
       <svg class="scene" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">
         <defs>
-          <linearGradient id="sky" x2="0" y2="1">
-            <stop stop-color="#111c46" />
-            <stop offset=".30" stop-color="#293e70" />
-            <stop offset=".56" stop-color="#59668c" />
-            <stop offset=".76" stop-color="#96849e" />
-            <stop offset=".91" stop-color="#c393a0" />
-            <stop offset="1" stop-color="#e1aa98" />
+          <g id="twilight2-clouds">
+            <image id="twilight2-cloud-sheet" x="-40" y="0" width="1080" height="620" preserveAspectRatio="none" />
+            <animateTransform attributeName="transform" type="translate" values="-10 0;10 0;-10 0" dur="240s" repeatCount="indefinite" />
+          </g>
+          <!-- Twilight 3's slate-blue palette and warm glow at the right horizon. -->
+          <linearGradient id="sky" x1="0" y1="0" x2="1" y2=".47">
+            <stop stop-color="#263f5b" />
+            <stop offset=".57" stop-color="#50647a" />
+            <stop offset="1" stop-color="#747d87" />
           </linearGradient>
-          <radialGradient id="afterglow" cx=".49" cy="1" r=".65" gradientTransform="translate(0 .4) scale(1 .6)">
-            <stop stop-color="#ffd09a" stop-opacity=".26" />
-            <stop offset="1" stop-color="#f0b899" stop-opacity="0" />
+          <radialGradient id="afterglow" cx="1.06" cy="1" r="1" gradientTransform="translate(1.06 1) scale(1.5 1.414) translate(-1.06 -1)">
+            <stop stop-color="#b69a7c" />
+            <stop offset=".24" stop-color="#8c8580" />
+            <stop offset=".53" stop-color="#63707c" stop-opacity=".533" />
+            <stop offset=".78" stop-color="#63707c" stop-opacity="0" />
           </radialGradient>
           <linearGradient id="sea" x2="0" y2="1">
-            <stop stop-color="#25344e" />
-            <stop offset=".3" stop-color="#34425b" />
-            <stop offset=".68" stop-color="#38445b" />
-            <stop offset="1" stop-color="#1e293e" />
+            <stop stop-color="#182955" />
+            <stop offset=".3" stop-color="#253966" />
+            <stop offset=".68" stop-color="#2c3d68" />
+            <stop offset="1" stop-color="#152344" />
           </linearGradient>
+          <linearGradient id="island-light-fade" x2="0" y2="1">
+            <stop stop-color="#ffc85c" stop-opacity=".26" />
+            <stop offset=".45" stop-color="#ffca6b" stop-opacity=".12" />
+            <stop offset="1" stop-color="#ffb95b" stop-opacity="0" />
+          </linearGradient>
+          <filter id="island-light-blur" x="-100%" y="-10%" width="300%" height="120%"><feGaussianBlur stdDeviation="1.3 .45" /></filter>
           <filter id="light-glow" x="-300%" y="-300%" width="700%" height="700%"><feGaussianBlur stdDeviation="2" /></filter>
           <clipPath id="water-clip"><rect y="647" width="1000" height="181" /></clipPath>
           <!-- Reuse the original flight and smoke at 42% scale, anchored to this horizon. -->
@@ -183,7 +199,8 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
               <path d="M-40 848 148 759 M852 759 1040 848" stroke-width="13" />
               <path d="M-40 868 148 776 M852 776 1040 868" stroke-width="4" />
             </g>
-            {[33, 93, 906, 967].map(x => <path d={`M${x} 732V816`} stroke="#090d14" stroke-width="4" />)}
+            <!-- Embed each roadside post below the pavement edge at y=829. -->
+            {[33, 93, 906, 967].map(x => <path d={`M${x} 732V835`} stroke="#090d14" stroke-width="4" />)}
             {[138, 849].map(x => <g><rect x={x} y="722" width="14" height="113" rx="2" fill="#090d14" /><rect x={x - 1} y="721" width="16" height="5" rx="2" fill="#090d14" /></g>)}
           </g>
         </defs>
@@ -194,6 +211,7 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
           {stars.map(star => <circle cx={star.x} cy={star.y} r={star.size} opacity={star.opacity} />)}
         </g>
         <use href="#distant-rocket" />
+        <use href="#twilight2-clouds" />
         <g id="coast">
         <!-- Low coastal silhouettes leave nearly two thirds of the frame as clear sky. -->
         <path d="M0 637 32 633 58 638 82 629 110 633 135 627 164 634 187 631 219 639 257 633 291 636 322 630 364 640 403 634 444 638 486 627 527 635 568 631 611 637 658 630 700 635 739 628 774 633 811 627 842 630 874 623 909 630 940 627 970 634 1000 631V651H0Z" fill="#69677c" />
@@ -208,6 +226,7 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
               <g transform="translate(0 918.74) scale(1 -.42)">
                 <rect x="-12" width="1024" height="650" fill="url(#sky)" />
                 <rect x="-12" width="1024" height="650" fill="url(#afterglow)" />
+                <use href="#twilight2-clouds" />
                 <use href="#coast" />
               </g>
             </g>
@@ -219,14 +238,18 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
           </g>
           <rect y="647" width="1000" height="181" filter="url(#water-texture)" />
         </g>
-        <g fill="#ffdfa2">
+        <g fill="#ffe29a">
           {lights.map(light => <circle cx={light.x} cy={light.y} r={light.size * 2.7} opacity={light.opacity * .45} filter="url(#light-glow)" />)}
           {lights.map(light => <ellipse cx={light.x} cy={light.y} rx={light.size} ry={light.size * .7} opacity={light.opacity} />)}
         </g>
         <g clip-path="url(#water-clip)">
         <g class="water-shimmer" filter="url(#water-ripples)">
-          <g fill="#ffe0a7" filter="url(#water-reflection-blur)">{reflections.map(r => <rect x={r.x} y={r.y} width={r.width} height=".65" opacity={r.opacity} />)}</g>
-          <g fill="#b2bad0" opacity=".55">{ripples.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} opacity={r.opacity} />)}</g>
+          <g fill="url(#island-light-fade)" filter="url(#island-light-blur)">
+            {lights.filter(light => light.opacity > .8).map(light => <path d={`M${light.x - .8} 648H${light.x + .8}L${light.x + 4.5} 826H${light.x - 4.5}Z`} opacity={light.opacity} />)}
+          </g>
+          <g fill="#ffd074" filter="url(#island-light-blur)">{reflections.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} opacity={r.opacity * .8} />)}</g>
+          <g fill="#ffecb0">{reflections.map(r => <rect x={r.x} y={r.y} width={r.width * .65} height={r.height * .55} opacity={r.opacity * .48} />)}</g>
+          <g fill="#9aaddc" opacity=".55">{ripples.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} opacity={r.opacity} />)}</g>
           <g fill="none" stroke="#939cb2" stroke-width="1" opacity=".13">
             <path d="M-20 702Q56 698 126 703T285 701 M586 697Q699 693 774 699T1010 698" />
             <path d="M-10 749Q78 739 159 749T353 747 M561 742Q635 735 730 744T1020 746" />
@@ -244,6 +267,12 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
       <footer><a href="/twilight/">original twilight ↗</a><button type="button" aria-pressed="false">Pause motion</button></footer>
     </main>
     <script>
+      import { createTwilight2Clouds } from '../scripts/twilight2-clouds';
+      const cloudSheet = document.querySelector<SVGImageElement>('#twilight2-cloud-sheet');
+      if (cloudSheet) {
+        cloudSheet.setAttribute('href', createTwilight2Clouds());
+        cloudSheet.dataset.ready = 'true';
+      }
       const button = document.querySelector<HTMLButtonElement>('button');
       const scene = document.querySelector<SVGSVGElement>('.scene');
       const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -274,7 +303,7 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
   :global(html), :global(body) { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #111927; }
   :global(astro-dev-toolbar) { display: none; }
   main { position: fixed; inset: 0; isolation: isolate; color: #8991ab; font: 10px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
-  .scene { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.65); }
+  .scene { position: absolute; inset: 0; width: 100%; height: 100%; filter: saturate(1.18); }
   .vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, #080f1b55, transparent 27%), radial-gradient(ellipse at 50% 38%, transparent 35%, #080e222e 100%); }
   .film-grain { position: absolute; inset: -50%; pointer-events: none; background: url('/assets/noise.png') repeat; opacity: .38; mix-blend-mode: soft-light; animation: grain 1s steps(1) infinite; }
   .water-shimmer { animation: shimmer 48s ease-in-out infinite alternate; }
@@ -287,7 +316,7 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
   a:focus-visible, button:focus-visible { outline: 1px solid #e5c6bf; outline-offset: 6px; opacity: 1; }
   :global(.paused) .water-shimmer, :global(.paused) .film-grain,
   :global(.hidden) .water-shimmer, :global(.hidden) .film-grain { animation-play-state: paused; }
-  @keyframes shimmer { from { opacity: .65; transform: translateY(0); } to { opacity: .75; transform: translateY(.2px); } }
+  @keyframes shimmer { from { opacity: .82; transform: translateY(0); } to { opacity: .96; transform: translateY(.2px); } }
   @keyframes grain { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-3%, 1%); } 40% { transform: translate(1%, -3%); } 60% { transform: translate(-2%, 3%); } 80% { transform: translate(3%, 2%); } }
   @media (max-width: 600px) { header, footer { left: 21px; right: 21px; } header { top: 21px; } footer { bottom: max(16px, env(safe-area-inset-bottom)); } }
   @media (prefers-reduced-motion: reduce) { :global(html:not(.motion-ready)) .water-shimmer, :global(html:not(.motion-ready)) .film-grain { animation-play-state: paused; } }

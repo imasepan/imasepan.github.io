@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-10-02 — Twilight 3
+
+- Replaced uniform surf movement with four-octave Perlin/fBm wave fronts and coordinated reflection distortion, with a shared pausable clock.
+
+- Added `/twilight3/` with a blue-gray dusk sky, island silhouette, illuminated waterfront, shimmering beach reflections, and gently animated waves. Motion can be paused and respects reduced-motion preferences.
+
+## 2026-10-02 — Twilight 2 color and reflections
+
+- Matched the sky to Twilight 3’s slate-blue palette and subtle warm glow at the right horizon, including its reflection in the water.
+
+- Added horizontal six-octave fBm cloud banks, Rayleigh/Mie-inspired single-scattering lighting, and synchronized cloud reflections and pausable drift.
+- Grounded the left and right roadside railing posts in the pavement.
+- Brightened and saturated the dusk palette, with richer blues and a warmer peach horizon.
+- Extended the island lights into long golden water reflections with soft glow and broken wave highlights.
+
 ## 2026-10-02 — Restore default menu
 
 - Use the selected Spotify album only in Frutiger mode and restore the original playlist when leaving it.

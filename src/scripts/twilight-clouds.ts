@@ -10,14 +10,14 @@ function hash(x: number, y: number) {
   n = Math.imul(n ^ (n >>> 13), 1274126177);
   return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
 }
-function noise(x: number, y: number) {
+export function noise(x: number, y: number) {
   const ix = Math.floor(x), iy = Math.floor(y);
   const fx = smooth(0, 1, x - ix), fy = smooth(0, 1, y - iy);
   const a = hash(ix, iy), b = hash(ix + 1, iy);
   const c = hash(ix, iy + 1), d = hash(ix + 1, iy + 1);
   return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy;
 }
-function fbm(x: number, y: number) {
+export function fbm(x: number, y: number) {
   let value = 0, amplitude = .5, total = 0;
   for (let octave = 0; octave < 6; octave++) {
     value += amplitude * noise(x, y);

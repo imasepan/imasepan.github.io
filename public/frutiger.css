@@ -1,10 +1,3 @@
-@font-face {
-  font-family: 'Neuropol X';
-  src: url('/assets/neuropol-x-free.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
 /* Keep layout choices as the original compact row of text buttons. */
 .home-header .appearance-button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 7px 10px; border: 0; background: transparent; color: var(--ink); font: 11px var(--mono); cursor: pointer; }
 .home-header .appearance-button::before { content: ''; width: 5px; height: 5px; border: 1px solid currentColor; border-radius: 50%; }
@@ -22,10 +15,10 @@
   --line: #99c7dd;
   --lime: #c5eaff;
 }
-:root[data-appearance='frutiger'] .overlay-site { background: linear-gradient(160deg, #73c8ee, #3188c3); --display: 'Neuropol X', sans-serif; }
+:root[data-appearance='frutiger'] .overlay-site { background: linear-gradient(160deg, #73c8ee, #3188c3); --display: 'Special Elite', monospace; --sans: 'Special Elite', monospace; --mono: 'Special Elite', monospace; font-family: var(--sans); }
 :root[data-appearance='frutiger'] .frutiger-water { display: block; }
 :root[data-appearance='frutiger'] .overlay-site :is(.sunlit-field, .film-grain, .analog-field) { display: none; }
-:root[data-appearance='frutiger'] :is(.home-links a, .home-webring, .overlay-content .journal-page h1, .overlay-content .post-card-title, .overlay-content .post-page .post-header h1) { font-family: 'Neuropol X', sans-serif; font-weight: 400; letter-spacing: 0; }
+:root[data-appearance='frutiger'] :is(.home-links a, .home-webring, .overlay-content .journal-page h1, .overlay-content .post-card-title, .overlay-content .post-page .post-header h1) { font-family: 'Special Elite', monospace; font-weight: 400; letter-spacing: 0; }
 :root[data-appearance='frutiger'] .home-menu { left: 12%; top: auto; bottom: max(30px, 6vh); transform: none; width: min(250px, 70vw); }
 :root[data-appearance='frutiger'] .home-links { gap: 10px; }
 :root[data-appearance='frutiger'] .guestbook-menu-item { width: 100%; }
@@ -34,121 +27,70 @@
 :root[data-appearance='frutiger'] .home-menu > .music-dock { position: relative; inset: auto; flex: none; }
 :root[data-appearance='frutiger'] .home-menu > .home-webring { position: relative; inset: auto; flex: none; width: max-content; max-width: 100%; padding-bottom: 0; }
 @media (max-height: 640px) { :root[data-appearance='frutiger'] .home-menu { padding-bottom: 30px; } }
-/* Glassy, rounded controls: a bright upper reflection over a deep colored center. */
+/* Plain text controls retain generous click targets and keyboard focus. */
 :root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page) {
-  --button-hue: 207;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border: 2px solid hsl(var(--button-hue) 85% 35%);
-  border-radius: 999px;
-  background: radial-gradient(ellipse at 50% 115%, hsl(var(--button-hue) 100% 77%), transparent 64%), linear-gradient(to bottom, hsl(var(--button-hue) 86% 65%), hsl(var(--button-hue) 95% 34%) 51%, hsl(var(--button-hue) 92% 51%));
-  box-shadow: inset 0 1px 2px #fff, inset 0 -3px 4px #a5f0ffad, 0 4px 12px #06385955;
-  color: white;
-  text-shadow: 0 1px 3px #062d58;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--ink);
+  text-shadow: none;
   text-decoration: none;
-  transition: filter .18s, transform .18s, box-shadow .18s;
+  transition: color .18s;
 }
-:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page)::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
-  inset: 3px 5% 48%;
-  border-radius: 999px 999px 65% 65%;
-  background: linear-gradient(#fffffff2, #ffffff70 55%, #ffffff12);
+:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page)::before { content: none; }
+:root[data-appearance='frutiger'] .home-links a { justify-content: flex-start; width: 100%; min-height: 46px; padding: 9px 0; font-size: 22px; line-height: 1.25; }
+:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page):hover {
+  translate: none;
+  transform: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
-:root[data-appearance='frutiger'] .home-links a { justify-content: center; width: 100%; min-height: 46px; padding: 9px 18px; font-size: 22px; line-height: 1.25; }
-:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a) {
-  background: radial-gradient(ellipse at 50% 115%, hsl(var(--button-hue) 100% 77% / .55), transparent 64%), linear-gradient(to bottom, hsl(var(--button-hue) 86% 65% / .72), hsl(var(--button-hue) 95% 34% / .74) 51%, hsl(var(--button-hue) 92% 51% / .7));
-  border-color: hsl(var(--button-hue) 85% 35% / .75);
-  backdrop-filter: blur(5px) saturate(125%);
-  -webkit-backdrop-filter: blur(5px) saturate(125%);
-}
-:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a)::before { opacity: .76; }
-:root[data-appearance='frutiger'] .home-links > a:nth-child(2) { --button-hue: 153; }
-:root[data-appearance='frutiger'] .home-links > a:nth-child(3) { --button-hue: 189; }
-:root[data-appearance='frutiger'] .guestbook-menu-item > a { --button-hue: 265; }
-:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page):hover { translate: none; filter: brightness(1.12); transform: translateY(-2px); }
-:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page):active { transform: translateY(1px); }
-:root[data-appearance='frutiger'] :is(.home-links a, .home-webring a, .overlay-close):focus-visible { outline: 3px solid white; outline-offset: 4px; }
+:root[data-appearance='frutiger'] :is(a, button):focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 :root[data-appearance='frutiger'] .home-menu > .music-dock {
   width: 280px;
   max-width: 80vw;
-  padding: 5px;
-  border: 1px solid #d9f8ffb3;
-  background: linear-gradient(150deg, #cbf3ff80, #157cb871 55%, #59caff88);
-  border-radius: 17px;
-  box-shadow: inset 0 1px 1px #ffffffbf, 0 5px 15px #084b7140;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
 }
-:root[data-appearance='frutiger'] .music-dock .spotify-player { filter: sepia(1) saturate(2.6) hue-rotate(165deg) brightness(1.5); opacity: .92; }
+:root[data-appearance='frutiger'] .music-dock .spotify-player { border-radius: 0; }
 
 :root[data-appearance='frutiger'] .home-webring { left: 12%; bottom: max(30px, 6vh); gap: 10px; font-size: 14px; }
 :root[data-appearance='frutiger'] .home-webring a { justify-content: center; min-width: 40px; min-height: 44px; padding: 8px 10px; }
-:root[data-appearance='frutiger'] .home-webring .webring-brand { font: 10px/1.3 'Neuropol X', sans-serif; }
-:root[data-appearance='frutiger'] .webring-brand svg { --ink: white; --line: #bde9ff; width: 19px; flex-basis: 19px; }
-/* Frosted blue glass: the water remains visible through the floating pane. */
-:root[data-appearance='frutiger'] .overlay-veil {
-  background: #07386a1c;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-:root[data-appearance='frutiger'] body:has(.page-overlay[open]) .home-screen { opacity: .12; filter: blur(5px); }
+:root[data-appearance='frutiger'] .home-webring .webring-brand { font: 10px/1.3 'Special Elite', monospace; }
+:root[data-appearance='frutiger'] .webring-brand svg { --ink: #10334f; --line: #345a74; width: 19px; flex-basis: 19px; }
+/* Flat, borderless reading surface over the water. */
+:root[data-appearance='frutiger'] .overlay-veil { background: #07386a1c; }
+:root[data-appearance='frutiger'] body:has(.page-overlay[open]) .home-screen { opacity: .12; }
 :root[data-appearance='frutiger'] .page-overlay {
   --ink: #082e4c;
   --muted: #234f6c;
-  --line: #ffffff6b;
-  isolation: isolate;
-  border: 1px solid #ffffffa8;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #effbff70, #b8e3fa38 38%, #8bcef342 72%, #e3faff66);
-  backdrop-filter: blur(26px) saturate(155%) brightness(1.08);
-  -webkit-backdrop-filter: blur(26px) saturate(155%) brightness(1.08);
-  box-shadow: inset 0 1px 1px #ffffffeb, inset 1px 0 0 #ffffff75, inset -1px -1px 1px #b9eaff99, 0 0 0 1px #467eb838, 0 22px 70px #00356b4d;
-  transform-origin: 50% 65%;
+  --line: #99c7dd;
+  border: 0;
+  border-radius: 0;
+  background: #d9eff9;
+  box-shadow: none;
 }
-:root[data-appearance='frutiger'] .page-overlay::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background: linear-gradient(125deg, transparent 9%, #ffffff24 9.2%, #ffffff05 22%, transparent 22.2%, transparent 57%, #ffffff16 57.2%, #ffffff03 68%, transparent 68.2%), linear-gradient(#ffffff29, transparent 24%, transparent 80%, #cdf4ff1f);
-}
-:root[data-appearance='frutiger'] .page-overlay[open] { animation: frutiger-glass-open .6s cubic-bezier(.16, .8, .24, 1); }
+:root[data-appearance='frutiger'] .page-overlay::before { content: none; }
 :root[data-appearance='frutiger'] .overlay-bar {
-  position: relative;
-  z-index: 1;
   flex-basis: 70px;
   margin: 6px 6px 0;
   padding-inline: 24px;
-  border-radius: 7px 7px 0 0;
-  background: linear-gradient(#f1fbff59, #b8e4ff1a);
-  border-color: #ffffff70;
-  text-shadow: 0 1px 1px #ffffff80;
+  border: 0;
+  border-radius: 0;
+  background: none;
 }
 :root[data-appearance='frutiger'] .overlay-scroll {
-  position: relative;
-  z-index: 1;
   margin: 0 12px 12px;
-  border: 1px solid #ffffff30;
-  border-top: 0;
-  border-radius: 0 0 7px 7px;
-  background: #d9f2ff2b;
-  scrollbar-color: #ffffff99 #457eaa14;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  scrollbar-color: #345a74 #d9eff9;
 }
-:root[data-appearance='frutiger'] .overlay-content { text-shadow: 0 1px 1px #e6faff50; }
-:root[data-appearance='frutiger'] .overlay-content :is(.project-card, .post-content blockquote) { background: #e4f6ff35; border-color: #ffffff73; border-radius: 9px; }
-@keyframes frutiger-glass-open {
-  from { opacity: 0; transform: perspective(1400px) translateY(22px) rotateX(5deg) rotateY(-4deg) scale(.965); }
-  to { opacity: 1; transform: perspective(1400px) translateY(0) rotateX(0) rotateY(0) scale(1); }
-}
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  :root[data-appearance='frutiger'] .page-overlay { background: #c9e6f6f5; }
-}
+:root[data-appearance='frutiger'] .overlay-content :is(.project-card, .post-content blockquote) { background: none; border: 0; border-radius: 0; box-shadow: none; }
 :root[data-appearance='frutiger'] :is(.overlay-close, .guestbook-sign, .page-back, .contact-band a, .retry-page) { padding: 8px 20px; }
 :root[data-appearance='frutiger'] .overlay-content :is(.journal-page h1, .post-page .post-header h1) { font-size: clamp(28px, 4.5vw, 52px); line-height: 1.35; overflow-wrap: anywhere; }
 :root[data-appearance='frutiger'] .overlay-content .journal-page .post-card-title { font-size: clamp(25px, 3.6vw, 42px); line-height: 1.35; }
@@ -157,7 +99,7 @@
   :root[data-appearance='frutiger'] .overlay-scroll { margin: 0 7px 7px; }
   :root[data-appearance='frutiger'] .overlay-content { padding: 26px 18px 40px; }
   :root[data-appearance='frutiger'] .home-menu { left: 10%; width: min(235px, 75vw); top: auto; bottom: max(30px, 6vh); }
-  :root[data-appearance='frutiger'] .home-links a { font-size: 21px; padding-inline: 16px; }
+  :root[data-appearance='frutiger'] .home-links a { font-size: 21px; padding-inline: 0; }
   :root[data-appearance='frutiger'] .home-webring { left: 10%; right: auto; gap: 8px; }
   :root[data-appearance='frutiger'] .home-webring a { padding-inline: 10px; }
   :root[data-appearance='frutiger'] .home-webring .webring-brand { font-size: 10px; }

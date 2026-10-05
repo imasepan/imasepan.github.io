@@ -99,8 +99,9 @@ vec3 sky(vec2 p, out float cloudOpacity) {
  vec3 cloudcolour=vec3(1.1,1.1,0.9)*clamp((clouddark+cloudlight*c),0.0,1.0);
  f=cloudcover+cloudalpha*f*r;
  cloudOpacity=clamp(f+c,0.0,1.0);
- vec3 result=mix(skycolour,clamp(skytint*skycolour+cloudcolour,0.0,1.0),cloudOpacity);
- return mix(vec3(0.002,0.006,0.015),result,daylight());
+ // Darken only the clear sky; clouds retain their bright daytime color.
+ vec3 cloudHighlight=clamp(skytint*skycolour+cloudcolour,0.0,1.0);
+ return mix(skycolour*daylight(),cloudHighlight,cloudOpacity);
 }
 // Analytic slopes of several crossing waves form the water surface normal.
 vec2 waveSlope(vec2 p, float t) {

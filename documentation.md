@@ -6,8 +6,10 @@ This repository contains the personal website for imasepan, built as an Astro st
 
 ## Key files
 
+- `src/scripts/twilight2-clouds.ts` — deterministic six-octave horizontal fBm cloud banks for Twilight 2. Uses wavelength-dependent Rayleigh scattering, a Henyey–Greenstein Mie approximation, and Beer–Lambert attenuation for cool shadows and warm grazing light. Generates one texture per page load, reused by the SVG sky and water reflection, with slow drift on the scene's pausable timeline. Lighting is an art-directed single-scattering approximation rather than a full volumetric simulation.
 - `src/pages/index.astro` — English homepage.
-- `src/pages/twilight2.astro` — separate `/twilight2/` seaside composition with a clear dusk sky, distant coast, empty lookout, and wet crossing. Self-contained SVG artwork with animated sea ripples and clipped sky/coast/light reflections. The original Twilight rocket and smoke arc appear at 42% scale in the distance, with a synchronized, distorted reflection in the sea. Water, rocket, and grain motion share a reduced-motion-aware pause control and stop while the tab is hidden. The original `/twilight/` remains available.
+- `src/pages/twilight3.astro` — `/twilight3/`, a reference-inspired blue-hour beach, with CSS sky and sand gradients, an SVG island and observation tower made with CSS, waterfront lights, fragmented amber reflections on the wet shoreline, and staggered CSS surf animations. Includes pause/resume, reduced-motion support, hidden-tab pausing, and a portrait crop.
+- `src/pages/twilight2.astro` — separate `/twilight2/` seaside composition with Twilight 3’s muted slate-blue sky and warm right-horizon glow, distant coast, empty lookout, and grounded roadside railings. Self-contained SVG artwork with animated sea ripples and clipped sky/coast/light reflections; island lights cast long golden paths with soft glow and broken wave highlights toward the foreground. The original Twilight rocket and smoke arc appear at 42% scale in the distance, with a synchronized, distorted reflection in the sea. Water, rocket, and grain motion share a reduced-motion-aware pause control and stop while the tab is hidden. The original `/twilight/` remains available.
 - `src/pages/kr.html.astro` — Korean homepage.
 - `src/pages/blog/index.astro` — writing index; `blog.html.astro` preserves the redirect.
 - `_posts/` — Markdown blog posts.
@@ -75,3 +77,7 @@ In Frutiger, the home navigation, Spotify dock, and webring share a vertical lay
 The default menu retains its pre-Frutiger placement: navigation is vertically centered at 45% (43% on mobile), the Spotify player sits 18px below Guestbook, and the webring is anchored to the bottom of the home screen. Only Frutiger moves the existing player and webring into the menu stack; switching back restores their original parents and the player’s artwork palette in light mode.
 
 Frutiger uses Spotify album `07NVjt98kIbx7SKynHNrFr`; the other modes use the original playlist `3U7y10CsdmnU7IfRpZRooU`. The player source and accessible label update when toggling the mode.
+
+### Twilight 3 procedural water
+
+`src/scripts/twilight-water.ts` combines four octaves of seeded gradient Perlin noise (fBm). Six advancing surf fronts, fragmented light reflections, and surface ripples sample a shared time-varying field. The renderer updates SVG geometry and CSS at at most 30 fps; the horizon remains fixed. Pause/resume, reduced motion, page visibility, and back/forward restoration share one clock, so resuming does not jump ahead. CSS remains the no-JavaScript fallback.
