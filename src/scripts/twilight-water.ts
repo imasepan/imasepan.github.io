@@ -29,6 +29,9 @@ function fbm(x: number, y: number) {
   return sum;
 }
 
+// Shared by twilight3's surf and twilight4's open-ocean ripples.
+export const sampleTwilightWater = (x: number, y: number, time: number) => fbm(x * 7 + time * .055, y * 14 - time * .16);
+
 export function mountTwilightWater(root: HTMLElement) {
   const waves = Array.from(root.querySelectorAll<SVGGElement>('.breaker'));
   const fronts = Array.from(root.querySelectorAll<SVGPathElement>('.wave-front'));
@@ -43,7 +46,7 @@ export function mountTwilightWater(root: HTMLElement) {
   let paused = true, frame = 0, last = 0, time = 12;
   // All surfaces sample one smoothly advecting field. High-frequency detail
   // travels with the broad swell instead of being randomized every frame.
-  const field = (x: number, y: number) => fbm(x * 7 + time * .055, y * 14 - time * .16);
+  const field = (x: number, y: number) => sampleTwilightWater(x, y, time);
   function front(progress: number, washLine = false) {
     const depth = progress ** 1.65;
     let d = '';

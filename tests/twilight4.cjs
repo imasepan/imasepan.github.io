@@ -1,0 +1,162 @@
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+(async () => {
+  const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome' });
+  const errors = [];
+  try {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, hasTouch: true });
+    page.on('pageerror', e => errors.push(e.message));
+    await page.route('http://scene.test/**', route => {
+      let file = path.resolve(__dirname, '../dist', new URL(route.request().url()).pathname.slice(1));
+      if (fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
+      return route.fulfill({ path: file });
+    });
+    await page.addInitScript(() => {
+      let callback, time = 100;
+      window.requestAnimationFrame = fn => { callback = fn; return 1; };
+      window.cancelAnimationFrame = () => { callback = null; };
+      window.advanceScene = seconds => { for (let i = 0; i < seconds * 10; i++) { time += 100; if (callback) callback(time); } };
+    });
+    await page.goto('http://scene.test/twilight4/');
+    await page.evaluate(() => window.advanceScene(.1));
+    const palette = () => page.locator('main').evaluate(el => ['--sky-top', '--horizon', '--night'].map(p => el.style.getPropertyValue(p)));
+    const initial = await palette();
+    assert.equal(await page.locator('.balcony').count(), 0, 'Balcony is removed');
+    const shorePixels = () => page.locator('#shore-lights').evaluate(canvas => canvas.toDataURL());
+    const initialShore = await shorePixels();
+    const shoreHasLight = await page.locator('#shore-lights').evaluate(canvas => {
+      const data = canvas.getContext('2d').getImageData(0, canvas.height * .52, canvas.width, canvas.height * .3).data;
+      let warmPixels = 0;
+      for (let i = 0; i < data.length; i += 4) if (data[i] > 190 && data[i + 2] < 180 && data[i + 3] > 20) warmPixels++;
+      return warmPixels > 100;
+    });
+    assert.ok(shoreHasLight, 'Shoreline lights and reflections are preserved');
+    assert.equal(initial[0], 'rgb(65,100,130)', 'Slider begins at early blue hour');
+    assert.equal(await page.locator('header, footer, .invitation').count(), 0, 'No visible text or navigation');
+    const release = page.getByRole('button', { name: 'Release a paper lantern into the sky', exact: true });
+    await release.click({ position: { x: 1040, y: 660 } });
+    await page.evaluate(() => window.advanceScene(.1));
+    const alphaAt = (x, y) => page.locator('#lanterns').evaluate((canvas, point) => {
+      const scale = canvas.width / canvas.clientWidth;
+      return canvas.getContext('2d').getImageData(Math.round(point.x * scale), Math.round(point.y * scale), 1, 1).data[3];
+    }, { x, y });
+    assert.ok(await alphaAt(1040, 660) > 200, 'Lantern starts at the cursor');
+    assert.equal(await alphaAt(720, 777), 0, 'No lantern at the old fixed origin');
+    await page.evaluate(() => window.advanceScene(7.9));
+    assert.equal(await page.locator('main').getAttribute('data-lantern-count'), '1');
+    const pixels = () => page.locator('#lanterns').evaluate(el => el.toDataURL());
+    const released = await pixels();
+    assert.notEqual(await shorePixels(), initialShore, 'Reflections still move');
+    await page.keyboard.press('p');
+    const pausedPalette = await palette();
+    const pausedShore = await shorePixels();
+    await page.evaluate(() => window.advanceScene(5));
+    assert.equal(await pixels(), released, 'Pause freezes lanterns');
+    assert.equal(await shorePixels(), pausedShore, 'Pause freezes reflections');
+    assert.deepEqual(await palette(), pausedPalette, 'Pause freezes the sky');
+    assert.equal(await page.locator('main').getAttribute('data-lantern-count'), '1', 'Pause does not release a lantern');
+    await release.blur();
+    await page.screenshot({ path: 'test-results/twilight4-desktop.png' });
+    await page.keyboard.press('p');
+    await page.evaluate(() => window.advanceScene(82.1));
+    const pink = await palette();
+    assert.equal(pink[0], 'rgb(27,66,104)');
+    await page.screenshot({ path: 'test-results/twilight4-pink.png' });
+    await page.evaluate(() => window.advanceScene(90));
+    const dark = await palette();
+    assert.equal(dark[0], 'rgb(8,15,34)');
+    await page.screenshot({ path: 'test-results/twilight4-dark.png' });
+    await page.evaluate(() => window.advanceScene(90));
+    const reverse = await palette();
+    assert.deepEqual(reverse.slice(0, 2), pink.slice(0, 2), 'Reverse transition returns through pink');
+    assert.ok(Math.abs(Number(reverse[2]) - Number(pink[2])) < .00001);
+    await page.evaluate(() => window.advanceScene(90));
+    const loop = await palette();
+    assert.equal(loop[0], initial[0], 'Full cycle returns to early blue hour');
+    assert.equal(loop[1], initial[1]);
+    const slider = page.getByRole('slider', { name: 'Blue hour', exact: true });
+    const cycle = page.getByRole('button', { name: 'Automatic blue hour cycle' });
+    await slider.focus();
+    await page.keyboard.press('End');
+    await page.evaluate(() => window.advanceScene(.1));
+    assert.equal((await palette())[0], dark[0], 'End key selects the final blue hour');
+    assert.equal(await cycle.getAttribute('aria-pressed'), 'false');
+    await page.keyboard.press('Home');
+    await page.evaluate(() => window.advanceScene(.1));
+    assert.equal((await palette())[0], initial[0], 'Home key selects the start');
+    await slider.evaluate(el => { el.value = '50'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+    await page.evaluate(() => window.advanceScene(.1));
+    const selected = await palette();
+    assert.equal(selected[0], 'rgb(27,66,104)');
+    assert.equal(selected[1], 'rgb(184,121,129)', 'The midpoint retains a fading rose horizon');
+    await release.click({ position: { x: 1100, y: 600 } });
+    await page.evaluate(() => window.advanceScene(.1));
+    const movingLantern = await pixels();
+    await page.evaluate(() => window.advanceScene(3));
+    assert.deepEqual(await palette(), selected, 'Manual selection holds the light');
+    assert.notEqual(await pixels(), movingLantern, 'Lanterns keep moving while the light is held');
+    await slider.blur();
+    await page.screenshot({ path: 'test-results/twilight4-slider-midpoint.png' });
+    const lanternCount = await page.locator('main').getAttribute('data-lantern-count');
+    await cycle.click();
+    await page.evaluate(() => window.advanceScene(.1));
+    assert.equal(await cycle.getAttribute('aria-pressed'), 'true');
+    const resumed = await palette();
+    for (let i = 0; i < 2; i++) {
+      const before = selected[i].match(/[\d.]+/g).map(Number);
+      const after = resumed[i].match(/[\d.]+/g).map(Number);
+      assert.ok(after.every((value, channel) => Math.abs(value - before[channel]) < .3), 'Automatic cycle resumes without a color jump');
+    }
+    await page.evaluate(() => window.advanceScene(4));
+    assert.ok(Number(await slider.inputValue()) > 50, 'Slider follows automatic light progression');
+    assert.equal(await page.locator('main').getAttribute('data-lantern-count'), lanternCount, 'Lighting controls do not release lanterns');
+    // Sample the entire slider: the sky and sea must darken steadily, without color jumps.
+    const samples = await page.evaluate(() => {
+      const input = document.querySelector('#blue-hour');
+      const main = document.querySelector('main');
+      return Array.from({ length: 101 }, (_, hour) => {
+        input.value = String(hour); input.dispatchEvent(new Event('input', { bubbles: true }));
+        window.advanceScene(.1);
+        return ['--sky-top', '--sky-mid', '--sky-low', '--horizon', '--sea-top', '--sea-mid', '--sea-bottom'].map(name => main.style.getPropertyValue(name).match(/[\d.]+/g).map(Number));
+      });
+    });
+    const luminance = rgb => rgb.reduce((sum, c, i) => {
+      c /= 255; return sum + [0.2126, 0.7152, 0.0722][i] * (c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4);
+    }, 0);
+    for (let i = 1; i < samples.length; i++) for (let layer = 0; layer < samples[i].length; layer++) {
+      assert.ok(luminance(samples[i][layer]) <= luminance(samples[i - 1][layer]) + .00001, 'Dusk never brightens partway through');
+      assert.ok(samples[i][layer].every((channel, c) => Math.abs(channel - samples[i - 1][layer][c]) < 5), 'Slider has no abrupt color changes');
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.reload();
+    await page.evaluate(() => window.advanceScene(.1));
+    assert.equal(await page.locator('main').getAttribute('data-paused'), 'true');
+    await page.touchscreen.tap(310, 280);
+    await page.evaluate(() => window.advanceScene(.1));
+    assert.ok(await alphaAt(310, 280) > 200, 'Touch releases at the tap position, even when paused');
+    await page.reload();
+    await page.evaluate(() => window.advanceScene(.1));
+    await release.focus(); await page.keyboard.press('Enter');
+    await page.evaluate(() => window.advanceScene(.1));
+    assert.equal(await page.locator('main').getAttribute('data-lantern-count'), '1', 'Keyboard releases a lantern');
+    const mobilePalette = await palette();
+    await page.evaluate(() => window.advanceScene(2));
+    assert.deepEqual(await palette(), mobilePalette, 'Reduced motion stays still');
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
+    await release.blur();
+    const sliderBounds = await slider.boundingBox();
+    await page.touchscreen.tap(sliderBounds.x + sliderBounds.width / 2, sliderBounds.y + sliderBounds.height / 2);
+    await page.evaluate(() => window.advanceScene(.1));
+    assert.ok(Math.abs(Number(await slider.inputValue()) - 50) < 2, 'Slider supports touch');
+    assert.equal(await page.locator('main').getAttribute('data-lantern-count'), '1', 'Touching slider does not release a lantern');
+    assert.equal(await page.locator('main').getAttribute('data-paused'), 'true', 'Scrubbing respects reduced motion');
+    assert.notEqual((await palette())[0], initial[0], 'Slider updates even with motion paused');
+    await slider.blur();
+    await page.screenshot({ path: 'test-results/twilight4-mobile.png' });
+    assert.deepEqual(errors, []);
+    console.log('PASS: balcony removed, steadily darkening sky/sea, smooth full-range progression, lighting slider endpoints/midpoint, keyboard/touch scrubbing, held light with moving lanterns, smooth automatic resume, cursor and touch origin, lantern release, keyboard access, pause/resume, complete six-minute reversible palette loop, reduced motion, mobile layout, no browser errors.');
+  } finally { await browser.close(); }
+})().catch(e => { console.error(e); process.exitCode = 1; });

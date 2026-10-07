@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-07 — Clouds label and rain sound
+
+- Renamed the visible Frutiger button to Clouds, preserving the existing mode and saved preferences.
+- Added the supplied heavy-rain MP3 to the shared Rain toggle. It loops while Rain is active and pauses when Rain is turned off or Clouds is selected; theme changes and overlay navigation keep playback running.
+
+## 2026-10-06 — Twilight 2 blue-hour slider
+
+- Added a time-of-day slider from the existing early-blue-hour scene to deeper indigo sky, clouds, coast, and water, retaining warm island lights and their reflections.
+- Lighting can be scrubbed independently of motion, with keyboard and touch support and a compact mobile layout.
+
 ## 2026-10-02 — Twilight 3
 
 - Replaced uniform surf movement with four-octave Perlin/fBm wave fronts and coordinated reflection distortion, with a shared pausable clock.

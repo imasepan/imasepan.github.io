@@ -47,27 +47,34 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
     <main aria-label="Twilight 2 — an empty seaside crossing at dusk">
       <svg class="scene" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false">
         <defs>
+          <filter id="cloud-dusk" color-interpolation-filters="sRGB">
+            <feComponentTransfer>
+              <feFuncR type="linear" slope="1" />
+              <feFuncG type="linear" slope="1" />
+              <feFuncB type="linear" slope="1" />
+            </feComponentTransfer>
+          </filter>
           <g id="twilight2-clouds">
-            <image id="twilight2-cloud-sheet" x="-40" y="0" width="1080" height="620" preserveAspectRatio="none" />
+            <image filter="url(#cloud-dusk)" id="twilight2-cloud-sheet" x="-40" y="0" width="1080" height="620" preserveAspectRatio="none" />
             <animateTransform attributeName="transform" type="translate" values="-10 0;10 0;-10 0" dur="240s" repeatCount="indefinite" />
           </g>
           <!-- Twilight 3's slate-blue palette and warm glow at the right horizon. -->
           <linearGradient id="sky" x1="0" y1="0" x2="1" y2=".47">
-            <stop stop-color="#263f5b" />
-            <stop offset=".57" stop-color="#50647a" />
-            <stop offset="1" stop-color="#747d87" />
+            <stop stop-color="#263f5b" data-blue-hour-end="#101c3c" />
+            <stop offset=".57" stop-color="#50647a" data-blue-hour-end="#1b2c52" />
+            <stop offset="1" stop-color="#747d87" data-blue-hour-end="#334267" />
           </linearGradient>
           <radialGradient id="afterglow" cx="1.06" cy="1" r="1" gradientTransform="translate(1.06 1) scale(1.5 1.414) translate(-1.06 -1)">
-            <stop stop-color="#b69a7c" />
-            <stop offset=".24" stop-color="#8c8580" />
-            <stop offset=".53" stop-color="#63707c" stop-opacity=".533" />
-            <stop offset=".78" stop-color="#63707c" stop-opacity="0" />
+            <stop stop-color="#b69a7c" data-blue-hour-end="#59516e" />
+            <stop offset=".24" stop-color="#8c8580" data-blue-hour-end="#3b4266" />
+            <stop offset=".53" stop-color="#63707c" data-blue-hour-end="#263659" stop-opacity=".533" />
+            <stop offset=".78" stop-color="#63707c" data-blue-hour-end="#263659" stop-opacity="0" />
           </radialGradient>
           <linearGradient id="sea" x2="0" y2="1">
-            <stop stop-color="#182955" />
-            <stop offset=".3" stop-color="#253966" />
-            <stop offset=".68" stop-color="#2c3d68" />
-            <stop offset="1" stop-color="#152344" />
+            <stop stop-color="#182955" data-blue-hour-end="#0b1732" />
+            <stop offset=".3" stop-color="#253966" data-blue-hour-end="#122244" />
+            <stop offset=".68" stop-color="#2c3d68" data-blue-hour-end="#17284a" />
+            <stop offset="1" stop-color="#152344" data-blue-hour-end="#0a152d" />
           </linearGradient>
           <linearGradient id="island-light-fade" x2="0" y2="1">
             <stop stop-color="#ffc85c" stop-opacity=".26" />
@@ -207,16 +214,16 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
 
         <rect width="1000" height="650" fill="url(#sky)" />
         <rect width="1000" height="650" fill="url(#afterglow)" />
-        <g fill="#e0e5ff">
+        <g id="stars" fill="#e0e5ff">
           {stars.map(star => <circle cx={star.x} cy={star.y} r={star.size} opacity={star.opacity} />)}
         </g>
         <use href="#distant-rocket" />
         <use href="#twilight2-clouds" />
         <g id="coast">
         <!-- Low coastal silhouettes leave nearly two thirds of the frame as clear sky. -->
-        <path d="M0 637 32 633 58 638 82 629 110 633 135 627 164 634 187 631 219 639 257 633 291 636 322 630 364 640 403 634 444 638 486 627 527 635 568 631 611 637 658 630 700 635 739 628 774 633 811 627 842 630 874 623 909 630 940 627 970 634 1000 631V651H0Z" fill="#69677c" />
-        <path d="M172 648 211 643 239 635 268 634 296 623 316 626 343 617 370 620 403 611 427 614 449 609 478 605 505 608 522 610 541 620 560 619 578 622 600 621 621 629 646 633 667 638 701 641 735 647Z" fill="#444d68" />
-        <path d="M0 648 80 646 137 650 234 645 299 646 342 642 383 646 428 641 459 645 503 642 548 645 590 641 633 645 689 643 736 647 784 644 841 649 904 646 1000 648V655H0Z" fill="#36425a" />
+        <path d="M0 637 32 633 58 638 82 629 110 633 135 627 164 634 187 631 219 639 257 633 291 636 322 630 364 640 403 634 444 638 486 627 527 635 568 631 611 637 658 630 700 635 739 628 774 633 811 627 842 630 874 623 909 630 940 627 970 634 1000 631V651H0Z" fill="#69677c" data-blue-hour-end="#292c49" />
+        <path d="M172 648 211 643 239 635 268 634 296 623 316 626 343 617 370 620 403 611 427 614 449 609 478 605 505 608 522 610 541 620 560 619 578 622 600 621 621 629 646 633 667 638 701 641 735 647Z" fill="#444d68" data-blue-hour-end="#1b2340" />
+        <path d="M0 648 80 646 137 650 234 645 299 646 342 642 383 646 428 641 459 645 503 642 548 645 590 641 633 645 689 643 736 647 784 644 841 649 904 646 1000 648V655H0Z" fill="#36425a" data-blue-hour-end="#151e35" />
         </g>
         <rect y="647" width="1000" height="187" fill="url(#sea)" />
         <!-- Reflect the sky, coast, and flight into the sea, behind the foreground rails. -->
@@ -236,7 +243,7 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
               <use href="#distant-rocket" transform="translate(0 918.74) scale(1 -.42)" />
             </g>
           </g>
-          <rect y="647" width="1000" height="181" filter="url(#water-texture)" />
+          <rect class="water-texture" y="647" width="1000" height="181" filter="url(#water-texture)" />
         </g>
         <g fill="#ffe29a">
           {lights.map(light => <circle cx={light.x} cy={light.y} r={light.size * 2.7} opacity={light.opacity * .45} filter="url(#light-glow)" />)}
@@ -249,7 +256,7 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
           </g>
           <g fill="#ffd074" filter="url(#island-light-blur)">{reflections.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} opacity={r.opacity * .8} />)}</g>
           <g fill="#ffecb0">{reflections.map(r => <rect x={r.x} y={r.y} width={r.width * .65} height={r.height * .55} opacity={r.opacity * .48} />)}</g>
-          <g fill="#9aaddc" opacity=".55">{ripples.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} opacity={r.opacity} />)}</g>
+          <g class="ambient-ripples" fill="#9aaddc" opacity=".55">{ripples.map(r => <rect x={r.x} y={r.y} width={r.width} height={r.height} opacity={r.opacity} />)}</g>
           <g fill="none" stroke="#939cb2" stroke-width="1" opacity=".13">
             <path d="M-20 702Q56 698 126 703T285 701 M586 697Q699 693 774 699T1010 698" />
             <path d="M-10 749Q78 739 159 749T353 747 M561 742Q635 735 730 744T1020 746" />
@@ -264,9 +271,16 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
       <div class="vignette" aria-hidden="true"></div>
       <div class="film-grain" aria-hidden="true"></div>
       <header><a href="/" aria-label="Back to home">← home</a><span>twilight / 02</span></header>
+      <section class="time-control" aria-label="Blue hour lighting">
+        <div class="time-heading"><label for="blue-hour">Time of day</label><output for="blue-hour" id="blue-hour-label">Early blue hour</output></div>
+        <input id="blue-hour" type="range" min="0" max="100" step="1" value="0" aria-valuetext="Beginning of blue hour" />
+        <div class="time-endpoints" aria-hidden="true"><span>Beginning</span><span>End of blue hour</span></div>
+      </section>
       <footer><a href="/twilight/">original twilight ↗</a><button type="button" aria-pressed="false">Pause motion</button></footer>
     </main>
     <script>
+      import { mountBlueHour } from '../scripts/twilight2-time';
+      mountBlueHour();
       import { createTwilight2Clouds } from '../scripts/twilight2-clouds';
       const cloudSheet = document.querySelector<SVGImageElement>('#twilight2-cloud-sheet');
       if (cloudSheet) {
@@ -306,6 +320,17 @@ const backPosts = Array.from({ length: 19 }, (_, i) => 280 + i * 24.5);
   .scene { position: absolute; inset: 0; width: 100%; height: 100%; filter: saturate(1.18); }
   .vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, #080f1b55, transparent 27%), radial-gradient(ellipse at 50% 38%, transparent 35%, #080e222e 100%); }
   .film-grain { position: absolute; inset: -50%; pointer-events: none; background: url('/assets/noise.png') repeat; opacity: .38; mix-blend-mode: soft-light; animation: grain 1s steps(1) infinite; }
+  .time-control { position: absolute; z-index: 1; bottom: 27px; left: 50%; transform: translateX(-50%); width: min(290px, calc(100% - 42px)); color: #bdc8de; letter-spacing: .04em; }
+  .time-heading, .time-endpoints { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .time-heading output { color: #91a5c8; font-size: 9px; }
+  .time-endpoints { color: #8f9fbb; font-size: 9px; }
+  #blue-hour { display: block; width: 100%; height: 28px; margin: 1px 0; background: transparent; appearance: none; cursor: pointer; }
+  #blue-hour::-webkit-slider-runnable-track { height: 3px; border-radius: 3px; background: linear-gradient(90deg, #9eacae, #4a638b 50%, #202d58); }
+  #blue-hour::-moz-range-track { height: 3px; border-radius: 3px; background: linear-gradient(90deg, #9eacae, #4a638b 50%, #202d58); }
+  #blue-hour::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; margin-top: -5.5px; border: 2px solid #dce4ef; border-radius: 50%; background: #7187a8; box-shadow: 0 0 9px #bbd5ff33; }
+  #blue-hour::-moz-range-thumb { width: 10px; height: 10px; border: 2px solid #dce4ef; border-radius: 50%; background: #7187a8; box-shadow: 0 0 9px #bbd5ff33; }
+  #blue-hour:focus-visible { outline: 1px solid #dce4ef; outline-offset: 4px; border-radius: 3px; }
+  @media (max-width: 700px) { .time-control { bottom: max(76px, calc(env(safe-area-inset-bottom) + 64px)); } }
   .water-shimmer { animation: shimmer 48s ease-in-out infinite alternate; }
   header, footer { position: absolute; left: 30px; right: 30px; display: flex; justify-content: space-between; align-items: center; gap: 20px; letter-spacing: .09em; }
   header { top: 27px; } footer { bottom: 23px; }

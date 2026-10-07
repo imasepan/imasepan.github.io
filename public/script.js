@@ -8,6 +8,22 @@ const themeToggle = document.querySelector('.theme-toggle');
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
 const appearanceButtons = document.querySelectorAll('[data-appearance-mode]');
 const hasAppearanceControls = appearanceButtons.length > 0;
+const rainAudio = document.querySelector('#rain-audio');
+const syncRainAudio = (enabled) => {
+  if (!rainAudio) return;
+  if (!enabled) {
+    rainAudio.pause();
+    return;
+  }
+  if (rainAudio.paused) {
+    // Keep play() in the Rain activation's synchronous call stack for mobile
+    // autoplay policies. Restoring saved Rain may be blocked until a click.
+    rainAudio.play().catch(() => {
+      // A blocked restore or interrupted play must not break the controls.
+      // The next Rain activation retries playback on this same audio element.
+    });
+  }
+};
 const appearanceModes = ['default', 'light', 'dark', 'rain', 'frutiger'];
 const readAppearance = () => {
   try {
@@ -74,6 +90,7 @@ const applyAppearance = (mode) => {
   if (musicDock && musicParent && musicDock.parentElement !== musicParent) musicParent.append(musicDock);
   if (webring && ringParent && webring.parentElement !== ringParent) ringParent.append(webring);
   document.documentElement.dataset.weather = next === 'rain' ? 'rain' : 'clear';
+  syncRainAudio(next === 'rain');
   applyTheme(next === 'dark' ? 'dark' : next === 'light' || next === 'frutiger' ? 'light' : readSavedTheme() || (systemTheme.matches ? 'dark' : 'light'));
   if (themeToggle) themeToggle.hidden = next === 'frutiger';
   const rainButton = document.querySelector('.rain-toggle');

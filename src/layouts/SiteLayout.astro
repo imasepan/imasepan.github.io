@@ -19,11 +19,12 @@ const { title = "home", description = "charlie's website where he writes about s
   <link rel="stylesheet" href="/frutiger.css?v=20261004-1" />
 </head>
 <body class="overlay-site">
+  <audio id="rain-audio" src="/assets/dragon-studio-heavy-rain-outside-the-window-515266.mp3" loop preload="none" hidden></audio>
   <div class="home-screen">
     <header class="home-header">
       <button class="rain-toggle" type="button" data-appearance-mode="rain" aria-pressed="false">Rain</button>
       <button class="theme-toggle" type="button" aria-label="Switch color theme">Theme</button>
-      <button class="appearance-button" type="button" data-appearance-mode="frutiger" aria-pressed="false">Frutiger</button>
+      <button class="appearance-button" type="button" data-appearance-mode="frutiger" aria-pressed="false">Clouds</button>
     </header>
     <main class="home-menu" aria-label="Home">
 
@@ -63,7 +64,7 @@ const { title = "home", description = "charlie's website where he writes about s
     <div class="overlay-scroll" tabindex="0"><div class="overlay-content"><slot /></div></div>
   </dialog>
   <noscript><style is:inline>.page-overlay:not([open]){display:block;position:fixed}.home-screen{display:none}</style><p>Please enable JavaScript to use the overlay navigation. <a href="/blog/">Blog</a> · <a href="/about.html">About</a> · <a href="/guestbook.html">Guestbook</a> · <a href="/work.html">Work</a></p></noscript>
-  <script is:inline src="/script.js?v=20261002-4"></script>
+  <script is:inline src="/script.js?v=20261007-1"></script>
   <script is:inline src="/overlay.js?v=20261002-1"></script>
   <script is:inline type="module" src="/frutiger.js?v=20261001-1"></script>
 </body>

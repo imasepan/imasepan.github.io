@@ -6,6 +6,7 @@ This repository contains the personal website for imasepan, built as an Astro st
 
 ## Key files
 
+- `src/scripts/twilight2-time.ts` — Twilight 2's manual blue-hour progression. The slider defaults to the existing early palette and smoothly deepens sky, coast, water, and cloud lighting while retaining warm lights. Shared SVG definitions update reflected colors too; cloud textures and the motion clock are reused. `node tests/twilight2.cjs` checks endpoints, continuous darkening, keyboard/mouse/touch, independent pause state, and mobile layout after a build.
 - `src/scripts/twilight2-clouds.ts` — deterministic six-octave horizontal fBm cloud banks for Twilight 2. Uses wavelength-dependent Rayleigh scattering, a Henyey–Greenstein Mie approximation, and Beer–Lambert attenuation for cool shadows and warm grazing light. Generates one texture per page load, reused by the SVG sky and water reflection, with slow drift on the scene's pausable timeline. Lighting is an art-directed single-scattering approximation rather than a full volumetric simulation.
 - `src/pages/index.astro` — English homepage.
 - `src/pages/twilight3.astro` — `/twilight3/`, a reference-inspired blue-hour beach, with CSS sky and sand gradients, an SVG island and observation tower made with CSS, waterfront lights, fragmented amber reflections on the wet shoreline, and staggered CSS surf animations. Includes pause/resume, reduced-motion support, hidden-tab pausing, and a portrait crop.
@@ -24,6 +25,8 @@ This repository contains the personal website for imasepan, built as an Astro st
 The text-free entrance screen and between-page loading transition now mirror the homepage's warm paper palette, analog dot texture, soft window light, and muted lilac accent while critical images and fonts decode. Non-visible status labels preserve loading announcements for assistive technology. Large visual assets use WebP versions, expensive visual effects start during idle time, and project cards render immediately before a near-viewport GitHub refresh. The unused industrial-layout resources are no longer requested by pages.
 
 ## Development notes
+
+The visible Clouds button retains the internal `frutiger` mode and stored preference for compatibility. The shared layout owns a single hidden looping audio element for `public/assets/dragon-studio-heavy-rain-outside-the-window-515266.mp3`. Rain activation calls `play()` synchronously from the button event; leaving Rain pauses it. Theme changes and overlay navigation preserve playback. Restoring a saved Rain mode attempts playback, but browser autoplay restrictions may keep it silent until Rain is reactivated. Playback rejections are handled without interrupting the visual controls.
 
 Falling rain uses thin, square-ended rectangles, 4px wide and 36–84px long, within the blinds' background layer. The effect pauses when the page is hidden and stays still for reduced motion.
 
