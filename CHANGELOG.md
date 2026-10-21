@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-21 — Larger responsive pages
+
+- Increased the shared page panel from 980px to 1200px and reclaimed vertical space on desktop and mobile.
+- Scaled headings, reading text, portraits, blog images, and content spacing together while preserving the existing palette and font families.
+- Kept long-form writing within 760px, stacked the About portrait on smaller tablets, and retained the fixed Close bar above independently scrolling content.
+
 ## 2026-10-07 — Clouds label and rain sound
 
 - Renamed the visible Frutiger button to Clouds, preserving the existing mode and saved preferences.

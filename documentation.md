@@ -26,6 +26,8 @@ The text-free entrance screen and between-page loading transition now mirror the
 
 ## Development notes
 
+The shared overlay sizing lives in `public/overlay.css`: `--panel-width` caps desktop pages at 1200px, `--panel-gutter` and `--content-inset` provide responsive margins, `--reading-width` caps article text at 760px, and `--page-text` scales body text from 16px to 18px. The panel leaves 24px above and 48px below on desktop, and 12px above / 16px below on phones, respecting safe-area insets. About stacks below 760px; existing blog mobile stacking remains at 650px. These rules affect the shared About, Work, Blog, post, and Guestbook panels. The separate Korean homepage and experimental scenes retain their own layouts.
+
 The visible Clouds button retains the internal `frutiger` mode and stored preference for compatibility. The shared layout owns a single hidden looping audio element for `public/assets/dragon-studio-heavy-rain-outside-the-window-515266.mp3`. Rain activation calls `play()` synchronously from the button event; leaving Rain pauses it. Theme changes and overlay navigation preserve playback. Restoring a saved Rain mode attempts playback, but browser autoplay restrictions may keep it silent until Rain is reactivated. Playback rejections are handled without interrupting the visual controls.
 
 Falling rain uses thin, square-ended rectangles, 4px wide and 36–84px long, within the blinds' background layer. The effect pauses when the page is hidden and stays still for reduced motion.

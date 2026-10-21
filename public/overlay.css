@@ -9,6 +9,11 @@
 html:has(.overlay-site), .overlay-site { width: 100%; height: 100%; overflow: hidden; }
 .overlay-site {
   --page-inset: clamp(20px, 5vw, 80px);
+  --panel-width: 1200px;
+  --panel-gutter: clamp(12px, 2.5vw, 40px);
+  --content-inset: clamp(22px, 4vw, 56px);
+  --reading-width: 760px;
+  --page-text: clamp(16px, 1.25vw, 18px);
   --sans: 'DM Sans', sans-serif;
   --display: var(--mono);
   --orange: var(--ink);
@@ -68,23 +73,23 @@ html:has(.overlay-site), .overlay-site { width: 100%; height: 100%; overflow: hi
 .music-dock { position: absolute; left: 0; top: calc(100% + 18px); width: 380px; max-width: 80vw; }
 .music-dock .spotify-player { display: block; width: 100%; max-width: 100%; height: 80px; margin: 0; border: 0; border-radius: 12px; }
 body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
-.page-overlay { position: fixed; inset: 24px 0 140px; width: min(980px, calc(100vw - 64px)); max-width: none; height: auto; max-height: none; margin: 0 auto; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 3px; color: var(--ink); background: color-mix(in srgb, var(--paper) 88%, transparent); box-shadow: 0 20px 100px #00000012; overflow: hidden; }
+.page-overlay { position: fixed; inset: max(24px, env(safe-area-inset-top)) 0 max(48px, env(safe-area-inset-bottom)); width: min(var(--panel-width), calc(100% - 2 * var(--panel-gutter))); max-width: none; height: auto; max-height: none; margin: 0 auto; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 3px; color: var(--ink); background: color-mix(in srgb, var(--paper) 88%, transparent); box-shadow: 0 20px 100px #00000012; overflow: hidden; }
 .page-overlay[open] { display: flex; flex-direction: column; animation: page-appear .55s cubic-bezier(.2, .75, .25, 1); }
 .page-overlay::backdrop { background: #22201720; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.overlay-bar { flex: 0 0 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); font: 11px var(--mono); }
+.overlay-bar { flex: 0 0 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--content-inset); border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); font: 12px var(--mono); }
 .overlay-close { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; text-decoration: none; }
 .overlay-close span { font: 26px var(--sans); }
 .overlay-scroll { min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
-.overlay-content { padding: 40px 48px 64px; overflow-wrap: anywhere; }
-.overlay-content h1 { font: 400 clamp(34px, 4.5vw, 54px)/1.1 var(--sans); letter-spacing: 0; margin: 0 0 24px; }
-.overlay-content h2 { font-size: 25px; letter-spacing: 0; }
+.overlay-content { padding: clamp(28px, 3.5vw, 48px) var(--content-inset) 72px; font-size: var(--page-text); overflow-wrap: anywhere; }
+.overlay-content h1 { font: 400 clamp(34px, 4.8vw, 64px)/1.1 var(--sans); letter-spacing: 0; margin: 0 0 24px; }
+.overlay-content h2 { font-size: clamp(25px, 2.3vw, 30px); letter-spacing: 0; }
 .overlay-content p { line-height: 1.8; }
 .overlay-content .page-intro, .overlay-content .post-page, .overlay-content .post-header, .overlay-content .section { display: block; width: 100%; max-width: none; min-height: 0; padding: 0; margin: 0 0 32px; border: 0; background: none; }
 .overlay-content .post-header h1 { max-width: none; }
-.overlay-content .post-content { max-width: 680px; margin: 28px auto 0; font-size: 16px; }
+.overlay-content .post-page .post-content { width: min(100%, var(--reading-width)); max-width: none; margin: 32px auto 0; font-size: var(--page-text); }
 .overlay-content .post-content img { max-width: 100%; height: auto; }
 .overlay-content .post-list { display: grid; grid-template-columns: 1fr; gap: 0; padding: 0; margin: 0; }
-.overlay-content .post-card { display: grid; grid-template-columns: minmax(0, 1fr) 34%; align-items: center; gap: 24px; min-height: 0; padding: 24px 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; box-shadow: none; color: var(--ink); text-decoration: none; transform: none; }
+.overlay-content .post-card { display: grid; grid-template-columns: minmax(0, 1fr) 34%; align-items: center; gap: 32px; min-height: 0; padding: 28px 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; box-shadow: none; color: var(--ink); text-decoration: none; transform: none; }
 .overlay-content .post-card::before, .overlay-content .post-card::after { display: none; }
 .overlay-content .post-card-image { position: static; grid-column: 2; grid-row: 1; width: 100%; height: 220px; object-fit: cover; opacity: 1; filter: none; border-radius: 2px; }
 .overlay-content .post-card .post-card-content {
@@ -106,7 +111,7 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
 .overlay-content .post-card .post-meta,
 .overlay-content .post-card .text-link { color: var(--ink); }
 .overlay-content .post-card-title { font-size: 25px; line-height: 1.2; }
-.overlay-content .post-card-excerpt { font-size: 14px; }
+.overlay-content .post-card-excerpt { font-size: clamp(14px, 1.15vw, 16px); }
 /* Keep the label and its highlight inside image cards' clipped bounds. */
 .overlay-site .overlay-content .post-card .text-link {
   justify-self: start;
@@ -120,13 +125,13 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
   background: var(--ink);
   color: var(--paper);
 }
-.overlay-content .post-meta, .overlay-content .eyebrow { font: 10px/1.6 var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+.overlay-content .post-meta, .overlay-content .eyebrow { font: 12px/1.6 var(--mono); text-transform: uppercase; letter-spacing: .08em; }
 .overlay-content .page-back { display: inline-block; margin: 0 0 24px; }
 .overlay-content .post-spotify { position: static; width: min(100%, 360px); margin: 24px 0; }
-.about-hero { display: grid; grid-template-columns: 1fr 220px; gap: 32px; align-items: center; }
+.about-hero { display: grid; grid-template-columns: minmax(0, 1fr) clamp(220px, 24vw, 280px); gap: clamp(24px, 3vw, 40px); align-items: center; }
 .hero-index, .panel-number { display: none; }
 .overlay-content .hero-copy { max-width: none; padding: 0; margin: 0; background: none; }
-.overlay-content .about-photo { display: block; width: 100%; max-width: 220px; margin: 0; padding: 0; transform: none; }
+.overlay-content .about-photo { display: block; width: 100%; max-width: 280px; margin: 0; padding: 0; transform: none; }
 .overlay-content .about-photo img { width: 100%; height: auto; display: block; border-radius: 2px; }
 .overlay-content .about-photo figcaption { font: 10px/1.6 var(--mono); }
 .kicker, .panel-label { font: 10px/1.5 var(--mono); letter-spacing: .08em; }
@@ -142,23 +147,28 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
 .contact-band { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin: 32px 0; padding: 24px 0; border-block: 1px solid var(--line); }
 .contact-band a { font: 12px var(--mono); }
 .overlay-content .project-grid { grid-template-columns: 1fr; }
-.overlay-content .project-card { padding: 20px; min-height: 0; }
-.guestbook-page { max-width: 640px; margin: auto; }
+.overlay-content .project-card { padding: clamp(20px, 2.3vw, 28px); min-height: 0; }
+.overlay-content .project-card p { font-size: var(--page-text); }
+.guestbook-page { max-width: var(--reading-width); margin: auto; }
 .guestbook-page figure { margin: 28px 0; }
-.guestbook-page img { display: block; width: 100%; max-height: 260px; object-fit: cover; border-radius: 2px; }
+.guestbook-page img { display: block; width: 100%; max-height: 320px; object-fit: cover; border-radius: 2px; }
 .guestbook-sign { display: inline-block; padding: 12px 0; text-underline-offset: 6px; }
 .guestbook-note { font-size: 12px; opacity: .7; }
 .overlay-content .load-message { padding: 30px 0; }
 .overlay-site :focus-visible { outline: 2px solid var(--ink); outline-offset: 5px; }
 @keyframes page-appear { from { opacity: 0; } to { opacity: 1; } }
+/* Stack the portrait before the larger heading becomes cramped on tablets. */
+@media (max-width: 760px) {
+  .about-hero { grid-template-columns: 1fr; gap: 24px; }
+}
 @media(max-width: 600px) {
   .home-header { top: 16px; }
   .home-menu { left: 10%; width: 80%; top: 43%; }
   .home-links a { font-size: 46px; }
-  .page-overlay { inset: 12px 0 128px; width: calc(100vw - 24px); }
+  .page-overlay { inset: max(12px, env(safe-area-inset-top)) 0 max(16px, env(safe-area-inset-bottom)); width: calc(100% - 24px); }
   .overlay-bar { flex-basis: 56px; padding: 0 20px; }
   .overlay-content { padding: 28px 22px 40px; }
-  .about-hero, .about-grid { grid-template-columns: 1fr; gap: 20px; }
+  .about-grid { grid-template-columns: 1fr; gap: 20px; }
   .overlay-content .about-photo { max-width: 260px; }
   .overlay-content .post-card { gap: 16px; grid-template-columns: minmax(0, 1fr) 38%; align-items: start; }
   .overlay-content .post-card-image { width: 100%; height: 160px; }
@@ -172,7 +182,7 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
 */
 
 .about-keepsake { margin: 40px 0 0; }
-.about-keepsake img { width: 100%; max-height: 320px; object-fit: cover; }
+.about-keepsake img { width: 100%; max-height: 400px; object-fit: cover; }
 
 /* Dim the home behind the open page. */
 .overlay-veil { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .55s ease, visibility .55s; position: fixed; inset: 0; z-index: 4; background: #22201720; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
@@ -453,14 +463,14 @@ body:has(.page-overlay[open]) .overlay-veil { opacity: 1; visibility: visible; p
 */
 
 /* Blog layout and Belyga titles. */
-.overlay-content .journal-page h1 { font-family:'Belyga',sans-serif; font-size:clamp(44px,6vw,76px); max-width:650px; letter-spacing:-.055em; }
-.overlay-content .journal-page .post-card-title { font-family:'Belyga',sans-serif; font-size:clamp(42px,5vw,64px); letter-spacing:-.035em; }
+.overlay-content .journal-page h1 { font-family:'Belyga',sans-serif; font-size:clamp(44px,6vw,84px); max-width:760px; letter-spacing:-.055em; }
+.overlay-content .journal-page .post-card-title { font-family:'Belyga',sans-serif; font-size:clamp(42px,5vw,72px); letter-spacing:-.035em; }
 .overlay-content .journal-page .post-card:first-child { padding:30px 0 38px; grid-template-columns:minmax(0,1fr) 42%; border-top:0; }
 .overlay-content .journal-page .post-card:first-child:not(.has-image) { grid-template-columns:1fr; }
-.overlay-content .journal-page .post-card:first-child .post-card-image { height:280px; filter:sepia(.15); }
-.overlay-content .journal-page .post-card:not(:first-child) .post-card-image { height:140px; }
+.overlay-content .journal-page .post-card:first-child .post-card-image { height:320px; filter:sepia(.15); }
+.overlay-content .journal-page .post-card:not(:first-child) .post-card-image { height:160px; }
 .overlay-content .post-page .post-header { border-bottom:1px solid var(--line); padding-bottom:28px; }
-.overlay-content .post-page .post-header h1 { font-family:'Belyga',sans-serif; font-size:clamp(44px,6vw,76px); letter-spacing:-.04em; }
+.overlay-content .post-page .post-header h1 { font-family:'Belyga',sans-serif; font-size:clamp(44px,6vw,84px); letter-spacing:-.04em; }
 .overlay-content .post-page .post-content blockquote { margin:34px 0; padding:20px 24px; border:0; border-block:1px solid var(--line); background:color-mix(in srgb,var(--ink) 3%,transparent); color:var(--ink); font:italic 22px/1.65 Georgia,serif; }
 .overlay-content .post-page .post-content blockquote p { font:inherit; }
 @media (max-width:650px) {
