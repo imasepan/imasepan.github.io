@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-21 — Narrower vertical pages
+
+- Narrowed the shared page panel to 880px and extended it vertically with 16px desktop top and bottom margins.
+- Stacked the About introduction and portrait vertically, keeping long pages scrollable beneath the Close bar.
+
 ## 2026-10-21 — Larger responsive pages
 
 - Increased the shared page panel from 980px to 1200px and reclaimed vertical space on desktop and mobile.

@@ -9,7 +9,7 @@
 html:has(.overlay-site), .overlay-site { width: 100%; height: 100%; overflow: hidden; }
 .overlay-site {
   --page-inset: clamp(20px, 5vw, 80px);
-  --panel-width: 1200px;
+  --panel-width: 880px;
   --panel-gutter: clamp(12px, 2.5vw, 40px);
   --content-inset: clamp(22px, 4vw, 56px);
   --reading-width: 760px;
@@ -73,7 +73,7 @@ html:has(.overlay-site), .overlay-site { width: 100%; height: 100%; overflow: hi
 .music-dock { position: absolute; left: 0; top: calc(100% + 18px); width: 380px; max-width: 80vw; }
 .music-dock .spotify-player { display: block; width: 100%; max-width: 100%; height: 80px; margin: 0; border: 0; border-radius: 12px; }
 body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
-.page-overlay { position: fixed; inset: max(24px, env(safe-area-inset-top)) 0 max(48px, env(safe-area-inset-bottom)); width: min(var(--panel-width), calc(100% - 2 * var(--panel-gutter))); max-width: none; height: auto; max-height: none; margin: 0 auto; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 3px; color: var(--ink); background: color-mix(in srgb, var(--paper) 88%, transparent); box-shadow: 0 20px 100px #00000012; overflow: hidden; }
+.page-overlay { position: fixed; inset: max(16px, env(safe-area-inset-top)) 0 max(16px, env(safe-area-inset-bottom)); width: min(var(--panel-width), calc(100% - 2 * var(--panel-gutter))); max-width: none; height: auto; max-height: none; margin: 0 auto; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 17%, transparent); border-radius: 3px; color: var(--ink); background: color-mix(in srgb, var(--paper) 88%, transparent); box-shadow: 0 20px 100px #00000012; overflow: hidden; }
 .page-overlay[open] { display: flex; flex-direction: column; animation: page-appear .55s cubic-bezier(.2, .75, .25, 1); }
 .page-overlay::backdrop { background: #22201720; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .overlay-bar { flex: 0 0 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--content-inset); border-bottom: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); font: 12px var(--mono); }
@@ -128,7 +128,7 @@ body:has(.page-overlay[open]) .home-screen { filter: blur(8px); opacity: .25; }
 .overlay-content .post-meta, .overlay-content .eyebrow { font: 12px/1.6 var(--mono); text-transform: uppercase; letter-spacing: .08em; }
 .overlay-content .page-back { display: inline-block; margin: 0 0 24px; }
 .overlay-content .post-spotify { position: static; width: min(100%, 360px); margin: 24px 0; }
-.about-hero { display: grid; grid-template-columns: minmax(0, 1fr) clamp(220px, 24vw, 280px); gap: clamp(24px, 3vw, 40px); align-items: center; }
+.about-hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(24px, 3vw, 40px); align-items: start; }
 .hero-index, .panel-number { display: none; }
 .overlay-content .hero-copy { max-width: none; padding: 0; margin: 0; background: none; }
 .overlay-content .about-photo { display: block; width: 100%; max-width: 280px; margin: 0; padding: 0; transform: none; }
