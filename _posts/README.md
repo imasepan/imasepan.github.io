@@ -12,11 +12,15 @@ For example: 2026-08-03-my-first-post.md
 
 ## Images
 
-Place attachments in `public/assets` (served at `/assets`), then embed them in a post with Obsidian syntax:
+Place attachments in `public/assets` (served at `/assets`), not the generated `dist/assets` folder. Commit the attachments with the post so GitHub Pages can publish them. Set the blog thumbnail in frontmatter with a full asset path, for example `image: /assets/my-photo.webp`. Frontmatter must start on the first line of the file, without surrounding code fences.
+
+Embed images in a post with Obsidian syntax:
 
 ```md
 ![[my-photo.webp]]
 ```
+
+Keep a blank line between an image embed and a `[figcaption: ...]` caption so they render as separate paragraphs.
 
 Optional width and alt text are supported:
 

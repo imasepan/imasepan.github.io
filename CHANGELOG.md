@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-02 — Restore blog images
+
+- Fixed Blog 2’s thumbnail asset path.
+- Repaired the newest post’s frontmatter, image filename, and caption spacing.
+- Added its beach photo, exam screenshot, book cover, and MAGE diagram to the published assets.
+
 ## 2026-10-21 — Narrower vertical pages
 
 - Narrowed the shared page panel to 880px and extended it vertically with 16px desktop top and bottom margins.
